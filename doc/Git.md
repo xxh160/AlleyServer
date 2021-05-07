@@ -1,4 +1,4 @@
-# Git规范
+# Git Standard
 
 ## Reference
 
@@ -6,7 +6,7 @@
 
 - [Commit message 和 Change log 编写指南](http://www.ruanyifeng.com/blog/2016/01/commit_message_change_log.html)
 
-## Branch规范
+## Branch Standard
 
 分支的命名限定在以下范围：
 
@@ -20,7 +20,7 @@ xxx为任意内容
 
 2. hotfix/订单流程更改 
 
-## Commit规范
+## Commit Standard
 
 每次commit时，添加的描述信息需要有一个特定的前缀，限定在以下范围：
 
@@ -46,7 +46,7 @@ feat | doc | test | docs | chore | refactor | fix | style | perf: xxx
 
 2. fix: 浏览酒店bug修复
 
-## 开发流程
+## Code Synchronization
 
 提交：
 
