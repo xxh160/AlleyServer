@@ -26,19 +26,19 @@ xxx为任意内容
 
 feat | doc | test | docs | chore | refactor | fix | style | perf: xxx
 
-feat - 新功能（feature）
+- feat 新功能（feature）
 
-doc - 文档（documentation）
+- doc 文档（documentation）
 
-style - 格式（不影响代码运行的变动）
+- style 格式（不影响代码运行的变动）
 
-refactor - 重构（即不是新增功能，也不是修改bug的代码变动）
+- refactor 重构（不是新增功能，也不是修改bug的代码变动）
 
-fix - 修补bug
+- fix 修补bug
 
-test - 增加测试
+- test 增加测试
 
-chore - 构建过程或辅助工具的变动
+- chore 构建过程或辅助工具的变动
 
 样例：
 
