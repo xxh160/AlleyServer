@@ -1,6 +1,6 @@
 # Git规范
 
-## reference
+## Reference
 
 - [git flow 工作流](https://github.com/xirong/my-git/blob/master/git-workflow-tutorial.md#23-gitflow工作流)
 
@@ -8,7 +8,11 @@
 
 ## Branch规范
 
-分支的命名限定在以下范围（master | dev | develop | release | feature/xxx | hotfix/xxx | fix/xxx ） xxx为任意内容
+分支的命名限定在以下范围：
+
+master | dev | develop | release | feature/xxx | hotfix/xxx | fix/xxx
+
+xxx为任意内容
 
 样例：
 
@@ -18,7 +22,9 @@
 
 ## Commit规范
 
-每次commit时，添加的描述信息需要有一个特定的前缀，限定在以下范围(feat|doc|test|docs|chore|refactor|fix|style| perf): xxx    **注意冒号后面有一个空格**
+每次commit时，添加的描述信息需要有一个特定的前缀，限定在以下范围：
+
+feat | doc | test | docs | chore | refactor | fix | style | perf: xxx
 
 feat - 新功能（feature）
 
@@ -42,19 +48,26 @@ chore - 构建过程或辅助工具的变动
 
 ## 开发流程
 
-只有release分支可以进行Test环境部署，clone项目之后新建release分支
+提交：
 
 ```bash
-git checkout -b release
 git add .
-git commit -m 'feat: xxx'
-git push --set-upstream origin release
-````
+git commit -m "feat: xxx"
+git push origin main
+```
 
-只有master分支可以进行Prod环境部署
+拉取，代码同步：
 
 ```bash
-git checkout -b master
-git merge release
-git push origin master
+git stash
+git fetch origin main:tmp
+git merge tmp
+```
+
+resolve conflicts manually
+
+```bash
+git branch -d tmp
+git stash pop
+git add .
 ```
