@@ -6,13 +6,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/search")
+@RequestMapping("/api")
 public class SearchController {
 
-    @GetMapping("/")
-    public ResponseVO search(@RequestParam("type") String type){
-        return ResponseVO.success().msg(type);
+    @GetMapping("/search")
+    public ResponseVO search(@RequestParam("keywords") String keywords){
+        return ResponseVO.success().add(Arrays.asList("a","b"));
     }
 
 }
