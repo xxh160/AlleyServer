@@ -5,21 +5,22 @@ import org.mybatis.dynamic.sql.SqlTable;
 
 import java.sql.JDBCType;
 
-public final class PostCommentPODynamicSqlSupport {
+public final class PostCommentDSS {
 
-    public static final PostCommentPO postCommentPO = new PostCommentPO();
+    public static final PostComment postComment = new PostComment();
 
-    public static final SqlColumn<Integer> id = postCommentPO.id;
+    public static final SqlColumn<Integer> id = postComment.id;
 
-    public static final SqlColumn<Integer> userId = postCommentPO.userId;
+    public static final SqlColumn<Integer> userId = postComment.userId;
 
-    public static final SqlColumn<Integer> postId = postCommentPO.postId;
+    public static final SqlColumn<Integer> postId = postComment.postId;
 
-    public static final SqlColumn<String> content = postCommentPO.content;
+    public static final SqlColumn<String> content = postComment.content;
 
-    public static final SqlColumn<Integer> likeNum = postCommentPO.likeNum;
+    public static final SqlColumn<Integer> likeNum = postComment.likeNum;
 
-    public static final class PostCommentPO extends SqlTable {
+    public static final class PostComment extends SqlTable {
+        
         public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
 
         public final SqlColumn<Integer> userId = column("user_id", JDBCType.INTEGER);
@@ -30,8 +31,9 @@ public final class PostCommentPODynamicSqlSupport {
 
         public final SqlColumn<Integer> likeNum = column("like_num", JDBCType.INTEGER);
 
-        public PostCommentPO() {
+        public PostComment() {
             super("post_comment");
         }
     }
+
 }

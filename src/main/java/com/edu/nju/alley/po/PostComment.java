@@ -1,9 +1,11 @@
 package com.edu.nju.alley.po;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
+@ApiModel("帖子评论模型")
 @Data
-public class PostCommentPO {
+public class PostComment {
 
     private Integer id;
 
