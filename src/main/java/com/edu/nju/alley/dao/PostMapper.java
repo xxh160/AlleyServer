@@ -1,9 +1,9 @@
 package com.edu.nju.alley.dao;
 
-import static com.edu.nju.alley.dao.PostCommentDynamicSqlSupport.*;
+import static com.edu.nju.alley.dao.PostDynamicSqlSupport.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
-import com.edu.nju.alley.po.PostComment;
+import com.edu.nju.alley.po.Post;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -32,9 +32,9 @@ import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 @Mapper
-public interface PostCommentMapper {
+public interface PostMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(id, userId, postId, content, likeNum, time);
+    BasicColumn[] selectList = BasicColumn.columnList(id, userId, label, title, content, likeNum, commentNum, time, isPublic, addrX, addrY);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -46,35 +46,45 @@ public interface PostCommentMapper {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
-    int insert(InsertStatementProvider<PostComment> insertStatement);
+    int insert(InsertStatementProvider<Post> insertStatement);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @InsertProvider(type=SqlProviderAdapter.class, method="insertMultiple")
-    int insertMultiple(MultiRowInsertStatementProvider<PostComment> multipleInsertStatement);
+    int insertMultiple(MultiRowInsertStatementProvider<Post> multipleInsertStatement);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    @Results(id="PostCommentResult", value = {
+    @Results(id="PostResult", value = {
         @Result(column="id", property="id", jdbcType=JdbcType.INTEGER, id=true),
         @Result(column="user_id", property="userId", jdbcType=JdbcType.INTEGER),
-        @Result(column="post_id", property="postId", jdbcType=JdbcType.INTEGER),
+        @Result(column="label", property="label", jdbcType=JdbcType.VARCHAR),
+        @Result(column="title", property="title", jdbcType=JdbcType.VARCHAR),
         @Result(column="content", property="content", jdbcType=JdbcType.VARCHAR),
         @Result(column="like_num", property="likeNum", jdbcType=JdbcType.INTEGER),
-        @Result(column="time", property="time", jdbcType=JdbcType.DATE)
+        @Result(column="comment_num", property="commentNum", jdbcType=JdbcType.INTEGER),
+        @Result(column="time", property="time", jdbcType=JdbcType.DATE),
+        @Result(column="is_public", property="isPublic", jdbcType=JdbcType.BIT),
+        @Result(column="addr_x", property="addrX", jdbcType=JdbcType.INTEGER),
+        @Result(column="addr_y", property="addrY", jdbcType=JdbcType.INTEGER)
     })
-    Optional<PostComment> selectOne(SelectStatementProvider selectStatement);
+    Optional<Post> selectOne(SelectStatementProvider selectStatement);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    @Results(id="PostCommentResult", value = {
+    @Results(id="PostResult", value = {
         @Result(column="id", property="id", jdbcType=JdbcType.INTEGER, id=true),
         @Result(column="user_id", property="userId", jdbcType=JdbcType.INTEGER),
-        @Result(column="post_id", property="postId", jdbcType=JdbcType.INTEGER),
+        @Result(column="label", property="label", jdbcType=JdbcType.VARCHAR),
+        @Result(column="title", property="title", jdbcType=JdbcType.VARCHAR),
         @Result(column="content", property="content", jdbcType=JdbcType.VARCHAR),
         @Result(column="like_num", property="likeNum", jdbcType=JdbcType.INTEGER),
-        @Result(column="time", property="time", jdbcType=JdbcType.DATE)
+        @Result(column="comment_num", property="commentNum", jdbcType=JdbcType.INTEGER),
+        @Result(column="time", property="time", jdbcType=JdbcType.DATE),
+        @Result(column="is_public", property="isPublic", jdbcType=JdbcType.BIT),
+        @Result(column="addr_x", property="addrX", jdbcType=JdbcType.INTEGER),
+        @Result(column="addr_y", property="addrY", jdbcType=JdbcType.INTEGER)
     })
-    List<PostComment> selectMany(SelectStatementProvider selectStatement);
+    List<Post> selectMany(SelectStatementProvider selectStatement);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @UpdateProvider(type=SqlProviderAdapter.class, method="update")
@@ -82,12 +92,12 @@ public interface PostCommentMapper {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default long count(CountDSLCompleter completer) {
-        return MyBatis3Utils.countFrom(this::count, postComment, completer);
+        return MyBatis3Utils.countFrom(this::count, post, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int delete(DeleteDSLCompleter completer) {
-        return MyBatis3Utils.deleteFrom(this::delete, postComment, completer);
+        return MyBatis3Utils.deleteFrom(this::delete, post, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -98,58 +108,73 @@ public interface PostCommentMapper {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    default int insert(PostComment record) {
-        return MyBatis3Utils.insert(this::insert, record, postComment, c ->
+    default int insert(Post record) {
+        return MyBatis3Utils.insert(this::insert, record, post, c ->
             c.map(id).toProperty("id")
             .map(userId).toProperty("userId")
-            .map(postId).toProperty("postId")
+            .map(label).toProperty("label")
+            .map(title).toProperty("title")
             .map(content).toProperty("content")
             .map(likeNum).toProperty("likeNum")
+            .map(commentNum).toProperty("commentNum")
             .map(time).toProperty("time")
+            .map(isPublic).toProperty("isPublic")
+            .map(addrX).toProperty("addrX")
+            .map(addrY).toProperty("addrY")
         );
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    default int insertMultiple(Collection<PostComment> records) {
-        return MyBatis3Utils.insertMultiple(this::insertMultiple, records, postComment, c ->
+    default int insertMultiple(Collection<Post> records) {
+        return MyBatis3Utils.insertMultiple(this::insertMultiple, records, post, c ->
             c.map(id).toProperty("id")
             .map(userId).toProperty("userId")
-            .map(postId).toProperty("postId")
+            .map(label).toProperty("label")
+            .map(title).toProperty("title")
             .map(content).toProperty("content")
             .map(likeNum).toProperty("likeNum")
+            .map(commentNum).toProperty("commentNum")
             .map(time).toProperty("time")
+            .map(isPublic).toProperty("isPublic")
+            .map(addrX).toProperty("addrX")
+            .map(addrY).toProperty("addrY")
         );
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    default int insertSelective(PostComment record) {
-        return MyBatis3Utils.insert(this::insert, record, postComment, c ->
+    default int insertSelective(Post record) {
+        return MyBatis3Utils.insert(this::insert, record, post, c ->
             c.map(id).toPropertyWhenPresent("id", record::getId)
             .map(userId).toPropertyWhenPresent("userId", record::getUserId)
-            .map(postId).toPropertyWhenPresent("postId", record::getPostId)
+            .map(label).toPropertyWhenPresent("label", record::getLabel)
+            .map(title).toPropertyWhenPresent("title", record::getTitle)
             .map(content).toPropertyWhenPresent("content", record::getContent)
             .map(likeNum).toPropertyWhenPresent("likeNum", record::getLikeNum)
+            .map(commentNum).toPropertyWhenPresent("commentNum", record::getCommentNum)
             .map(time).toPropertyWhenPresent("time", record::getTime)
+            .map(isPublic).toPropertyWhenPresent("isPublic", record::getIsPublic)
+            .map(addrX).toPropertyWhenPresent("addrX", record::getAddrX)
+            .map(addrY).toPropertyWhenPresent("addrY", record::getAddrY)
         );
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    default Optional<PostComment> selectOne(SelectDSLCompleter completer) {
-        return MyBatis3Utils.selectOne(this::selectOne, selectList, postComment, completer);
+    default Optional<Post> selectOne(SelectDSLCompleter completer) {
+        return MyBatis3Utils.selectOne(this::selectOne, selectList, post, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    default List<PostComment> select(SelectDSLCompleter completer) {
-        return MyBatis3Utils.selectList(this::selectMany, selectList, postComment, completer);
+    default List<Post> select(SelectDSLCompleter completer) {
+        return MyBatis3Utils.selectList(this::selectMany, selectList, post, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    default List<PostComment> selectDistinct(SelectDSLCompleter completer) {
-        return MyBatis3Utils.selectDistinct(this::selectMany, selectList, postComment, completer);
+    default List<Post> selectDistinct(SelectDSLCompleter completer) {
+        return MyBatis3Utils.selectDistinct(this::selectMany, selectList, post, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    default Optional<PostComment> selectByPrimaryKey(Integer id_) {
+    default Optional<Post> selectByPrimaryKey(Integer id_) {
         return selectOne(c ->
             c.where(id, isEqualTo(id_))
         );
@@ -157,49 +182,69 @@ public interface PostCommentMapper {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int update(UpdateDSLCompleter completer) {
-        return MyBatis3Utils.update(this::update, postComment, completer);
+        return MyBatis3Utils.update(this::update, post, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    static UpdateDSL<UpdateModel> updateAllColumns(PostComment record, UpdateDSL<UpdateModel> dsl) {
+    static UpdateDSL<UpdateModel> updateAllColumns(Post record, UpdateDSL<UpdateModel> dsl) {
         return dsl.set(id).equalTo(record::getId)
                 .set(userId).equalTo(record::getUserId)
-                .set(postId).equalTo(record::getPostId)
+                .set(label).equalTo(record::getLabel)
+                .set(title).equalTo(record::getTitle)
                 .set(content).equalTo(record::getContent)
                 .set(likeNum).equalTo(record::getLikeNum)
-                .set(time).equalTo(record::getTime);
+                .set(commentNum).equalTo(record::getCommentNum)
+                .set(time).equalTo(record::getTime)
+                .set(isPublic).equalTo(record::getIsPublic)
+                .set(addrX).equalTo(record::getAddrX)
+                .set(addrY).equalTo(record::getAddrY);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    static UpdateDSL<UpdateModel> updateSelectiveColumns(PostComment record, UpdateDSL<UpdateModel> dsl) {
+    static UpdateDSL<UpdateModel> updateSelectiveColumns(Post record, UpdateDSL<UpdateModel> dsl) {
         return dsl.set(id).equalToWhenPresent(record::getId)
                 .set(userId).equalToWhenPresent(record::getUserId)
-                .set(postId).equalToWhenPresent(record::getPostId)
+                .set(label).equalToWhenPresent(record::getLabel)
+                .set(title).equalToWhenPresent(record::getTitle)
                 .set(content).equalToWhenPresent(record::getContent)
                 .set(likeNum).equalToWhenPresent(record::getLikeNum)
-                .set(time).equalToWhenPresent(record::getTime);
+                .set(commentNum).equalToWhenPresent(record::getCommentNum)
+                .set(time).equalToWhenPresent(record::getTime)
+                .set(isPublic).equalToWhenPresent(record::getIsPublic)
+                .set(addrX).equalToWhenPresent(record::getAddrX)
+                .set(addrY).equalToWhenPresent(record::getAddrY);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    default int updateByPrimaryKey(PostComment record) {
+    default int updateByPrimaryKey(Post record) {
         return update(c ->
             c.set(userId).equalTo(record::getUserId)
-            .set(postId).equalTo(record::getPostId)
+            .set(label).equalTo(record::getLabel)
+            .set(title).equalTo(record::getTitle)
             .set(content).equalTo(record::getContent)
             .set(likeNum).equalTo(record::getLikeNum)
+            .set(commentNum).equalTo(record::getCommentNum)
             .set(time).equalTo(record::getTime)
+            .set(isPublic).equalTo(record::getIsPublic)
+            .set(addrX).equalTo(record::getAddrX)
+            .set(addrY).equalTo(record::getAddrY)
             .where(id, isEqualTo(record::getId))
         );
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    default int updateByPrimaryKeySelective(PostComment record) {
+    default int updateByPrimaryKeySelective(Post record) {
         return update(c ->
             c.set(userId).equalToWhenPresent(record::getUserId)
-            .set(postId).equalToWhenPresent(record::getPostId)
+            .set(label).equalToWhenPresent(record::getLabel)
+            .set(title).equalToWhenPresent(record::getTitle)
             .set(content).equalToWhenPresent(record::getContent)
             .set(likeNum).equalToWhenPresent(record::getLikeNum)
+            .set(commentNum).equalToWhenPresent(record::getCommentNum)
             .set(time).equalToWhenPresent(record::getTime)
+            .set(isPublic).equalToWhenPresent(record::getIsPublic)
+            .set(addrX).equalToWhenPresent(record::getAddrX)
+            .set(addrY).equalToWhenPresent(record::getAddrY)
             .where(id, isEqualTo(record::getId))
         );
     }
