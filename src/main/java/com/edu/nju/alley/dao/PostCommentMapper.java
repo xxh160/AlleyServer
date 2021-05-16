@@ -62,7 +62,6 @@ public interface PostCommentMapper {
     @ResultMap("PostCommentResult")
     List<PostComment> selectMany(SelectStatementProvider selectStatement);
 
-
     @UpdateProvider(type = SqlProviderAdapter.class, method = "update")
     int update(UpdateStatementProvider updateStatement);
 
