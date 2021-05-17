@@ -3,51 +3,50 @@ package com.edu.nju.alley.dao.support;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 
-import javax.annotation.Generated;
 import java.sql.JDBCType;
 import java.util.Date;
 
 public final class PostDSS {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+
     public static final Post post = new Post();
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+
     public static final SqlColumn<Integer> id = post.id;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+
     public static final SqlColumn<Integer> authId = post.authId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+
     public static final SqlColumn<Integer> userId = post.userId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+
     public static final SqlColumn<String> title = post.title;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+
     public static final SqlColumn<String> content = post.content;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+
     public static final SqlColumn<Integer> likeNum = post.likeNum;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+
     public static final SqlColumn<Integer> commentNum = post.commentNum;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+
     public static final SqlColumn<Date> createT = post.createT;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+
     public static final SqlColumn<Date> lastModifiedT = post.lastModifiedT;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+
     public static final SqlColumn<Integer> anchorId = post.anchorId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+
     public static final SqlColumn<Integer> addrX = post.addrX;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+
     public static final SqlColumn<Integer> addrY = post.addrY;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    
     public static final class Post extends SqlTable {
         public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
 
