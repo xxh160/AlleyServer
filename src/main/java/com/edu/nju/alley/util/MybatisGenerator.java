@@ -21,8 +21,8 @@ public class MybatisGenerator {
         ConfigurationParser cp = new ConfigurationParser(warnings);
         Configuration config = cp.parseConfiguration(in);
 
-        // 覆盖 Java 文件
-        boolean overwrite = true;
+        // 不覆盖 Java 文件
+        boolean overwrite = false;
         DefaultShellCallback callback = new DefaultShellCallback(overwrite);
         MyBatisGenerator myBatisGenerator = new MyBatisGenerator(config, callback, warnings);
 

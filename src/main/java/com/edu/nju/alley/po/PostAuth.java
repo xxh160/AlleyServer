@@ -3,15 +3,11 @@ package com.edu.nju.alley.po;
 import lombok.Data;
 
 @Data
-public class User {
+public class PostAuth {
 
     private Integer id;
 
 
-    private Integer authId;
+    private Boolean visible;
 
-
-    private String sign;
-
- 
 }

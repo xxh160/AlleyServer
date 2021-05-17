@@ -37,6 +37,8 @@ dependencies {
     implementation 'org.mybatis:mybatis:3.5.4'
     implementation 'org.mybatis.dynamic-sql:mybatis-dynamic-sql:1.1.4'
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    // https://mvnrepository.com/artifact/com.github.pagehelper/pagehelper
+    implementation group: 'com.github.pagehelper', name: 'pagehelper', version: '5.2.0'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'mysql:mysql-connector-java'

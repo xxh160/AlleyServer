@@ -1,12 +1,13 @@
-package com.edu.nju.alley.dao;
+package com.edu.nju.alley.dao.support;
 
-import java.sql.JDBCType;
-import java.util.Date;
-import javax.annotation.Generated;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 
-public final class PostDynamicSqlSupport {
+import javax.annotation.Generated;
+import java.sql.JDBCType;
+import java.util.Date;
+
+public final class PostDSS {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final Post post = new Post();
 
@@ -14,10 +15,10 @@ public final class PostDynamicSqlSupport {
     public static final SqlColumn<Integer> id = post.id;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Integer> userId = post.userId;
+    public static final SqlColumn<Integer> authId = post.authId;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<String> label = post.label;
+    public static final SqlColumn<Integer> userId = post.userId;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> title = post.title;
@@ -32,10 +33,13 @@ public final class PostDynamicSqlSupport {
     public static final SqlColumn<Integer> commentNum = post.commentNum;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Date> time = post.time;
+    public static final SqlColumn<Date> createT = post.createT;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Boolean> isPublic = post.isPublic;
+    public static final SqlColumn<Date> lastModifiedT = post.lastModifiedT;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<Integer> anchorId = post.anchorId;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Integer> addrX = post.addrX;
@@ -47,9 +51,9 @@ public final class PostDynamicSqlSupport {
     public static final class Post extends SqlTable {
         public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
 
-        public final SqlColumn<Integer> userId = column("user_id", JDBCType.INTEGER);
+        public final SqlColumn<Integer> authId = column("auth_id", JDBCType.INTEGER);
 
-        public final SqlColumn<String> label = column("label", JDBCType.VARCHAR);
+        public final SqlColumn<Integer> userId = column("user_id", JDBCType.INTEGER);
 
         public final SqlColumn<String> title = column("title", JDBCType.VARCHAR);
 
@@ -59,9 +63,11 @@ public final class PostDynamicSqlSupport {
 
         public final SqlColumn<Integer> commentNum = column("comment_num", JDBCType.INTEGER);
 
-        public final SqlColumn<Date> time = column("time", JDBCType.DATE);
+        public final SqlColumn<Date> createT = column("create_t", JDBCType.TIMESTAMP);
 
-        public final SqlColumn<Boolean> isPublic = column("is_public", JDBCType.BIT);
+        public final SqlColumn<Date> lastModifiedT = column("last_modified_t", JDBCType.TIMESTAMP);
+
+        public final SqlColumn<Integer> anchorId = column("anchor_id", JDBCType.INTEGER);
 
         public final SqlColumn<Integer> addrX = column("addr_x", JDBCType.INTEGER);
 
