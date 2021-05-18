@@ -52,7 +52,7 @@ public interface CommentMapper {
             @Result(column = "id", property = "id", jdbcType = JdbcType.INTEGER, id = true),
             @Result(column = "user_id", property = "userId", jdbcType = JdbcType.INTEGER),
             @Result(column = "upper_id", property = "upperId", jdbcType = JdbcType.INTEGER),
-            @Result(column = "upper_type", property = "upperType", jdbcType = JdbcType.CHAR),
+            @Result(column = "upper_type", property = "upperType", jdbcType = JdbcType.VARCHAR),
             @Result(column = "content", property = "content", jdbcType = JdbcType.VARCHAR),
             @Result(column = "like_num", property = "likeNum", jdbcType = JdbcType.INTEGER),
             @Result(column = "create_t", property = "createT", jdbcType = JdbcType.TIMESTAMP),

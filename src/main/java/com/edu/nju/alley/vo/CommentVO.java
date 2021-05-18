@@ -1,23 +1,13 @@
-package com.edu.nju.alley.po;
-
-import com.edu.nju.alley.enums.UpperType;
-import lombok.Data;
+package com.edu.nju.alley.vo;
 
 import java.util.Date;
 
-@Data
-public class Comment {
+public class CommentVO {
 
     private Integer id;
 
 
     private Integer userId;
-
-
-    private Integer upperId;
-
-
-    private UpperType upperType;
 
 
     private String content;

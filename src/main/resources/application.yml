@@ -16,4 +16,8 @@ springfox:
     swagger-ui:
       enabled: true
 
-
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count
