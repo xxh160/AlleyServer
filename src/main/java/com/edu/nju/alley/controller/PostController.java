@@ -1,5 +1,6 @@
 package com.edu.nju.alley.controller;
 
+import com.edu.nju.alley.po.Post;
 import com.edu.nju.alley.service.PostService;
 import com.edu.nju.alley.vo.ResponseVO;
 import io.swagger.annotations.Api;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 @Api(tags = "Post")
 @RestController
@@ -24,10 +26,10 @@ public class PostController {
         this.postService = postService;
     }
 
-    @ApiOperation("获取帖子")
+    @ApiOperation("读取帖子")
     @GetMapping("/{postId}")
     public ResponseVO getOnePost(@PathVariable Integer postId) {
-        return null;
+        return postService.getPost(postId);
     }
 
     @ApiOperation("获取帖子列表")
