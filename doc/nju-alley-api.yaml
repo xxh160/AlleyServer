@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: nju-alley-api
   description: nju alley api
-  version: 1.0.3
+  version: 1.0.4
 servers:
   - url: 'http://119.23.56.136:8001/api'
 tags:
@@ -364,6 +364,33 @@ paths:
                     type: string
                   data:
                     $ref: "#/components/schemas/UserVO"
+  /user/authenticate/{userId}:
+    post:
+      tags:
+        - user
+      summary: 官方用户认证
+      description: 通过user id定位用户，对比invitation code是否相同。若通过则更新其权限，同时更新invitation_code中user id。
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: user id
+          schema:
+            type: integer
+      requestBody:
+        description: 邀请码 dto
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticationDTO'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseVO"
   /user/update/{userId}:
     post:
       tags:
@@ -378,7 +405,7 @@ paths:
           schema:
             type: integer
       requestBody:
-        description: post 信息属性
+        description: user 信息属性
         required: true
         content:
           application/json:
@@ -387,6 +414,10 @@ paths:
       responses:
         200:
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseVO"
   /comment/comment:
     post:
       tags:
@@ -630,7 +661,7 @@ components:
     LikeVO:
       type: object
       properties:
-        type:
+        upperType:
           type: integer
           enum:
             - 1
@@ -639,3 +670,9 @@ components:
         id:
           type: integer
           description: 被点赞的实体的id
+    AuthenticationDTO:
+      type: object
+      properties:
+        code:
+          type: string
+          description: 邀请码
