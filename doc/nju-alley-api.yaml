@@ -1,0 +1,641 @@
+openapi: 3.0.3
+info:
+  title: nju-alley-api
+  description: nju alley api
+  version: 1.0.3
+servers:
+  - url: 'http://119.23.56.136:8001/api'
+tags:
+  - name: anchor
+  - name: post
+  - name: user
+  - name: comment
+paths:
+  /anchor/post/{anchorId}:
+    get:
+      tags:
+        - anchor
+      summary: 获取该锚点对应的所有post
+      description: 根据锚点id返回post；返回根据page id分页；sort是排序方式；label是根据标签筛选。
+      parameters:
+        - name: anchorId
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The ID of the anchor.
+        - name: pageId
+          in: query
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The ID of the page.
+        - name: sort
+          in: query
+          required: true
+          schema:
+            type: integer
+            enum:
+              - 1
+              - 2
+          description: 排序方式，1是按时间，2是按热度
+        - name: label
+          in: query
+          required: true
+          schema:
+            type: integer
+            enum:
+              - 0
+              - 1
+              - 2
+              - 3
+            description: 0是全部，1是随笔，2是通知，3是反馈，只能选一个
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PostVO'
+  /post/view/{postId}:
+    get:
+      tags:
+        - post
+      summary: 返回特定的帖子
+      description: 通过帖子id返回特定的帖子
+      parameters:
+        - name: postId
+          in: path
+          description: 帖子id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/PostVO'
+  /post/update/{postId}:
+    post:
+      tags:
+        - post
+      summary: 更新帖子
+      description: 从request body中接收PostDTO来部分重写帖子以达到更新效果
+      parameters:
+        - name: postId
+          in: path
+          description: 帖子id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: post 信息属性
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostDTO'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    default: null
+  /post/like:
+    post:
+      tags:
+        - post
+      summary: 点赞或者取消点赞帖子
+      description: 将对应帖子的点赞数加/减一，并且向user_like_post数据库里加/减一条记录
+      parameters:
+        - name: postId
+          in: query
+          description: post id
+          required: true
+          schema:
+            type: integer
+        - name: userId
+          in: query
+          description: liker id
+          required: true
+          schema:
+            type: integer
+        - name: type
+          in: query
+          description: 0是点赞，1是取消点赞
+          required: true
+          schema:
+            type: integer
+            enum:
+              - 0
+              - 1
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/PostLikeVO"
+  /post/comment:
+    post:
+      tags:
+        - post
+      summary: 评论帖子
+      description: 通过PostCommentDTO的评论信息新建立一个评论加入数据库，更新post_comment_rel、user_comment_rel数据库以及相关post信息（commentNum等）
+      requestBody:
+        required: true
+        description: comment info
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommentDTO"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseVO"
+  /post/create:
+    post:
+      tags:
+        - post
+      summary: 新建帖子
+      description: 新建一个帖子，更新post数据库和user_post_rel数据库
+      requestBody:
+        required: true
+        description: post info
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostDTO"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseVO"
+  /post/delete/{postId}:
+    delete:
+      tags:
+        - post
+      summary: 删除帖子
+      description: 删除帖子，更新相应数据库，注意user id在post表中有存
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          description: post id
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseVO"
+  /user/post/{userId}:
+    get:
+      tags:
+        - user
+      summary: 返回该用户的所有帖子
+      description: 通过user id定位帖子，通过page id定位页数
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: user id
+          schema:
+            type: integer
+        - name: pageId
+          in: query
+          required: true
+          description: page id
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PostVO'
+  /user/comment/{userId}:
+    get:
+      tags:
+        - user
+      summary: 返回用户的所有评论
+      description: 通过user id找到用户所有评论并返回，通过page id定位页数
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: user id
+          schema:
+            type: integer
+        - name: pageId
+          in: query
+          required: true
+          description: page id
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CommentVO'
+  /user/like/{userId}:
+    get:
+      tags:
+        - user
+      summary: 返回用户所有点赞记录
+      description: 通过user_like_*查找点赞记录并返回，page id定位页数
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: user id
+          schema:
+            type: integer
+        - name: pageId
+          in: query
+          required: true
+          description: page id
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LikeVO'
+  /user/view/{userId}:
+    get:
+      tags:
+        - user
+      summary: 查看用户信息
+      description: 通过user id定位用户并返回信息
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: user id
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/UserVO"
+  /user/update/{userId}:
+    post:
+      tags:
+        - user
+      summary: 更新用户信息
+      description: 通过request body的信息更新用户信息
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: user id
+          schema:
+            type: integer
+      requestBody:
+        description: post 信息属性
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDTO'
+      responses:
+        200:
+          description: OK
+  /comment/comment:
+    post:
+      tags:
+        - comment
+      summary: 评论一条评论
+      description: 评论一条评论，更新comment、user_comment_rel和comment_rel数据库
+      requestBody:
+        required: true
+        description: comment 信息属性
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentDTO'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseVO"
+  /comment/like:
+    post:
+      tags:
+        - comment
+      summary: 点赞或取消点赞评论
+      description: 更新评论信息，同时通过user id定位到user，更新user_like_comment数据库
+      parameters:
+        - name: type
+          in: query
+          required: true
+          description: 0是点赞，1是取消点赞
+          schema:
+            type: integer
+            enum:
+              - 0
+              - 1
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/CommentLikeVO"
+
+
+components:
+  schemas:
+    UserVO:
+      type: object
+      properties:
+        id:
+          type: integer
+        openid:
+          type: integer
+          description: 微信帐号的唯一标识码
+        sign:
+          type: string
+        posts:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostVO'
+        auth:
+          $ref: "#/components/schemas/UserAuthVO"
+    UserDTO:
+      type: object
+      properties:
+        openid:
+          type: integer
+          description: 微信帐号的唯一标识码
+        sign:
+          type: string
+        posts:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostVO'
+        auth:
+          $ref: "#/components/schemas/UserAuthDTO"
+    PostVO:
+      type: object
+      properties:
+        userId:
+          type: integer
+          description: 创建帖子的用户id
+        labelId:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+        likeNum:
+          type: integer
+        CommentNum:
+          type: integer
+        createTime:
+          type: string
+          format: date-time
+        anchorId:
+          type: integer
+        addrX:
+          type: integer
+          description: 经度
+        addrY:
+          type: integer
+          description: 纬度
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommentVO'
+        auth:
+          $ref: "#/components/schemas/PostAuthVO"
+    PostDTO:
+      type: object
+      properties:
+        userId:
+          type: integer
+          description: 创建帖子用户id
+        labelId:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+        createTime:
+          type: string
+          format: date-time
+        anchorId:
+          type: integer
+        addrX:
+          type: integer
+          description: 经度
+        addrY:
+          type: integer
+          description: 纬度
+        auth:
+          $ref: "#/components/schemas/PostAuthDTO"
+    PostLikeVO:
+      type: object
+      properties:
+        likeNum:
+          type: integer
+          description: post like num
+    CommentDTO:
+      type: object
+      properties:
+        userId:
+          type: integer
+          description: 评论者的id
+        postId:
+          type: integer
+          description: 原帖id
+        fatherId:
+          type: integer
+          description: 父级评论的id，可以为null
+        content:
+          type: string
+        createTime:
+          type: string
+          format: date-time
+    CommentVO:
+      type: object
+      properties:
+        id:
+          type: integer
+        postId:
+          type: integer
+          description: 原帖id
+        fatherId:
+          type: integer
+          description: 父级评论的id，可以为null
+        content:
+          type: string
+        likeNum:
+          type: integer
+        comments:
+          type: array
+          items:
+            $ref: "#/components/schemas/CommentVO"
+    CommentLikeVO:
+      type: object
+      properties:
+        likeNum:
+          type: integer
+          description: comment like num
+    ResponseVO:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        data:
+          type: object
+          default: null
+    UserAuthVO:
+      type: object
+      properties:
+        chat:
+          type: boolean
+        mkfriend:
+          type: boolean
+        locate:
+          type: boolean
+        wxInfo:
+          type: boolean
+        official:
+          type: boolean
+    UserAuthDTO:
+      type: object
+      properties:
+        chat:
+          type: boolean
+        mkfriend:
+          type: boolean
+        locate:
+          type: boolean
+        wxInfo:
+          type: boolean
+        official:
+          type: boolean
+    PostAuthVO:
+      type: object
+      properties:
+        visible:
+          type: boolean
+        comment:
+          type: boolean
+    PostAuthDTO:
+      type: object
+      properties:
+        visible:
+          type: boolean
+        comment:
+          type: boolean
+    LikeVO:
+      type: object
+      properties:
+        type:
+          type: integer
+          enum:
+            - 1
+            - 2
+          description: 1是post，2是comment
+        id:
+          type: integer
+          description: 被点赞的实体的id

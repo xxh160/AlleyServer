@@ -16,6 +16,9 @@ public class Post {
     private Integer userId;
 
 
+    private Integer labelId;
+
+
     private String title;
 
 

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Api(tags = "User")
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 public class UserController {
 
     private UserService userService;

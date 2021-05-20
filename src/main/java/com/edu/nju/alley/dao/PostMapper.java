@@ -28,7 +28,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 @Mapper
 public interface PostMapper {
 
-    BasicColumn[] selectList = BasicColumn.columnList(id, authId, userId, title, content, likeNum, commentNum, createT, lastModifiedT, anchorId, addrX, addrY);
+    BasicColumn[] selectList = BasicColumn.columnList(id, authId, userId, labelId, title, content, likeNum, commentNum, createT, lastModifiedT, anchorId, addrX, addrY);
 
 
     @SelectProvider(type = SqlProviderAdapter.class, method = "select")
@@ -52,6 +52,7 @@ public interface PostMapper {
             @Result(column = "id", property = "id", jdbcType = JdbcType.INTEGER, id = true),
             @Result(column = "auth_id", property = "authId", jdbcType = JdbcType.INTEGER),
             @Result(column = "user_id", property = "userId", jdbcType = JdbcType.INTEGER),
+            @Result(column = "label_id", property = "labelId", jdbcType = JdbcType.INTEGER),
             @Result(column = "title", property = "title", jdbcType = JdbcType.VARCHAR),
             @Result(column = "content", property = "content", jdbcType = JdbcType.VARCHAR),
             @Result(column = "like_num", property = "likeNum", jdbcType = JdbcType.INTEGER),
@@ -96,6 +97,7 @@ public interface PostMapper {
                 c.map(id).toProperty("id")
                         .map(authId).toProperty("authId")
                         .map(userId).toProperty("userId")
+                        .map(labelId).toProperty("labelId")
                         .map(title).toProperty("title")
                         .map(content).toProperty("content")
                         .map(likeNum).toProperty("likeNum")
@@ -114,6 +116,7 @@ public interface PostMapper {
                 c.map(id).toProperty("id")
                         .map(authId).toProperty("authId")
                         .map(userId).toProperty("userId")
+                        .map(labelId).toProperty("labelId")
                         .map(title).toProperty("title")
                         .map(content).toProperty("content")
                         .map(likeNum).toProperty("likeNum")
@@ -132,6 +135,7 @@ public interface PostMapper {
                 c.map(id).toPropertyWhenPresent("id", record::getId)
                         .map(authId).toPropertyWhenPresent("authId", record::getAuthId)
                         .map(userId).toPropertyWhenPresent("userId", record::getUserId)
+                        .map(labelId).toPropertyWhenPresent("labelId", record::getLabelId)
                         .map(title).toPropertyWhenPresent("title", record::getTitle)
                         .map(content).toPropertyWhenPresent("content", record::getContent)
                         .map(likeNum).toPropertyWhenPresent("likeNum", record::getLikeNum)
@@ -176,6 +180,7 @@ public interface PostMapper {
         return dsl.set(id).equalTo(record::getId)
                 .set(authId).equalTo(record::getAuthId)
                 .set(userId).equalTo(record::getUserId)
+                .set(labelId).equalTo(record::getLabelId)
                 .set(title).equalTo(record::getTitle)
                 .set(content).equalTo(record::getContent)
                 .set(likeNum).equalTo(record::getLikeNum)
@@ -192,6 +197,7 @@ public interface PostMapper {
         return dsl.set(id).equalToWhenPresent(record::getId)
                 .set(authId).equalToWhenPresent(record::getAuthId)
                 .set(userId).equalToWhenPresent(record::getUserId)
+                .set(labelId).equalToWhenPresent(record::getLabelId)
                 .set(title).equalToWhenPresent(record::getTitle)
                 .set(content).equalToWhenPresent(record::getContent)
                 .set(likeNum).equalToWhenPresent(record::getLikeNum)
@@ -208,6 +214,7 @@ public interface PostMapper {
         return update(c ->
                 c.set(authId).equalTo(record::getAuthId)
                         .set(userId).equalTo(record::getUserId)
+                        .set(labelId).equalTo(record::getLabelId)
                         .set(title).equalTo(record::getTitle)
                         .set(content).equalTo(record::getContent)
                         .set(likeNum).equalTo(record::getLikeNum)
@@ -226,6 +233,7 @@ public interface PostMapper {
         return update(c ->
                 c.set(authId).equalToWhenPresent(record::getAuthId)
                         .set(userId).equalToWhenPresent(record::getUserId)
+                        .set(labelId).equalToWhenPresent(record::getLabelId)
                         .set(title).equalToWhenPresent(record::getTitle)
                         .set(content).equalToWhenPresent(record::getContent)
                         .set(likeNum).equalToWhenPresent(record::getLikeNum)

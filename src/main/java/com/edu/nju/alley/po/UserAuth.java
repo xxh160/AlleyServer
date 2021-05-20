@@ -18,5 +18,8 @@ public class UserAuth {
 
 
     private Boolean showWxInfo;
-    
+
+
+    private Boolean official;
+
 }

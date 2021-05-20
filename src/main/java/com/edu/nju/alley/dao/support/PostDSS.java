@@ -20,6 +20,9 @@ public final class PostDSS {
     public static final SqlColumn<Integer> userId = post.userId;
 
 
+    public static final SqlColumn<Integer> labelId = post.labelId;
+
+
     public static final SqlColumn<String> title = post.title;
 
 
@@ -46,13 +49,15 @@ public final class PostDSS {
 
     public static final SqlColumn<Integer> addrY = post.addrY;
 
-    
+
     public static final class Post extends SqlTable {
         public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
 
         public final SqlColumn<Integer> authId = column("auth_id", JDBCType.INTEGER);
 
         public final SqlColumn<Integer> userId = column("user_id", JDBCType.INTEGER);
+
+        public final SqlColumn<Integer> labelId = column("label_id", JDBCType.INTEGER);
 
         public final SqlColumn<String> title = column("title", JDBCType.VARCHAR);
 

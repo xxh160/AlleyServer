@@ -1,5 +1,11 @@
 # Databases 概述
 
+## 变更记录
+
+|Time|Content|
+|:---:|:---:|
+|2021-05-20|post_auth，增加comment列；post，增加label_id；comment，将upper_type改为upper_type_id；user_auth，增加official列；增加label表；增加invitation_code表|
+
 ## 实体类表
 
 ### user
@@ -19,6 +25,7 @@
 |id|int|主键，可自增|
 |auth_id|int|对应权限行id|
 |user_id|int|对应发帖者id|
+|label_id|int|对应label的id|
 |title|varchar(64)|标题|
 |content|varchar(500)|帖子正文|
 |like_num|int|点赞数|
@@ -34,7 +41,7 @@
 |Column|Type|Description|
 |:---:|:---:|:---:|
 |id|int|主键，可自增|
-|upper_type|enum(post, comment)|表明父级的类型，帖子或者评论|
+|upper_type_id|int|表明父级的类型，帖子或者评论|
 |upper_id|int|对应父级的id，和上一行结合起来用|
 |content|varchar(200)|正文|
 |like_num|int|点赞数|
@@ -61,6 +68,7 @@
 |Column|Type|Description|
 |:---:|:---:|:---:|
 |id|int|主键，可自增|
+|official|int|是否为官方用户|
 |chat|boolean|是否允许发起聊天|
 |position|boolean|是否允许共享位置|
 |make_friend|boolean|是否允许申请好友|
@@ -74,6 +82,36 @@
 |:---:|:---:|:---:|
 |id|int|主键，可自增|
 |visible|boolean|是否可见|
+|comment|boolean|是否可评论|
+
+### label
+
+常量表，应由系统管理员修改。
+
+|Column|Type|Description|
+|:---:|:---:|:---:|
+|id|int|主键，可自增|
+|name|varchar(64)|label名称|
+
+### invitation_code
+
+常量表，应由系统管理员修改。
+
+用于认证官方用户。
+
+官方用户申请流程：
+
+1. 线下或线上提交申请；
+2. 线下验证；
+3. 管理员向此table插入新邀请码
+4. 用户在官方用户认证页面输入邀请码并得到验证
+
+|Column|Type|Description|
+|:---:|:---:|:---:|
+|id|int|主键，可自增|
+|code|varchar(64)|邀请码|
+|user_id|int|对应认证用户的id|
+|description|varchar(100)|官方用户描述|
 
 ## 关系表
 

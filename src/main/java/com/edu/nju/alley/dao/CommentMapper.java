@@ -28,7 +28,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 @Mapper
 public interface CommentMapper {
 
-    BasicColumn[] selectList = BasicColumn.columnList(id, userId, upperId, upperType, content, likeNum, createT, lastModifiedT);
+    BasicColumn[] selectList = BasicColumn.columnList(id, userId, upperId, upperTypeId, content, likeNum, createT, lastModifiedT);
 
 
     @SelectProvider(type = SqlProviderAdapter.class, method = "select")
@@ -52,7 +52,7 @@ public interface CommentMapper {
             @Result(column = "id", property = "id", jdbcType = JdbcType.INTEGER, id = true),
             @Result(column = "user_id", property = "userId", jdbcType = JdbcType.INTEGER),
             @Result(column = "upper_id", property = "upperId", jdbcType = JdbcType.INTEGER),
-            @Result(column = "upper_type", property = "upperType", jdbcType = JdbcType.VARCHAR),
+            @Result(column = "upper_type_id", property = "upperTypeId", jdbcType = JdbcType.INTEGER),
             @Result(column = "content", property = "content", jdbcType = JdbcType.VARCHAR),
             @Result(column = "like_num", property = "likeNum", jdbcType = JdbcType.INTEGER),
             @Result(column = "create_t", property = "createT", jdbcType = JdbcType.TIMESTAMP),
@@ -92,7 +92,7 @@ public interface CommentMapper {
                 c.map(id).toProperty("id")
                         .map(userId).toProperty("userId")
                         .map(upperId).toProperty("upperId")
-                        .map(upperType).toProperty("upperType")
+                        .map(upperTypeId).toProperty("upperTypeId")
                         .map(content).toProperty("content")
                         .map(likeNum).toProperty("likeNum")
                         .map(createT).toProperty("createT")
@@ -106,7 +106,7 @@ public interface CommentMapper {
                 c.map(id).toProperty("id")
                         .map(userId).toProperty("userId")
                         .map(upperId).toProperty("upperId")
-                        .map(upperType).toProperty("upperType")
+                        .map(upperTypeId).toProperty("upperTypeId")
                         .map(content).toProperty("content")
                         .map(likeNum).toProperty("likeNum")
                         .map(createT).toProperty("createT")
@@ -120,7 +120,7 @@ public interface CommentMapper {
                 c.map(id).toPropertyWhenPresent("id", record::getId)
                         .map(userId).toPropertyWhenPresent("userId", record::getUserId)
                         .map(upperId).toPropertyWhenPresent("upperId", record::getUpperId)
-                        .map(upperType).toPropertyWhenPresent("upperType", record::getUpperType)
+                        .map(upperTypeId).toPropertyWhenPresent("upperTypeId", record::getUpperTypeId)
                         .map(content).toPropertyWhenPresent("content", record::getContent)
                         .map(likeNum).toPropertyWhenPresent("likeNum", record::getLikeNum)
                         .map(createT).toPropertyWhenPresent("createT", record::getCreateT)
@@ -160,7 +160,7 @@ public interface CommentMapper {
         return dsl.set(id).equalTo(record::getId)
                 .set(userId).equalTo(record::getUserId)
                 .set(upperId).equalTo(record::getUpperId)
-                .set(upperType).equalTo(record::getUpperType)
+                .set(upperTypeId).equalTo(record::getUpperTypeId)
                 .set(content).equalTo(record::getContent)
                 .set(likeNum).equalTo(record::getLikeNum)
                 .set(createT).equalTo(record::getCreateT)
@@ -172,7 +172,7 @@ public interface CommentMapper {
         return dsl.set(id).equalToWhenPresent(record::getId)
                 .set(userId).equalToWhenPresent(record::getUserId)
                 .set(upperId).equalToWhenPresent(record::getUpperId)
-                .set(upperType).equalToWhenPresent(record::getUpperType)
+                .set(upperTypeId).equalToWhenPresent(record::getUpperTypeId)
                 .set(content).equalToWhenPresent(record::getContent)
                 .set(likeNum).equalToWhenPresent(record::getLikeNum)
                 .set(createT).equalToWhenPresent(record::getCreateT)
@@ -184,7 +184,7 @@ public interface CommentMapper {
         return update(c ->
                 c.set(userId).equalTo(record::getUserId)
                         .set(upperId).equalTo(record::getUpperId)
-                        .set(upperType).equalTo(record::getUpperType)
+                        .set(upperTypeId).equalTo(record::getUpperTypeId)
                         .set(content).equalTo(record::getContent)
                         .set(likeNum).equalTo(record::getLikeNum)
                         .set(createT).equalTo(record::getCreateT)
@@ -198,7 +198,7 @@ public interface CommentMapper {
         return update(c ->
                 c.set(userId).equalToWhenPresent(record::getUserId)
                         .set(upperId).equalToWhenPresent(record::getUpperId)
-                        .set(upperType).equalToWhenPresent(record::getUpperType)
+                        .set(upperTypeId).equalToWhenPresent(record::getUpperTypeId)
                         .set(content).equalToWhenPresent(record::getContent)
                         .set(likeNum).equalToWhenPresent(record::getLikeNum)
                         .set(createT).equalToWhenPresent(record::getCreateT)

@@ -15,11 +15,16 @@ public final class PostAuthDSS {
 
     public static final SqlColumn<Boolean> visible = postAuth.visible;
 
-    
+
+    public static final SqlColumn<Boolean> comment = postAuth.comment;
+
+
     public static final class PostAuth extends SqlTable {
         public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
 
         public final SqlColumn<Boolean> visible = column("visible", JDBCType.BIT);
+
+        public final SqlColumn<Boolean> comment = column("comment", JDBCType.BIT);
 
         public PostAuth() {
             super("post_auth");

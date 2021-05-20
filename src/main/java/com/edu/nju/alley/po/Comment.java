@@ -1,6 +1,5 @@
 package com.edu.nju.alley.po;
 
-import com.edu.nju.alley.enums.UpperType;
 import lombok.Data;
 
 import java.util.Date;
@@ -17,7 +16,7 @@ public class Comment {
     private Integer upperId;
 
 
-    private UpperType upperType;
+    private Integer upperTypeId;
 
 
     private String content;
@@ -30,5 +29,6 @@ public class Comment {
 
 
     private Date lastModifiedT;
+
 
 }

@@ -28,7 +28,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 @Mapper
 public interface PostAuthMapper {
 
-    BasicColumn[] selectList = BasicColumn.columnList(id, visible);
+    BasicColumn[] selectList = BasicColumn.columnList(id, visible, comment);
 
 
     @SelectProvider(type = SqlProviderAdapter.class, method = "select")
@@ -50,7 +50,8 @@ public interface PostAuthMapper {
     @SelectProvider(type = SqlProviderAdapter.class, method = "select")
     @Results(id = "PostAuthResult", value = {
             @Result(column = "id", property = "id", jdbcType = JdbcType.INTEGER, id = true),
-            @Result(column = "visible", property = "visible", jdbcType = JdbcType.BIT)
+            @Result(column = "visible", property = "visible", jdbcType = JdbcType.BIT),
+            @Result(column = "comment", property = "comment", jdbcType = JdbcType.BIT)
     })
     Optional<PostAuth> selectOne(SelectStatementProvider selectStatement);
 
@@ -85,6 +86,7 @@ public interface PostAuthMapper {
         return MyBatis3Utils.insert(this::insert, record, postAuth, c ->
                 c.map(id).toProperty("id")
                         .map(visible).toProperty("visible")
+                        .map(comment).toProperty("comment")
         );
     }
 
@@ -93,6 +95,7 @@ public interface PostAuthMapper {
         return MyBatis3Utils.insertMultiple(this::insertMultiple, records, postAuth, c ->
                 c.map(id).toProperty("id")
                         .map(visible).toProperty("visible")
+                        .map(comment).toProperty("comment")
         );
     }
 
@@ -101,6 +104,7 @@ public interface PostAuthMapper {
         return MyBatis3Utils.insert(this::insert, record, postAuth, c ->
                 c.map(id).toPropertyWhenPresent("id", record::getId)
                         .map(visible).toPropertyWhenPresent("visible", record::getVisible)
+                        .map(comment).toPropertyWhenPresent("comment", record::getComment)
         );
     }
 
@@ -134,19 +138,22 @@ public interface PostAuthMapper {
 
     static UpdateDSL<UpdateModel> updateAllColumns(PostAuth record, UpdateDSL<UpdateModel> dsl) {
         return dsl.set(id).equalTo(record::getId)
-                .set(visible).equalTo(record::getVisible);
+                .set(visible).equalTo(record::getVisible)
+                .set(comment).equalTo(record::getComment);
     }
 
 
     static UpdateDSL<UpdateModel> updateSelectiveColumns(PostAuth record, UpdateDSL<UpdateModel> dsl) {
         return dsl.set(id).equalToWhenPresent(record::getId)
-                .set(visible).equalToWhenPresent(record::getVisible);
+                .set(visible).equalToWhenPresent(record::getVisible)
+                .set(comment).equalToWhenPresent(record::getComment);
     }
 
 
     default int updateByPrimaryKey(PostAuth record) {
         return update(c ->
                 c.set(visible).equalTo(record::getVisible)
+                        .set(comment).equalTo(record::getComment)
                         .where(id, isEqualTo(record::getId))
         );
     }
@@ -155,6 +162,7 @@ public interface PostAuthMapper {
     default int updateByPrimaryKeySelective(PostAuth record) {
         return update(c ->
                 c.set(visible).equalToWhenPresent(record::getVisible)
+                        .set(comment).equalToWhenPresent(record::getComment)
                         .where(id, isEqualTo(record::getId))
         );
     }

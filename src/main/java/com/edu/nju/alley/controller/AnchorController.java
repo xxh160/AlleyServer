@@ -4,12 +4,11 @@ import com.edu.nju.alley.service.AnchorService;
 import com.edu.nju.alley.vo.ResponseVO;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@Api(tags = "Anchor")
+@Api(tags = "anchor")
 @RestController
-@RequestMapping("/api/anchor")
+@RequestMapping("/anchor")
 public class AnchorController {
 
     private AnchorService anchorService;
@@ -19,7 +18,11 @@ public class AnchorController {
         this.anchorService = anchorService;
     }
 
-    public ResponseVO getAllPosts() {
+    @GetMapping("/post/{anchorId}")
+    public ResponseVO getAllPosts(@PathVariable Integer anchorId,
+                                  @RequestParam("pageId") Integer pageId,
+                                  @RequestParam("sort") Integer sort,
+                                  @RequestParam("label") Integer label) {
         return null;
     }
 

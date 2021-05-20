@@ -24,7 +24,10 @@ public final class UserAuthDSS {
 
     public static final SqlColumn<Boolean> showWxInfo = userAuth.showWxInfo;
 
-    
+
+    public static final SqlColumn<Boolean> official = userAuth.official;
+
+
     public static final class UserAuth extends SqlTable {
         public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
 
@@ -35,6 +38,8 @@ public final class UserAuthDSS {
         public final SqlColumn<Boolean> makeFriend = column("make_friend", JDBCType.BIT);
 
         public final SqlColumn<Boolean> showWxInfo = column("show_wx_info", JDBCType.BIT);
+
+        public final SqlColumn<Boolean> official = column("official", JDBCType.BIT);
 
         public UserAuth() {
             super("user_auth");

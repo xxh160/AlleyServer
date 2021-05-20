@@ -3,12 +3,10 @@ package com.edu.nju.alley.po;
 import lombok.Data;
 
 @Data
-public class PostAuth {
+public class Label {
 
     private Integer id;
 
-    private Boolean visible;
-
-    private Boolean comment;
+    private String name;
 
 }

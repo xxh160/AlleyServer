@@ -28,7 +28,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 @Mapper
 public interface UserAuthMapper {
 
-    BasicColumn[] selectList = BasicColumn.columnList(id, chat, position, makeFriend, showWxInfo);
+    BasicColumn[] selectList = BasicColumn.columnList(id, chat, position, makeFriend, showWxInfo, official);
 
 
     @SelectProvider(type = SqlProviderAdapter.class, method = "select")
@@ -53,7 +53,8 @@ public interface UserAuthMapper {
             @Result(column = "chat", property = "chat", jdbcType = JdbcType.BIT),
             @Result(column = "position", property = "position", jdbcType = JdbcType.BIT),
             @Result(column = "make_friend", property = "makeFriend", jdbcType = JdbcType.BIT),
-            @Result(column = "show_wx_info", property = "showWxInfo", jdbcType = JdbcType.BIT)
+            @Result(column = "show_wx_info", property = "showWxInfo", jdbcType = JdbcType.BIT),
+            @Result(column = "official", property = "official", jdbcType = JdbcType.BIT)
     })
     Optional<UserAuth> selectOne(SelectStatementProvider selectStatement);
 
@@ -91,6 +92,7 @@ public interface UserAuthMapper {
                         .map(position).toProperty("position")
                         .map(makeFriend).toProperty("makeFriend")
                         .map(showWxInfo).toProperty("showWxInfo")
+                        .map(official).toProperty("official")
         );
     }
 
@@ -102,6 +104,7 @@ public interface UserAuthMapper {
                         .map(position).toProperty("position")
                         .map(makeFriend).toProperty("makeFriend")
                         .map(showWxInfo).toProperty("showWxInfo")
+                        .map(official).toProperty("official")
         );
     }
 
@@ -113,6 +116,7 @@ public interface UserAuthMapper {
                         .map(position).toPropertyWhenPresent("position", record::getPosition)
                         .map(makeFriend).toPropertyWhenPresent("makeFriend", record::getMakeFriend)
                         .map(showWxInfo).toPropertyWhenPresent("showWxInfo", record::getShowWxInfo)
+                        .map(official).toPropertyWhenPresent("official", record::getOfficial)
         );
     }
 
@@ -149,7 +153,8 @@ public interface UserAuthMapper {
                 .set(chat).equalTo(record::getChat)
                 .set(position).equalTo(record::getPosition)
                 .set(makeFriend).equalTo(record::getMakeFriend)
-                .set(showWxInfo).equalTo(record::getShowWxInfo);
+                .set(showWxInfo).equalTo(record::getShowWxInfo)
+                .set(official).equalTo(record::getOfficial);
     }
 
 
@@ -158,7 +163,8 @@ public interface UserAuthMapper {
                 .set(chat).equalToWhenPresent(record::getChat)
                 .set(position).equalToWhenPresent(record::getPosition)
                 .set(makeFriend).equalToWhenPresent(record::getMakeFriend)
-                .set(showWxInfo).equalToWhenPresent(record::getShowWxInfo);
+                .set(showWxInfo).equalToWhenPresent(record::getShowWxInfo)
+                .set(official).equalToWhenPresent(record::getOfficial);
     }
 
 
@@ -168,6 +174,7 @@ public interface UserAuthMapper {
                         .set(position).equalTo(record::getPosition)
                         .set(makeFriend).equalTo(record::getMakeFriend)
                         .set(showWxInfo).equalTo(record::getShowWxInfo)
+                        .set(official).equalTo(record::getOfficial)
                         .where(id, isEqualTo(record::getId))
         );
     }
@@ -179,6 +186,7 @@ public interface UserAuthMapper {
                         .set(position).equalToWhenPresent(record::getPosition)
                         .set(makeFriend).equalToWhenPresent(record::getMakeFriend)
                         .set(showWxInfo).equalToWhenPresent(record::getShowWxInfo)
+                        .set(official).equalToWhenPresent(record::getOfficial)
                         .where(id, isEqualTo(record::getId))
         );
     }

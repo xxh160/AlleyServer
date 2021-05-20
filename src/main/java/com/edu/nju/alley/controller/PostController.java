@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 @Api(tags = "Post")
 @RestController
-@RequestMapping("/api/post")
+@RequestMapping("/post")
 public class PostController {
 
     private PostService postService;
@@ -24,7 +24,7 @@ public class PostController {
         this.postService = postService;
     }
 
-    @ApiOperation("获取帖子")
+    @ApiOperation("获取")
     @GetMapping("/{postId}")
     public ResponseVO getOnePost(@PathVariable Integer postId) {
         return null;

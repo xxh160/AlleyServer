@@ -10,10 +10,10 @@ nju-alley，具有直观地理联系的校园实时互动社区。
 
 ## doc
 
-- [必要知识](./doc/Reference.md)
-- [api文档](http://www.docway.net/)
 - [git规范](./doc/Git.md)
-- [spring指南](./doc/Springboot-Gradle-Help.md)
+- [数据库设计](./doc/Database.md)
+- [api文档](./doc/nju-alley-api.yaml)
+- [参考网址](./doc/Reference.md)
 
 ## 技术选型
 
@@ -23,5 +23,5 @@ nju-alley，具有直观地理联系的校园实时互动社区。
 |数据库|[Mysql](https://www.mysql.com)|
 |持久化|[Mybatis](https://mybatis.org/mybatis-3/zh/index.html)|
 |封装工具|[lombok](https://projectlombok.org/)|
-|接口管理|[DocWay](http://www.docway.net/)|
-|平台|[wechat](https://developers.weixin.qq.com/miniprogram/dev/framework/)|
+|接口管理|[SwaggerHub](https://swagger.io/)|
+|依赖平台|[wechat](https://developers.weixin.qq.com/miniprogram/dev/framework/)|
