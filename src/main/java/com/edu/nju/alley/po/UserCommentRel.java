@@ -10,4 +10,8 @@ public class UserCommentRel {
 
     private Integer commentId;
 
+    public UserCommentRel(Integer userId, Integer commentId) {
+        this.userId = userId;
+        this.commentId = commentId;
+    }
 }

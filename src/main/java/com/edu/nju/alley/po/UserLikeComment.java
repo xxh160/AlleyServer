@@ -10,4 +10,10 @@ public class UserLikeComment {
 
     private Integer commentId;
 
+    public UserLikeComment(Integer userId, Integer commentId) {
+        this.userId = userId;
+        this.commentId = commentId;
+    }
+
+
 }

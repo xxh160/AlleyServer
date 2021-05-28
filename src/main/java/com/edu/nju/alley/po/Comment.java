@@ -1,5 +1,7 @@
 package com.edu.nju.alley.po;
 
+import cn.hutool.core.date.DateUtil;
+import com.edu.nju.alley.dto.CommentDTO;
 import lombok.Data;
 
 import java.util.Date;
@@ -29,6 +31,17 @@ public class Comment {
 
 
     private Date lastModifiedT;
+
+    public Comment(CommentDTO commentDTO, Integer typeId) {
+        this.id = 0;//怎么分配？
+        this.userId = commentDTO.getUserId();
+        this.upperId = commentDTO.getFatherId();
+        this.upperTypeId = typeId;
+        this.content = commentDTO.getContent();
+        this.likeNum = 0;
+        this.createT = DateUtil.date();
+        this.lastModifiedT = DateUtil.date();
+    }
 
 
 }

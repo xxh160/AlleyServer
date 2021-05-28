@@ -10,4 +10,9 @@ public class UserLikePost {
 
     private Integer postId;
 
+    public UserLikePost(Integer userId, Integer postId) {
+        this.userId = userId;
+        this.postId = postId;
+    }
+
 }

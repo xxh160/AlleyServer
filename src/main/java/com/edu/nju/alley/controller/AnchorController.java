@@ -23,7 +23,9 @@ public class AnchorController {
                                   @RequestParam("pageId") Integer pageId,
                                   @RequestParam("sort") Integer sort,
                                   @RequestParam("label") Integer label) {
-        return null;
+        return anchorService.getAllPosts(anchorId,pageId,sort,label);
     }
+
+
 
 }

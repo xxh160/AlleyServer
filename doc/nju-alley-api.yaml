@@ -135,7 +135,7 @@ paths:
       tags:
         - post
       summary: 点赞或者取消点赞帖子
-      description: 将对应帖子的点赞数加/减一，并且向user_like_post数据库里加/减一条记录
+      description: 将对应帖子的点赞数加/减一，通过查询user_like_post数据库来判断是点赞还是取消点赞，并且向user_like_post数据库里加/减一条记录
       parameters:
         - name: postId
           in: query
@@ -149,15 +149,6 @@ paths:
           required: true
           schema:
             type: integer
-        - name: type
-          in: query
-          description: 0是点赞，1是取消点赞
-          required: true
-          schema:
-            type: integer
-            enum:
-              - 0
-              - 1
       responses:
         200:
           description: OK
@@ -445,15 +436,16 @@ paths:
       summary: 点赞或取消点赞评论
       description: 更新评论信息，同时通过user id定位到user，更新user_like_comment数据库
       parameters:
-        - name: type
+        - name: userId
           in: query
-          required: true
-          description: 0是点赞，1是取消点赞
           schema:
             type: integer
-            enum:
-              - 0
-              - 1
+          required: true
+        - name: commentId
+          in: query
+          schema:
+            type: integer
+          required: true
       responses:
         200:
           description: OK

@@ -10,5 +10,9 @@ public class PostCommentRel {
 
     private Integer commentId;
 
+    public PostCommentRel(Integer postId, Integer commentId) {
+        this.postId = postId;
+        this.commentId = commentId;
+    }
 
 }
