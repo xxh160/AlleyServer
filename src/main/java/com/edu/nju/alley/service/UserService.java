@@ -1,17 +1,22 @@
 package com.edu.nju.alley.service;
 
 import com.edu.nju.alley.dto.UserDTO;
-import com.edu.nju.alley.vo.ResponseVO;
+import com.edu.nju.alley.vo.*;
+
+import java.util.List;
 
 public interface UserService {
-    ResponseVO getUserPost(Integer userId, Integer pageId);
 
-    ResponseVO getUserComment(Integer userId, Integer pageId);
+    List<PostVO> getUserPost(Integer userId, Integer pageId);
 
-    ResponseVO getUserLike(Integer userId, Integer pageId);
+    List<CommentVO> getUserComment(Integer userId, Integer pageId);
 
-    ResponseVO viewUser(Integer userId);
+    List<UserLikeVO> getUserLike(Integer userId, Integer pageId);
 
-    ResponseVO updateUser(Integer userId, UserDTO userDTO);
+    UserVO viewUser(Integer userId);
+
+    void updateUser(Integer userId, UserDTO userDTO);
+
+    LikeVO isLike(Integer userId, Integer typeId, Integer targetId);
 
 }

@@ -1,12 +1,11 @@
 package com.edu.nju.alley.service;
 
-import com.edu.nju.alley.vo.ResponseVO;
+import com.edu.nju.alley.vo.PostViewVO;
+
+import java.util.List;
 
 public interface AnchorService {
 
-    ResponseVO getAllPosts(Integer anchorId,
-                           Integer pageId,
-                           Integer sort,
-                           Integer label);
+    List<PostViewVO> getAllPosts(Integer anchorId, Integer pageId, Integer sort, Integer label);
 
 }

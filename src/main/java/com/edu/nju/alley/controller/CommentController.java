@@ -13,20 +13,21 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/comment")
 public class CommentController {
 
-    private CommentService commentService;
+    private final CommentService commentService;
 
     @Autowired
     public CommentController(CommentService commentService) {
         this.commentService = commentService;
     }
 
-    @GetMapping("/comment")
+    @PostMapping("/comment")
     public ResponseVO commentComment(@RequestBody CommentDTO commentDTO) {
-        return commentService.commentComment(commentDTO);
+        return ResponseVO.success().add(commentService.commentComment(commentDTO));
     }
 
-    @GetMapping("/like")
-    public ResponseVO likeComment(@RequestParam Integer commentId, @RequestParam Integer likerId) {
-        return commentService.likeComment(commentId, likerId);
+    @PostMapping("/like")
+    public ResponseVO likeComment(@RequestParam Integer commentId,
+                                  @RequestParam Integer likerId) {
+        return ResponseVO.success().add(commentService.likeComment(commentId, likerId));
     }
 }

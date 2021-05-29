@@ -1,147 +1,173 @@
 package com.edu.nju.alley.service.impl;
 
-import cn.hutool.core.date.DateUtil;
 import com.edu.nju.alley.dao.*;
 import com.edu.nju.alley.dao.support.PostCommentRelDSS;
 import com.edu.nju.alley.dao.support.PostDSS;
 import com.edu.nju.alley.dao.support.UserLikePostDSS;
 import com.edu.nju.alley.dao.support.UserPostRelDSS;
 import com.edu.nju.alley.dto.CommentDTO;
-import com.edu.nju.alley.dto.PostAuthDTO;
 import com.edu.nju.alley.dto.PostDTO;
+import com.edu.nju.alley.enums.LabelSelectType;
+import com.edu.nju.alley.enums.SortType;
+import com.edu.nju.alley.exceptions.NoSuchDataException;
 import com.edu.nju.alley.po.*;
+import com.edu.nju.alley.service.CommentService;
 import com.edu.nju.alley.service.PostService;
-import com.edu.nju.alley.vo.CommentVO;
-import com.edu.nju.alley.vo.PostLikeVO;
-import com.edu.nju.alley.vo.PostVO;
-import com.edu.nju.alley.vo.ResponseVO;
-import org.mybatis.dynamic.sql.SqlBuilder;
+import com.edu.nju.alley.vo.*;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.select;
 
 @Service
 public class PostServiceImpl implements PostService {
 
-    @Resource
-    PostMapper postMapper;
+    private final PostMapper postMapper;
 
-    @Resource
-    UserLikeCommentMapper userLikeCommentMapper;
+    private final PostAuthMapper postAuthMapper;
 
-    @Resource
-    PostAuthMapper postAuthMapper;
+    private final PostCommentRelMapper postCommentRelMapper;
 
-    @Resource
-    PostCommentRelMapper postCommentRelMapper;
+    private final UserLikePostMapper userLikePostMapper;
 
-    @Resource
-    UserCommentRelMapper userCommentRelMapper;
+    private final UserPostRelMapper userPostRelMapper;
 
-    @Resource
-    UserLikePostMapper userLikePostMapper;
+    private final CommentService commentService;
 
-    @Resource
-    UserPostRelMapper userPostRelMapper;
-
-    @Resource
-    CommentMapper commentMapper;
-
-    @Resource
-    CommentServiceImpl commentService;
+    @Autowired
+    public PostServiceImpl(PostMapper postMapper,
+                           PostAuthMapper postAuthMapper,
+                           PostCommentRelMapper postCommentRelMapper,
+                           UserLikePostMapper userLikePostMapper,
+                           UserPostRelMapper userPostRelMapper,
+                           CommentService commentService) {
+        this.postMapper = postMapper;
+        this.postAuthMapper = postAuthMapper;
+        this.postCommentRelMapper = postCommentRelMapper;
+        this.userLikePostMapper = userLikePostMapper;
+        this.userPostRelMapper = userPostRelMapper;
+        this.commentService = commentService;
+    }
 
     @Override
-    public ResponseVO getSpecialPost(Integer postId) {
-        Optional<Post> post = postMapper.selectByPrimaryKey(postId);
-        List<PostCommentRel> postCommentRels = postCommentRelMapper.select(c -> c.where(PostCommentRelDSS.postId, SqlBuilder.isEqualTo(post.get().getId())));
-        List<CommentVO> commentVOS = new ArrayList<CommentVO>();
-        for (PostCommentRel postCommentRel : postCommentRels) {
-            commentVOS.add(commentService.getComment(postCommentRel.getCommentId()));
-        }
+    public PostVO getSpecificPost(Integer postId) {
+        Optional<Post> postOptional = postMapper.selectByPrimaryKey(postId);
+        if (!postOptional.isPresent()) throw new NoSuchDataException("没有这条帖子");
+        Post post = postOptional.get();
+        List<PostCommentRel> postCommentRels = postCommentRelMapper
+                .select(c -> c.where(PostCommentRelDSS.postId, isEqualTo(post.getId())));
+        List<CommentVO> commentVOList = postCommentRels.stream()
+                .map(t -> commentService.getSpecificOne(t.getCommentId()))
+                .collect(Collectors.toList());
         //找到权限
-        Optional<PostAuth> postAuth = postAuthMapper.selectByPrimaryKey(post.get().getId());
-        ResponseVO ret = ResponseVO.success();
-        ret.add(new PostVO(post.get(), commentVOS, postAuth.get()));
-        return ret;
+        Optional<PostAuth> postAuthOptional = postAuthMapper.selectByPrimaryKey(post.getId());
+        if (!postAuthOptional.isPresent()) throw new NoSuchDataException("帖子没有对应的权限");
+        return new PostVO(post, commentVOList, new PostAuthVO(postAuthOptional.get()));
     }
 
     @Override
-    public ResponseVO updatePost(Integer postId, PostDTO postDTO) {
+    public void updatePost(Integer postId, PostDTO postDTO) {
         //将请求封装成post
-        Optional<Post> post = postMapper.selectByPrimaryKey(postId);
-        Post NewPost = post.get();
-        updatePost(NewPost, postDTO);
+        Optional<Post> postOptional = postMapper.selectByPrimaryKey(postId);
+        if (!postOptional.isPresent()) throw new NoSuchDataException("没有这条帖子");
+        Post post = postOptional.get();
 
-        return ResponseVO.success();
+        Optional<PostAuth> postAuthOptional = postAuthMapper.selectByPrimaryKey(post.getAuthId());
+        if (!postAuthOptional.isPresent()) throw new NoSuchDataException("帖子没有对应的权限");
+        PostAuth postAuth = postAuthOptional.get();
+
+        post.updateByDTO(postDTO);
+        postAuth.updateByDTO(postDTO.getAuth());
     }
 
     @Override
-    public ResponseVO likePost(Integer postId, Integer likerId) {
-        Optional<UserLikePost> userLikePost = userLikePostMapper.selectOne(c -> c.where(UserLikePostDSS.postId, SqlBuilder.isEqualTo(postId)).and(UserLikePostDSS.userId, SqlBuilder.isEqualTo(likerId)));
-        Post post;
-        if (userLikePost.isPresent()) {
-            post = postMapper.selectOne(c -> c.where(PostDSS.id, SqlBuilder.isEqualTo(postId))).get();
-            post.setLikeNum(post.getLikeNum() - 1);//点赞数减一
-            userLikePostMapper.delete(c -> c.where(UserLikePostDSS.postId, SqlBuilder.isEqualTo(postId)).and(UserLikePostDSS.userId, SqlBuilder.isEqualTo(likerId)));
-        } else {
-            UserLikePost userLikePost1 = new UserLikePost(postId, likerId);
-            post = postMapper.selectOne(c -> c.where(PostDSS.id, SqlBuilder.isEqualTo(postId))).get();
-            post.setLikeNum(post.getLikeNum() + 1);//点赞数加一
-            userLikePostMapper.insert(userLikePost1);
+    public LikeVO likePost(Integer postId, Integer likerId) {
+        Optional<UserLikePost> userLikePostOptional = userLikePostMapper
+                .selectOne(c -> c.where(UserLikePostDSS.postId, isEqualTo(postId))
+                        .and(UserLikePostDSS.userId, isEqualTo(likerId)));
+
+        Optional<Post> postOptional = postMapper
+                .selectOne(c -> c.where(PostDSS.id, isEqualTo(postId)));
+        if (!postOptional.isPresent()) throw new NoSuchDataException("没有这条帖子");
+        Post post = postOptional.get();
+        // 已经点过赞 取消点赞
+        if (userLikePostOptional.isPresent()) {
+            // 点赞数减一
+            post.setLikeNum(post.getLikeNum() - 1);
+            userLikePostMapper.delete(c -> c.where(UserLikePostDSS.postId, isEqualTo(postId))
+                    .and(UserLikePostDSS.userId, isEqualTo(likerId)));
+            postMapper.updateByPrimaryKeySelective(post);
+            return new LikeVO(false);
         }
-        ResponseVO res = ResponseVO.success();
-        PostLikeVO postLikeVO = new PostLikeVO(post.getLikeNum());
-        res.add(postLikeVO);
-        return res;
+        // 点赞
+        UserLikePost userLikePost = new UserLikePost(likerId, postId);
+        // 点赞数加一
+        post.setLikeNum(post.getLikeNum() + 1);
+        userLikePostMapper.insert(userLikePost);
+        postMapper.updateByPrimaryKeySelective(post);
+
+        return new LikeVO(true);
     }
 
     @Override
-    public ResponseVO commentPost(CommentDTO commentDTO) {
-        Comment comment = new Comment(commentDTO, 1);//1代表Post
-        commentMapper.insert(comment);
+    public NewRecordVO commentPost(CommentDTO commentDTO) {
+        Comment comment = Comment.PostComment(commentDTO);
+        commentService.insertOne(comment);
         PostCommentRel postCommentRel = new PostCommentRel(commentDTO.getPostId(), comment.getId());
         postCommentRelMapper.insert(postCommentRel);
-        UserCommentRel userCommentRel = new UserCommentRel(commentDTO.getUserId(), comment.getId());
-        userCommentRelMapper.insert(userCommentRel);
-
-        return ResponseVO.success();
+        return new NewRecordVO(comment.getId());
     }
 
     @Override
-    public ResponseVO createPost(PostDTO postDTO) {
+    public NewRecordVO createPost(PostDTO postDTO) {
         Post post = new Post(postDTO);
-        postMapper.insert(post);//插入一个post
+        // 创建postAuth并获得id
         PostAuth postAuth = new PostAuth(post.getId(), postDTO.getAuth());
         postAuthMapper.insert(postAuth);
-        return ResponseVO.success();
+        post.setAuthId(postAuth.getId());
+        postMapper.insert(post);
+        UserPostRel userPostRel = new UserPostRel(post.getUserId(), post.getId());
+        userPostRelMapper.insert(userPostRel);
+        return new NewRecordVO(post.getId());
     }
 
     @Override
-    public ResponseVO deletePost(Integer postId) {
+    public void deletePost(Integer postId) {
+        Optional<Post> postOptional = postMapper.selectByPrimaryKey(postId);
+        if (!postOptional.isPresent()) throw new NoSuchDataException("没有这条帖子");
+        Post post = postOptional.get();
         postMapper.deleteByPrimaryKey(postId);
-        postAuthMapper.deleteByPrimaryKey(postId);
-        postCommentRelMapper.delete(c -> c.where(PostCommentRelDSS.postId, SqlBuilder.isEqualTo(postId)));
-        userLikePostMapper.delete(c -> c.where(UserLikePostDSS.postId, SqlBuilder.isEqualTo(postId)));
-        userPostRelMapper.delete(c -> c.where(UserPostRelDSS.postId, SqlBuilder.isEqualTo(postId)));
-        return ResponseVO.success();
+        postAuthMapper.deleteByPrimaryKey(post.getAuthId());
+        postCommentRelMapper.delete(c -> c.where(PostCommentRelDSS.postId, isEqualTo(postId)));
+        userLikePostMapper.delete(c -> c.where(UserLikePostDSS.postId, isEqualTo(postId)));
+        userPostRelMapper.delete(c -> c.where(UserPostRelDSS.postId, isEqualTo(postId)));
     }
 
-    public void updatePost(Post post, PostDTO postDTO) {
-        post.setTitle(postDTO.getTitle());
-        post.setContent(postDTO.getContent());
-        post.setAnchorId(postDTO.getAnchorId());
-        post.setLastModifiedT(DateUtil.date());
-        post.setAddrX(post.getAddrX());
-        post.setAddrY(post.getAddrY());
-        Optional<PostAuth> postAuth = postAuthMapper.selectByPrimaryKey(post.getAuthId());
-        updatePostAuth(postAuth.get(), postDTO.getAuth());
+    @Override
+    public List<PostViewVO> getAllPostView(Integer sort, Integer label) {
+        return this.getAllSortedPosts(sort)
+                .stream()
+                .filter(c -> (c.getLabelId().equals(label) || label == LabelSelectType.ALL.getCode()))
+                .map(t -> new PostViewVO(t.getId(), t.getLatitude(), t.getLongitude()))
+                .collect(Collectors.toList());
     }
 
-    public void updatePostAuth(PostAuth postAuth, PostAuthDTO postAuthDTO) {
-        postAuth.setVisible(postAuthDTO.isVisible());
-        postAuth.setComment(postAuthDTO.isComment());
+    @Override
+    public List<Post> getAllSortedPosts(Integer sort) {
+        SelectStatementProvider selectAll = select(PostMapper.selectList)
+                .from(PostDSS.post)
+                .orderBy((sort == SortType.HOT.getCode()) ? PostDSS.likeNum : PostDSS.lastModifiedT)
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        return postMapper.selectMany(selectAll);
     }
+
 }

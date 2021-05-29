@@ -5,16 +5,18 @@
 |Time|Content|
 |:---:|:---:|
 |2021-05-20|post_auth，增加comment列；post，增加label_id；comment，将upper_type改为upper_type_id；user_auth，增加official列；增加label表；增加invitation_code表|
+|2021-05-29|post, anchor, addr_x改为longitude, addr_y改为latitude, 删除label数据库, 将user重命名为customer|
 
 ## 实体类表
 
-### user
+### customer
 
 |Column|Type|Description|
 |:---:|:---:|:---:|
 |id|int|主键，可自增|
 |auth_id|int|对应user_auth权限行id|
 |sign|varchar(100)|个人介绍|
+|openid|varchar(64)|微信用户对应唯一标识码|
 
 个人介绍是写在信息概览的地方的。
 
@@ -33,8 +35,8 @@
 |create_t|datetime|创建时间|
 |last_modified_t|datetime|最后一次修改时间|
 |anchor_id|int|锚点id，对应哪个锚点|
-|addr_x|int|经度|
-|addr_y|int|纬度|
+|longitude|int|经度|
+|latitude|int|纬度|
 
 ### comment
 
@@ -56,8 +58,8 @@
 |:---:|:---:|:---:|
 |id|int|主键，可自增|
 |name|varchar(64)|名称|
-|addr_x|int|经度|
-|addr_y|int|纬度|
+|longitude|int|经度|
+|latitude|int|纬度|
 
 ### user_auth
 
@@ -83,15 +85,6 @@
 |id|int|主键，可自增|
 |visible|boolean|是否可见|
 |comment|boolean|是否可评论|
-
-### label
-
-常量表，应由系统管理员修改。
-
-|Column|Type|Description|
-|:---:|:---:|:---:|
-|id|int|主键，可自增|
-|name|varchar(64)|label名称|
 
 ### invitation_code
 

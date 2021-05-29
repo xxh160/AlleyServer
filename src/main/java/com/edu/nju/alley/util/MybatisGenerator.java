@@ -14,7 +14,6 @@ public class MybatisGenerator {
     public static void main(String[] args) throws Exception {
 
         // LogFactory.forceSlf4jLogging();
-        // System.setProperty("user.name", "zzs");
         // 这个集合记录着生成、合并、覆盖文件的信息
         List<String> warnings = new ArrayList<>();
         InputStream in = MyBatisGenerator.class.getClassLoader().getResourceAsStream("generatorConfig.xml");

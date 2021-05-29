@@ -162,7 +162,7 @@ paths:
                   message:
                     type: string
                   data:
-                    $ref: "#/components/schemas/PostLikeVO"
+                    $ref: "#/components/schemas/LikeVO"
   /post/comment:
     post:
       tags:
@@ -327,7 +327,7 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/LikeVO'
+                      $ref: '#/components/schemas/UserLikeVO'
   /user/view/{userId}:
     get:
       tags:
@@ -459,7 +459,7 @@ paths:
                   message:
                     type: string
                   data:
-                    $ref: "#/components/schemas/CommentLikeVO"
+                    $ref: "#/components/schemas/LikeVO"
 
 
 components:
@@ -497,6 +497,9 @@ components:
     PostVO:
       type: object
       properties:
+        id:
+          type: integer
+          description: post id
         userId:
           type: integer
           description: 创建帖子的用户id
@@ -552,12 +555,6 @@ components:
           description: 纬度
         auth:
           $ref: "#/components/schemas/PostAuthDTO"
-    PostLikeVO:
-      type: object
-      properties:
-        likeNum:
-          type: integer
-          description: post like num
     CommentDTO:
       type: object
       properties:
@@ -566,7 +563,7 @@ components:
           description: 评论者的id
         postId:
           type: integer
-          description: 原帖id
+          description: 父级帖子的id，可以为null
         fatherId:
           type: integer
           description: 父级评论的id，可以为null
@@ -582,7 +579,7 @@ components:
           type: integer
         postId:
           type: integer
-          description: 原帖id
+          description: 父级帖子的id，可以为null
         fatherId:
           type: integer
           description: 父级评论的id，可以为null
@@ -594,12 +591,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/CommentVO"
-    CommentLikeVO:
-      type: object
-      properties:
-        likeNum:
-          type: integer
-          description: comment like num
     ResponseVO:
       type: object
       properties:
@@ -650,7 +641,7 @@ components:
           type: boolean
         comment:
           type: boolean
-    LikeVO:
+    UserLikeVO:
       type: object
       properties:
         upperType:
@@ -662,6 +653,12 @@ components:
         id:
           type: integer
           description: 被点赞的实体的id
+    LikeVO:
+      type: object
+      properties:
+        isLike:
+          type: boolean
+          description: 用户是点赞还是取消点赞
     AuthenticationDTO:
       type: object
       properties:

@@ -1,138 +1,152 @@
 package com.edu.nju.alley.service.impl;
 
-import com.edu.nju.alley.constant.Constant;
 import com.edu.nju.alley.dao.*;
 import com.edu.nju.alley.dao.support.*;
-import com.edu.nju.alley.dto.UserAuthDTO;
 import com.edu.nju.alley.dto.UserDTO;
-import com.edu.nju.alley.po.*;
+import com.edu.nju.alley.enums.LikeType;
+import com.edu.nju.alley.exceptions.NoSuchDataException;
+import com.edu.nju.alley.po.User;
+import com.edu.nju.alley.po.UserAuth;
+import com.edu.nju.alley.po.UserCommentRel;
+import com.edu.nju.alley.po.UserPostRel;
+import com.edu.nju.alley.service.CommentService;
+import com.edu.nju.alley.service.PostService;
 import com.edu.nju.alley.service.UserService;
+import com.edu.nju.alley.util.Const;
 import com.edu.nju.alley.vo.*;
 import com.github.pagehelper.PageHelper;
-import org.mybatis.dynamic.sql.SqlBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
 @Service
 public class UserServiceImpl implements UserService {
-    @Resource
-    UserMapper userMapper;
 
-    @Resource
-    PostMapper postMapper;
+    private final PostService postService;
 
-    @Resource
-    CommentMapper commentMapper;
+    private final CommentService commentService;
 
-    @Resource
-    UserLikeCommentMapper userLikeCommentMapper;
+    private final UserMapper userMapper;
 
-    @Resource
-    UserLikePostMapper userLikePostMapper;
+    private final UserLikeCommentMapper userLikeCommentMapper;
 
-    @Resource
-    UserPostRelMapper userPostRelMapper;
+    private final UserLikePostMapper userLikePostMapper;
 
-    @Resource
-    PostServiceImpl postService;
+    private final UserPostRelMapper userPostRelMapper;
 
-    @Resource
-    CommentServiceImpl commentService;
+    private final UserCommentRelMapper userCommentRelMapper;
 
-    @Resource
-    UserCommentRelMapper userCommentRelMapper;
+    private final UserAuthMapper userAuthMapper;
 
-    @Resource
-    UserAuthMapper userAuthMapper;
-
-    @Override
-    public ResponseVO getUserPost(Integer userId, Integer pageId) {
-        //返回用户所有帖子
-        PageHelper.startPage(pageId, Constant.pageSize);
-        ResponseVO res = ResponseVO.success();
-        List<UserPostRel> userPostRels = userPostRelMapper.select(c -> c.where(UserPostRelDSS.userId, SqlBuilder.isEqualTo(userId)));
-        List<PostVO> postVOS = new ArrayList<PostVO>();
-        for (UserPostRel userPostRel : userPostRels) {
-            postVOS.add((PostVO) postService.getSpecialPost(userPostRel.getPostId()).getData());
-        }
-        res.add(postVOS);
-        return res;
+    @Autowired
+    public UserServiceImpl(PostService postService,
+                           CommentService commentService,
+                           UserMapper userMapper,
+                           UserLikeCommentMapper userLikeCommentMapper,
+                           UserLikePostMapper userLikePostMapper,
+                           UserPostRelMapper userPostRelMapper,
+                           UserCommentRelMapper userCommentRelMapper,
+                           UserAuthMapper userAuthMapper) {
+        this.postService = postService;
+        this.commentService = commentService;
+        this.userMapper = userMapper;
+        this.userLikeCommentMapper = userLikeCommentMapper;
+        this.userLikePostMapper = userLikePostMapper;
+        this.userPostRelMapper = userPostRelMapper;
+        this.userCommentRelMapper = userCommentRelMapper;
+        this.userAuthMapper = userAuthMapper;
     }
 
     @Override
-    public ResponseVO getUserComment(Integer userId, Integer pageId) {
+    public List<PostVO> getUserPost(Integer userId, Integer pageId) {
+        // 返回用户所有帖子
+        PageHelper.startPage(pageId, Const.pageSize);
+        List<UserPostRel> userPostRels = userPostRelMapper
+                .select(c -> c.where(UserPostRelDSS.userId, isEqualTo(userId)));
+        return userPostRels.stream()
+                .map(t -> postService.getSpecificPost(t.getPostId()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CommentVO> getUserComment(Integer userId, Integer pageId) {
         //返回用户所有评论
-        PageHelper.startPage(pageId, Constant.pageSize);
-        ResponseVO res = ResponseVO.success();
-        List<UserCommentRel> userCommentRels = userCommentRelMapper.select(c -> c.where(UserCommentRelDSS.userId, SqlBuilder.isEqualTo(userId)));
-        List<CommentVO> commentVOS = new ArrayList<CommentVO>();
-        for (UserCommentRel userCommentRel : userCommentRels) {
-            commentVOS.add(commentService.getComment(userCommentRel.getCommentId()));
-        }
-        res.add(commentVOS);
-        return res;
+        PageHelper.startPage(pageId, Const.pageSize);
+        List<UserCommentRel> userCommentRels = userCommentRelMapper
+                .select(c -> c.where(UserCommentRelDSS.userId, isEqualTo(userId)));
+        return userCommentRels.stream()
+                .map(t -> commentService.getSpecificOne(t.getCommentId()))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public ResponseVO getUserLike(Integer userId, Integer pageId) {
-        PageHelper.startPage(pageId, Constant.pageSize);
+    public List<UserLikeVO> getUserLike(Integer userId, Integer pageId) {
+        PageHelper.startPage(pageId, Const.pageSize);
         //是返回点赞的帖子还是评论？
-        List<LikeVO> likeVOS = new ArrayList<LikeVO>();
-        List<UserLikeComment> userLikeComments = userLikeCommentMapper.select(c -> c.where(UserLikeCommentDSS.userId, SqlBuilder.isEqualTo(userId)));
-        for (UserLikeComment userLikeComment : userLikeComments) {
-            likeVOS.add(new LikeVO(userLikeComment));
-        }
-        List<UserLikePost> userLikePosts = userLikePostMapper.select(c -> c.where(UserLikePostDSS.userId, SqlBuilder.isEqualTo(userId)));
-        for (UserLikePost userLikePost : userLikePosts) {
-            likeVOS.add(new LikeVO(userLikePost));
-        }
-        ResponseVO res = ResponseVO.success();
-        res.add(likeVOS);
-        return res;
+        List<UserLikeVO> userLikeVOList = new ArrayList<>();
+        userLikeCommentMapper.select(c -> c.where(UserLikeCommentDSS.userId, isEqualTo(userId)))
+                .forEach(t -> userLikeVOList.add(new UserLikeVO(t)));
+        userLikePostMapper.select(c -> c.where(UserLikePostDSS.userId, isEqualTo(userId)))
+                .forEach(t -> userLikeVOList.add(new UserLikeVO(t)));
+        return userLikeVOList;
     }
 
     @Override
-    public ResponseVO viewUser(Integer userId) {
+    public UserVO viewUser(Integer userId) {
         //查看用户信息
         //得到用户基本信息
-        Optional<User> user = userMapper.selectOne(c -> c
-                .where(UserDSS.id, SqlBuilder.isEqualTo(userId)));
+        Optional<User> userOptional = userMapper
+                .selectOne(c -> c.where(UserDSS.id, isEqualTo(userId)));
+        if (!userOptional.isPresent()) throw new NoSuchDataException("没有这个用户");
+        User user = userOptional.get();
         //得到用户所有帖子
-        List<UserPostRel> userPostRels = userPostRelMapper.select(
-                c -> c.where(UserPostRelDSS.userId, SqlBuilder.isEqualTo(userId)));
-        List<PostVO> postVOS = new ArrayList<>();
-        for (UserPostRel userPostRel : userPostRels) {
-            postVOS.add((PostVO) postService.getSpecialPost(userPostRel.getPostId()).getData());
-        }
+        List<UserPostRel> userPostRels = userPostRelMapper
+                .select(c -> c.where(UserPostRelDSS.userId, isEqualTo(userId)));
+
+        List<PostVO> postVOList = userPostRels.stream()
+                .map(t -> postService.getSpecificPost(t.getPostId()))
+                .collect(Collectors.toList());
         //得到用户权限数据
-        Optional<UserAuth> userAuth = userAuthMapper.selectByPrimaryKey(userId);
-        return ResponseVO.success().add(new UserVO(user.get(), postVOS, userAuth.get()));
+        Optional<UserAuth> userAuthOptional = userAuthMapper.selectByPrimaryKey(user.getAuthId());
+        if (!userAuthOptional.isPresent()) throw new NoSuchDataException("没有这条权限");
+        return new UserVO(user, postVOList, new UserAuthVO(userAuthOptional.get()));
     }
 
     @Override
-    public ResponseVO updateUser(Integer userId, UserDTO userDTO) {
-        Optional<User> user = userMapper.selectOne(c -> c.where(UserDSS.id, SqlBuilder.isEqualTo(userId)));
-        User NewUser = user.get();
-        updateUser(NewUser, userDTO);
+    public void updateUser(Integer userId, UserDTO userDTO) {
+        Optional<User> userOptional = userMapper
+                .selectOne(c -> c.where(UserDSS.id, isEqualTo(userId)));
+        if (!userOptional.isPresent()) throw new NoSuchDataException("没有这个用户");
+        User user = userOptional.get();
+        user.updateByDTO(userDTO);
 
-        return ResponseVO.success();
+        Optional<UserAuth> userAuthOptional = userAuthMapper.selectByPrimaryKey(user.getAuthId());
+        if (!userAuthOptional.isPresent()) throw new NoSuchDataException("没有这条权限");
+        UserAuth userAuth = userAuthOptional.get();
+        userAuth.updateByDTO(userDTO.getAuth());
+
+        userMapper.updateByPrimaryKeySelective(user);
+        userAuthMapper.updateByPrimaryKeySelective(userAuth);
     }
 
-    public void updateUser(User user, UserDTO userDTO) {
-        user.setSign(userDTO.getSign());
-        Optional<UserAuth> userAuth = userAuthMapper.selectByPrimaryKey(user.getAuthId());
-        updateUserAuth(userAuth.get(), userDTO.getAuth());
+    @Override
+    public LikeVO isLike(Integer userId, Integer typeId, Integer targetId) {
+        if (typeId.equals(LikeType.POST.getCode())) {
+            Optional<UserPostRel> userPostRelOptional = userPostRelMapper
+                    .selectOne(c -> c.where(UserPostRelDSS.postId, isEqualTo(targetId))
+                            .and(UserPostRelDSS.userId, isEqualTo(userId)));
+            return new LikeVO(userPostRelOptional.isPresent());
+        }
+        Optional<UserCommentRel> userCommentRelOptional = userCommentRelMapper
+                .selectOne(c -> c.where(UserPostRelDSS.postId, isEqualTo(targetId))
+                        .and(UserPostRelDSS.userId, isEqualTo(userId)));
+        return new LikeVO(userCommentRelOptional.isPresent());
     }
 
-    public void updateUserAuth(UserAuth userAuth, UserAuthDTO userAuthDTO) {
-        userAuth.setChat(userAuthDTO.isChat());
-        userAuth.setMakeFriend(userAuthDTO.isMkfriend());
-        userAuth.setOfficial(userAuthDTO.isOfficial());
-        userAuth.setShowWxInfo(userAuthDTO.isWxInfo());
-        userAuth.setPosition(userAuthDTO.isLocate());
-    }
 }

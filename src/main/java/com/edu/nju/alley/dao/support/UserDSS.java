@@ -9,16 +9,15 @@ public final class UserDSS {
 
     public static final User user = new User();
 
-
     public static final SqlColumn<Integer> id = user.id;
-
 
     public static final SqlColumn<Integer> authId = user.authId;
 
-
     public static final SqlColumn<String> sign = user.sign;
 
-    
+    public static final SqlColumn<String> openid = user.openid;
+
+
     public static final class User extends SqlTable {
         public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
 
@@ -26,8 +25,10 @@ public final class UserDSS {
 
         public final SqlColumn<String> sign = column("sign", JDBCType.VARCHAR);
 
+        public final SqlColumn<String> openid = column("openid", JDBCType.VARCHAR);
+
         public User() {
-            super("user");
+            super("customer");
         }
     }
 }

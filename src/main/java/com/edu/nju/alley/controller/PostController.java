@@ -13,41 +13,51 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/post")
 public class PostController {
 
-    private PostService postService;
+    private final PostService postService;
 
     @Autowired
     public PostController(PostService postService) {
         this.postService = postService;
     }
 
+    @GetMapping("/all")
+    public ResponseVO getAllPosts(@RequestParam Integer sort,
+                                  @RequestParam Integer label) {
+        return ResponseVO.success().add(postService.getAllPostView(sort, label));
+    }
+
     @GetMapping("/view/{postId}")
     public ResponseVO getSpecialPost(@PathVariable Integer postId) {
-        return postService.getSpecialPost(postId);
+        return ResponseVO.success().add(postService.getSpecificPost(postId));
     }
 
-    @GetMapping("/update/{postId}")
-    public ResponseVO updatePost(@PathVariable Integer postId, @RequestBody PostDTO postDTO) {
-        return postService.updatePost(postId, postDTO);
+    @PostMapping("/update/{postId}")
+    public ResponseVO updatePost(@PathVariable Integer postId,
+                                 @RequestBody PostDTO postDTO) {
+        postService.updatePost(postId, postDTO);
+        return ResponseVO.success();
     }
 
-    @GetMapping("/like")
-    public ResponseVO likePost(@RequestParam Integer postId, @RequestParam Integer likerId) {
-        return postService.likePost(postId, likerId);
+    @PostMapping("/like")
+    public ResponseVO likePost(@RequestParam Integer postId,
+                               @RequestParam Integer likerId) {
+        return ResponseVO.success().add(postService.likePost(postId, likerId));
     }
 
-    @GetMapping("/comment")
+    @PostMapping("/comment")
     public ResponseVO commentPost(@RequestBody CommentDTO commentDTO) {
-        return postService.commentPost(commentDTO);
+        return ResponseVO.success().add(postService.commentPost(commentDTO));
     }
 
-    @GetMapping("/create")
+    @PostMapping("/create")
     public ResponseVO createPost(@RequestBody PostDTO postDTO) {
-        return postService.createPost(postDTO);
+        return ResponseVO.success().add(postService.createPost(postDTO));
     }
 
-    @GetMapping("/delete/{postId}")
+    @DeleteMapping("/delete/{postId}")
     public ResponseVO deletePost(@PathVariable Integer postId) {
-        return postService.deletePost(postId);
+        postService.deletePost(postId);
+        return ResponseVO.success();
     }
 
 }

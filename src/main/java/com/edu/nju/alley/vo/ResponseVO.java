@@ -2,10 +2,12 @@ package com.edu.nju.alley.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @ApiModel("api response format")
-@Getter
+@Data
+@NoArgsConstructor
 public class ResponseVO {
 
     @ApiModelProperty("标识代码, 1表示成功，-1表示出错")

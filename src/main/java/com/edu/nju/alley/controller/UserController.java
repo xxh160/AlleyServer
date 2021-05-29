@@ -5,17 +5,14 @@ import com.edu.nju.alley.service.UserService;
 import com.edu.nju.alley.vo.ResponseVO;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Api(tags = "User")
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
 
     @Autowired
     public UserController(UserService userService) {
@@ -23,28 +20,40 @@ public class UserController {
     }
 
     @GetMapping("/post/{userId}")
-    public ResponseVO getUserPost(Integer userId, Integer pageId) {
-        return userService.getUserPost(userId, pageId);
+    public ResponseVO getUserPost(@PathVariable Integer userId,
+                                  @RequestParam Integer pageId) {
+        return ResponseVO.success().add(userService.getUserPost(userId, pageId));
     }
 
     @GetMapping("/comment/{userId}")
-    public ResponseVO getUserComment(Integer userId, Integer pageId) {
-        return userService.getUserComment(userId, pageId);
+    public ResponseVO getUserComment(@PathVariable Integer userId,
+                                     @RequestParam Integer pageId) {
+        return ResponseVO.success().add(userService.getUserComment(userId, pageId));
     }
 
     @GetMapping("/like/{userId}")
-    public ResponseVO getUserLike(Integer userId, Integer pageId) {
-        return userService.getUserLike(userId, pageId);
+    public ResponseVO getUserLike(@PathVariable Integer userId,
+                                  @RequestParam Integer pageId) {
+        return ResponseVO.success().add(userService.getUserLike(userId, pageId));
     }
 
     @GetMapping("/view/{userId}")
-    public ResponseVO viewUser(Integer userId) {
-        return userService.viewUser(userId);
+    public ResponseVO viewUser(@PathVariable Integer userId) {
+        return ResponseVO.success().add(userService.viewUser(userId));
     }
 
-    @GetMapping("/update/{userId}")
-    public ResponseVO updateUser(Integer userId, @RequestBody UserDTO userDTO) {
-        return userService.updateUser(userId, userDTO);
+    @PostMapping("/update/{userId}")
+    public ResponseVO updateUser(@PathVariable Integer userId,
+                                 @RequestBody UserDTO userDTO) {
+        userService.updateUser(userId, userDTO);
+        return ResponseVO.success();
+    }
+
+    @GetMapping("/isLike")
+    public ResponseVO isLike(@RequestParam Integer userId,
+                             @RequestParam Integer typeId,
+                             @RequestParam Integer targetId) {
+        return ResponseVO.success().add(userService.isLike(userId, typeId, targetId));
     }
 
 }

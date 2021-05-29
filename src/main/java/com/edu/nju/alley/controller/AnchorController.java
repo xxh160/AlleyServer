@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/anchor")
 public class AnchorController {
 
-    private AnchorService anchorService;
+    private final AnchorService anchorService;
 
     @Autowired
     public AnchorController(AnchorService anchorService) {
@@ -23,9 +23,7 @@ public class AnchorController {
                                   @RequestParam("pageId") Integer pageId,
                                   @RequestParam("sort") Integer sort,
                                   @RequestParam("label") Integer label) {
-        return anchorService.getAllPosts(anchorId,pageId,sort,label);
+        return ResponseVO.success().add(anchorService.getAllPosts(anchorId, pageId, sort, label));
     }
-
-
 
 }

@@ -23,11 +23,12 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.edu.nju.alley.dao.support.UserDSS.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
 @Mapper
 public interface UserMapper {
 
-    BasicColumn[] selectList = BasicColumn.columnList(id, authId, sign);
+    BasicColumn[] selectList = BasicColumn.columnList(id, authId, sign, openid);
 
 
     @SelectProvider(type = SqlProviderAdapter.class, method = "select")
@@ -48,9 +49,10 @@ public interface UserMapper {
 
     @SelectProvider(type = SqlProviderAdapter.class, method = "select")
     @Results(id = "UserResult", value = {
-            @Result(column = "id", property = "id", jdbcType = JdbcType.INTEGER),
+            @Result(column = "id", property = "id", jdbcType = JdbcType.INTEGER, id = true),
             @Result(column = "auth_id", property = "authId", jdbcType = JdbcType.INTEGER),
-            @Result(column = "sign", property = "sign", jdbcType = JdbcType.VARCHAR)
+            @Result(column = "sign", property = "sign", jdbcType = JdbcType.VARCHAR),
+            @Result(column = "openid", property = "openid", jdbcType = JdbcType.VARCHAR)
     })
     Optional<User> selectOne(SelectStatementProvider selectStatement);
 
@@ -74,11 +76,19 @@ public interface UserMapper {
     }
 
 
+    default int deleteByPrimaryKey(Integer id_) {
+        return delete(c ->
+                c.where(id, isEqualTo(id_))
+        );
+    }
+
+
     default int insert(User record) {
         return MyBatis3Utils.insert(this::insert, record, user, c ->
                 c.map(id).toProperty("id")
                         .map(authId).toProperty("authId")
                         .map(sign).toProperty("sign")
+                        .map(openid).toProperty("openid")
         );
     }
 
@@ -88,6 +98,7 @@ public interface UserMapper {
                 c.map(id).toProperty("id")
                         .map(authId).toProperty("authId")
                         .map(sign).toProperty("sign")
+                        .map(openid).toProperty("openid")
         );
     }
 
@@ -97,6 +108,7 @@ public interface UserMapper {
                 c.map(id).toPropertyWhenPresent("id", record::getId)
                         .map(authId).toPropertyWhenPresent("authId", record::getAuthId)
                         .map(sign).toPropertyWhenPresent("sign", record::getSign)
+                        .map(openid).toPropertyWhenPresent("openid", record::getOpenid)
         );
     }
 
@@ -116,6 +128,13 @@ public interface UserMapper {
     }
 
 
+    default Optional<User> selectByPrimaryKey(Integer id_) {
+        return selectOne(c ->
+                c.where(id, isEqualTo(id_))
+        );
+    }
+
+
     default int update(UpdateDSLCompleter completer) {
         return MyBatis3Utils.update(this::update, user, completer);
     }
@@ -124,13 +143,35 @@ public interface UserMapper {
     static UpdateDSL<UpdateModel> updateAllColumns(User record, UpdateDSL<UpdateModel> dsl) {
         return dsl.set(id).equalTo(record::getId)
                 .set(authId).equalTo(record::getAuthId)
-                .set(sign).equalTo(record::getSign);
+                .set(sign).equalTo(record::getSign)
+                .set(openid).equalTo(record::getOpenid);
     }
 
 
     static UpdateDSL<UpdateModel> updateSelectiveColumns(User record, UpdateDSL<UpdateModel> dsl) {
         return dsl.set(id).equalToWhenPresent(record::getId)
                 .set(authId).equalToWhenPresent(record::getAuthId)
-                .set(sign).equalToWhenPresent(record::getSign);
+                .set(sign).equalToWhenPresent(record::getSign)
+                .set(openid).equalToWhenPresent(record::getOpenid);
+    }
+
+
+    default int updateByPrimaryKey(User record) {
+        return update(c ->
+                c.set(authId).equalTo(record::getAuthId)
+                        .set(sign).equalTo(record::getSign)
+                        .set(openid).equalTo(record::getOpenid)
+                        .where(id, isEqualTo(record::getId))
+        );
+    }
+
+
+    default int updateByPrimaryKeySelective(User record) {
+        return update(c ->
+                c.set(authId).equalToWhenPresent(record::getAuthId)
+                        .set(sign).equalToWhenPresent(record::getSign)
+                        .set(openid).equalToWhenPresent(record::getOpenid)
+                        .where(id, isEqualTo(record::getId))
+        );
     }
 }

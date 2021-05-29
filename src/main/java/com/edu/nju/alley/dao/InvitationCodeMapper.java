@@ -40,6 +40,7 @@ public interface InvitationCodeMapper {
 
 
     @InsertProvider(type = SqlProviderAdapter.class, method = "insert")
+    @SelectKey(statement = "SELECT LAST_INSERT_ID()", keyProperty = "record.id", before = false, resultType = Integer.class)
     int insert(InsertStatementProvider<InvitationCode> insertStatement);
 
 

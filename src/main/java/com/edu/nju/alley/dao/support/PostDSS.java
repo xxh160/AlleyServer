@@ -44,10 +44,10 @@ public final class PostDSS {
     public static final SqlColumn<Integer> anchorId = post.anchorId;
 
 
-    public static final SqlColumn<Integer> addrX = post.addrX;
+    public static final SqlColumn<Integer> longitude = post.longitude;
 
 
-    public static final SqlColumn<Integer> addrY = post.addrY;
+    public static final SqlColumn<Integer> latitude = post.latitude;
 
 
     public static final class Post extends SqlTable {
@@ -73,9 +73,9 @@ public final class PostDSS {
 
         public final SqlColumn<Integer> anchorId = column("anchor_id", JDBCType.INTEGER);
 
-        public final SqlColumn<Integer> addrX = column("addr_x", JDBCType.INTEGER);
+        public final SqlColumn<Integer> longitude = column("longitude", JDBCType.INTEGER);
 
-        public final SqlColumn<Integer> addrY = column("addr_y", JDBCType.INTEGER);
+        public final SqlColumn<Integer> latitude = column("latitude", JDBCType.INTEGER);
 
         public Post() {
             super("post");

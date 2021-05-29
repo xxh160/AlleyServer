@@ -9,4 +9,9 @@ public class UserPostRel {
 
     private Integer postId;
 
+    public UserPostRel(Integer userId, Integer postId) {
+        this.userId = userId;
+        this.postId = postId;
+    }
+
 }

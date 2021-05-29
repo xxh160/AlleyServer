@@ -3,54 +3,42 @@ package com.edu.nju.alley.po;
 import cn.hutool.core.date.DateUtil;
 import com.edu.nju.alley.dto.PostDTO;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 @Data
+@NoArgsConstructor
 public class Post {
 
     private Integer id;
 
-
     private Integer authId;
-
 
     private Integer userId;
 
-
     private Integer labelId;
-
 
     private String title;
 
-
     private String content;
-
 
     private Integer likeNum;
 
-
     private Integer commentNum;
-
 
     private Date createT;
 
-
     private Date lastModifiedT;
-
 
     private Integer anchorId;
 
+    private Integer longitude;
 
-    private Integer addrX;
-
-
-    private Integer addrY;
+    private Integer latitude;
 
     //新建一个Post
     public Post(PostDTO postDTO) {
-        this.id = 0;//怎么分配？
-        this.authId = 0;//怎么分配？
         this.userId = postDTO.getUserId();
         this.labelId = postDTO.getLabelId();
         this.title = postDTO.getTitle();
@@ -60,7 +48,17 @@ public class Post {
         this.createT = DateUtil.date();
         this.lastModifiedT = DateUtil.date();
         this.anchorId = postDTO.getAnchorId();
-        this.addrX = postDTO.getAddrX();
-        this.addrY = postDTO.getAddrY();
+        this.longitude = postDTO.getLongitude();
+        this.latitude = postDTO.getLatitude();
     }
+
+    public void updateByDTO(PostDTO postDTO) {
+        this.title = postDTO.getTitle();
+        this.content = postDTO.getContent();
+        this.anchorId = postDTO.getAnchorId();
+        this.lastModifiedT = DateUtil.date();
+        this.longitude = postDTO.getLongitude();
+        this.latitude = postDTO.getLatitude();
+    }
+
 }

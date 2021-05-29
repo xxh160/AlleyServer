@@ -5,12 +5,12 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class LikeVO {
+public class NewRecordVO {
 
-    private boolean isLike;
+    private Integer id;
 
-    public LikeVO(boolean isLike) {
-        this.isLike = isLike;
+    public NewRecordVO(Integer id) {
+        this.id = id;
     }
 
 }

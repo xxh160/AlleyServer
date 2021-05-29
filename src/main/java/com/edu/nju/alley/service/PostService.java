@@ -2,21 +2,31 @@ package com.edu.nju.alley.service;
 
 import com.edu.nju.alley.dto.CommentDTO;
 import com.edu.nju.alley.dto.PostDTO;
-import com.edu.nju.alley.vo.ResponseVO;
+import com.edu.nju.alley.po.Post;
+import com.edu.nju.alley.vo.LikeVO;
+import com.edu.nju.alley.vo.NewRecordVO;
+import com.edu.nju.alley.vo.PostVO;
+import com.edu.nju.alley.vo.PostViewVO;
+
+import java.util.List;
 
 
 public interface PostService {
 
-    ResponseVO getSpecialPost(Integer postId);
+    PostVO getSpecificPost(Integer postId);
 
-    ResponseVO updatePost(Integer postId, PostDTO postDTO);
+    void updatePost(Integer postId, PostDTO postDTO);
 
-    ResponseVO likePost(Integer postId, Integer likerId);
+    LikeVO likePost(Integer postId, Integer likerId);
 
-    ResponseVO commentPost(CommentDTO commentDTO);
+    NewRecordVO commentPost(CommentDTO commentDTO);
 
-    ResponseVO createPost(PostDTO postDTO);
+    NewRecordVO createPost(PostDTO postDTO);
 
-    ResponseVO deletePost(Integer postId);
+    void deletePost(Integer postId);
+
+    List<PostViewVO> getAllPostView(Integer sort, Integer label);
+
+    List<Post> getAllSortedPosts(Integer sort);
 
 }

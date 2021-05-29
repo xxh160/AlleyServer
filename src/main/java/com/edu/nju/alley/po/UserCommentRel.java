@@ -7,7 +7,6 @@ public class UserCommentRel {
 
     private Integer userId;
 
-
     private Integer commentId;
 
     public UserCommentRel(Integer userId, Integer commentId) {

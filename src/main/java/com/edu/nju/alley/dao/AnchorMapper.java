@@ -7,7 +7,6 @@ import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.delete.DeleteDSLCompleter;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
-import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.select.CountDSLCompleter;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -18,7 +17,6 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +26,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 @Mapper
 public interface AnchorMapper {
 
-    BasicColumn[] selectList = BasicColumn.columnList(id, name, addrX, addrY);
+    BasicColumn[] selectList = BasicColumn.columnList(id, name, longitude, latitude);
 
 
     @SelectProvider(type = SqlProviderAdapter.class, method = "select")
@@ -40,19 +38,16 @@ public interface AnchorMapper {
 
 
     @InsertProvider(type = SqlProviderAdapter.class, method = "insert")
+    @SelectKey(statement = "SELECT LAST_INSERT_ID()", keyProperty = "record.id", before = false, resultType = Integer.class)
     int insert(InsertStatementProvider<Anchor> insertStatement);
-
-
-    @InsertProvider(type = SqlProviderAdapter.class, method = "insertMultiple")
-    int insertMultiple(MultiRowInsertStatementProvider<Anchor> multipleInsertStatement);
 
 
     @SelectProvider(type = SqlProviderAdapter.class, method = "select")
     @Results(id = "AnchorResult", value = {
             @Result(column = "id", property = "id", jdbcType = JdbcType.INTEGER, id = true),
             @Result(column = "name", property = "name", jdbcType = JdbcType.VARCHAR),
-            @Result(column = "addr_x", property = "addrX", jdbcType = JdbcType.INTEGER),
-            @Result(column = "addr_y", property = "addrY", jdbcType = JdbcType.INTEGER)
+            @Result(column = "longitude", property = "longitude", jdbcType = JdbcType.INTEGER),
+            @Result(column = "latitude", property = "latitude", jdbcType = JdbcType.INTEGER)
     })
     Optional<Anchor> selectOne(SelectStatementProvider selectStatement);
 
@@ -85,30 +80,18 @@ public interface AnchorMapper {
 
     default int insert(Anchor record) {
         return MyBatis3Utils.insert(this::insert, record, anchor, c ->
-                c.map(id).toProperty("id")
-                        .map(name).toProperty("name")
-                        .map(addrX).toProperty("addrX")
-                        .map(addrY).toProperty("addrY")
-        );
-    }
-
-
-    default int insertMultiple(Collection<Anchor> records) {
-        return MyBatis3Utils.insertMultiple(this::insertMultiple, records, anchor, c ->
-                c.map(id).toProperty("id")
-                        .map(name).toProperty("name")
-                        .map(addrX).toProperty("addrX")
-                        .map(addrY).toProperty("addrY")
+                c.map(name).toProperty("name")
+                        .map(longitude).toProperty("longitude")
+                        .map(latitude).toProperty("latitude")
         );
     }
 
 
     default int insertSelective(Anchor record) {
         return MyBatis3Utils.insert(this::insert, record, anchor, c ->
-                c.map(id).toPropertyWhenPresent("id", record::getId)
-                        .map(name).toPropertyWhenPresent("name", record::getName)
-                        .map(addrX).toPropertyWhenPresent("addrX", record::getAddrX)
-                        .map(addrY).toPropertyWhenPresent("addrY", record::getAddrY)
+                c.map(name).toPropertyWhenPresent("name", record::getName)
+                        .map(longitude).toPropertyWhenPresent("longitude", record::getLongitude)
+                        .map(latitude).toPropertyWhenPresent("latitude", record::getLatitude)
         );
     }
 
@@ -141,26 +124,24 @@ public interface AnchorMapper {
 
 
     static UpdateDSL<UpdateModel> updateAllColumns(Anchor record, UpdateDSL<UpdateModel> dsl) {
-        return dsl.set(id).equalTo(record::getId)
-                .set(name).equalTo(record::getName)
-                .set(addrX).equalTo(record::getAddrX)
-                .set(addrY).equalTo(record::getAddrY);
+        return dsl.set(name).equalTo(record::getName)
+                .set(longitude).equalTo(record::getLongitude)
+                .set(latitude).equalTo(record::getLatitude);
     }
 
 
     static UpdateDSL<UpdateModel> updateSelectiveColumns(Anchor record, UpdateDSL<UpdateModel> dsl) {
-        return dsl.set(id).equalToWhenPresent(record::getId)
-                .set(name).equalToWhenPresent(record::getName)
-                .set(addrX).equalToWhenPresent(record::getAddrX)
-                .set(addrY).equalToWhenPresent(record::getAddrY);
+        return dsl.set(name).equalToWhenPresent(record::getName)
+                .set(longitude).equalToWhenPresent(record::getLongitude)
+                .set(latitude).equalToWhenPresent(record::getLatitude);
     }
 
 
     default int updateByPrimaryKey(Anchor record) {
         return update(c ->
                 c.set(name).equalTo(record::getName)
-                        .set(addrX).equalTo(record::getAddrX)
-                        .set(addrY).equalTo(record::getAddrY)
+                        .set(longitude).equalTo(record::getLongitude)
+                        .set(latitude).equalTo(record::getLatitude)
                         .where(id, isEqualTo(record::getId))
         );
     }
@@ -169,8 +150,8 @@ public interface AnchorMapper {
     default int updateByPrimaryKeySelective(Anchor record) {
         return update(c ->
                 c.set(name).equalToWhenPresent(record::getName)
-                        .set(addrX).equalToWhenPresent(record::getAddrX)
-                        .set(addrY).equalToWhenPresent(record::getAddrY)
+                        .set(longitude).equalToWhenPresent(record::getLongitude)
+                        .set(latitude).equalToWhenPresent(record::getLatitude)
                         .where(id, isEqualTo(record::getId))
         );
     }

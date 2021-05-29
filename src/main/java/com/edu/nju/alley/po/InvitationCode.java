@@ -7,12 +7,9 @@ public class InvitationCode {
 
     private Integer id;
 
-
     private String code;
 
-
     private Integer userId;
-
 
     private String description;
 
