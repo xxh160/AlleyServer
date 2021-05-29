@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: nju-alley-api
   description: nju alley api
-  version: 1.0.4
+  version: 1.0.5
 servers:
   - url: 'http://119.23.56.136:8001/api'
 tags:
@@ -15,7 +15,7 @@ paths:
     get:
       tags:
         - anchor
-      summary: 获取该锚点对应的所有post
+      summary: 获取该锚点对应的所有post预览
       description: 根据锚点id返回post；返回根据page id分页；sort是排序方式；label是根据标签筛选。
       parameters:
         - name: anchorId
@@ -67,7 +67,50 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/PostVO'
+                      $ref: '#/components/schemas/PostViewVO'
+  /post/all:
+    get:
+      tags:
+        - post
+      summary: 返回所有帖子预览
+      description: sortId决定排序方式，labelId决定标签筛选方式
+      parameters:
+        - name: sort
+          in: query
+          required: true
+          schema:
+            type: integer
+            enum:
+              - 1
+              - 2
+          description: 排序方式，1是按时间，2是按热度
+        - name: label
+          in: query
+          required: true
+          schema:
+            type: integer
+            enum:
+              - 0
+              - 1
+              - 2
+              - 3
+          description: 0是全部，1是随笔，2是通知，3是反馈，只能选一个
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PostViewVO'
   /post/view/{postId}:
     get:
       tags:
@@ -382,6 +425,42 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ResponseVO"
+  /user/isLike:
+    get:
+      tags:
+        - user
+      summary: 获得用户是否点赞
+      description: 通过userId定位用户，typeId定位点赞种类，0是post，1是comment，targetId是对应实体的id
+      parameters:
+        - name: userId
+          in: query
+          schema:
+            type: integer
+          required: true
+        - name: typeId
+          in: query
+          schema:
+            type: integer
+          required: true
+        - name: targetId
+          in: query
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/LikeVO'
   /user/update/{userId}:
     post:
       tags:
@@ -518,10 +597,10 @@ components:
           format: date-time
         anchorId:
           type: integer
-        addrX:
+        langitude:
           type: integer
           description: 经度
-        addrY:
+        latitude:
           type: integer
           description: 纬度
         comments:
@@ -530,6 +609,18 @@ components:
             $ref: '#/components/schemas/CommentVO'
         auth:
           $ref: "#/components/schemas/PostAuthVO"
+    PostViewVO:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: post id
+        langitude:
+          type: integer
+          description: 经度
+        latitude:
+          type: integer
+          description: 纬度
     PostDTO:
       type: object
       properties:

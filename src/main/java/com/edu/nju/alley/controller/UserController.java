@@ -1,5 +1,6 @@
 package com.edu.nju.alley.controller;
 
+import com.edu.nju.alley.dto.AuthenticationDTO;
 import com.edu.nju.alley.dto.UserDTO;
 import com.edu.nju.alley.service.UserService;
 import com.edu.nju.alley.vo.ResponseVO;
@@ -54,6 +55,13 @@ public class UserController {
                              @RequestParam Integer typeId,
                              @RequestParam Integer targetId) {
         return ResponseVO.success().add(userService.isLike(userId, typeId, targetId));
+    }
+
+    @PostMapping("/authenticate/{userId}")
+    public ResponseVO authenticate(@PathVariable Integer userId,
+                                   @RequestBody AuthenticationDTO authenticationDTO) {
+        userService.authenticate(userId, authenticationDTO);
+        return ResponseVO.success();
     }
 
 }

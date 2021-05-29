@@ -2,6 +2,7 @@ package com.edu.nju.alley.service.impl;
 
 import com.edu.nju.alley.dao.*;
 import com.edu.nju.alley.dao.support.*;
+import com.edu.nju.alley.dto.AuthenticationDTO;
 import com.edu.nju.alley.dto.UserDTO;
 import com.edu.nju.alley.enums.LikeType;
 import com.edu.nju.alley.exceptions.NoSuchDataException;
@@ -9,6 +10,7 @@ import com.edu.nju.alley.po.User;
 import com.edu.nju.alley.po.UserAuth;
 import com.edu.nju.alley.po.UserCommentRel;
 import com.edu.nju.alley.po.UserPostRel;
+import com.edu.nju.alley.service.AuthenticationService;
 import com.edu.nju.alley.service.CommentService;
 import com.edu.nju.alley.service.PostService;
 import com.edu.nju.alley.service.UserService;
@@ -44,6 +46,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserAuthMapper userAuthMapper;
 
+    private final AuthenticationService authenticationService;
+
     @Autowired
     public UserServiceImpl(PostService postService,
                            CommentService commentService,
@@ -52,7 +56,8 @@ public class UserServiceImpl implements UserService {
                            UserLikePostMapper userLikePostMapper,
                            UserPostRelMapper userPostRelMapper,
                            UserCommentRelMapper userCommentRelMapper,
-                           UserAuthMapper userAuthMapper) {
+                           UserAuthMapper userAuthMapper,
+                           AuthenticationService authenticationService) {
         this.postService = postService;
         this.commentService = commentService;
         this.userMapper = userMapper;
@@ -61,6 +66,7 @@ public class UserServiceImpl implements UserService {
         this.userPostRelMapper = userPostRelMapper;
         this.userCommentRelMapper = userCommentRelMapper;
         this.userAuthMapper = userAuthMapper;
+        this.authenticationService = authenticationService;
     }
 
     @Override
@@ -147,6 +153,21 @@ public class UserServiceImpl implements UserService {
                 .selectOne(c -> c.where(UserPostRelDSS.postId, isEqualTo(targetId))
                         .and(UserPostRelDSS.userId, isEqualTo(userId)));
         return new LikeVO(userCommentRelOptional.isPresent());
+    }
+
+    @Override
+    public void authenticate(Integer userId, AuthenticationDTO authenticationDTO) {
+        Integer codeId = authenticationService.isExist(authenticationDTO.getCode());
+        if (codeId == null)
+            throw new NoSuchDataException("错误的邀请码");
+        authenticationService.addUser(userId, codeId);
+        Optional<User> userOptional = userMapper.selectByPrimaryKey(userId);
+        if (!userOptional.isPresent()) throw new NoSuchDataException("没有这个用户");
+        Optional<UserAuth> userAuthOptional = userAuthMapper.selectByPrimaryKey(userOptional.get().getAuthId());
+        if (!userAuthOptional.isPresent()) throw new NoSuchDataException("没有这条权限");
+        UserAuth userAuth = userAuthOptional.get();
+        userAuth.setOfficial(true);
+        userAuthMapper.updateByPrimaryKeySelective(userAuth);
     }
 
 }

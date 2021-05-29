@@ -1,5 +1,6 @@
 package com.edu.nju.alley.service;
 
+import com.edu.nju.alley.dto.AuthenticationDTO;
 import com.edu.nju.alley.dto.UserDTO;
 import com.edu.nju.alley.vo.*;
 
@@ -18,5 +19,7 @@ public interface UserService {
     void updateUser(Integer userId, UserDTO userDTO);
 
     LikeVO isLike(Integer userId, Integer typeId, Integer targetId);
+
+    void authenticate(Integer userId, AuthenticationDTO authenticationDTO);
 
 }
