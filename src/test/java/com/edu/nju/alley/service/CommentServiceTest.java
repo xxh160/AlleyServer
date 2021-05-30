@@ -1,7 +1,6 @@
 package com.edu.nju.alley.service;
 
 import com.edu.nju.alley.dto.CommentDTO;
-import com.edu.nju.alley.vo.CommentVO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,7 +30,6 @@ public class CommentServiceTest {
 
     @Test
     public void getSpecificOneTest() {
-        CommentVO commentVO = commentService.getSpecificOne(1);
     }
 
 }

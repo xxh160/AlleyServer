@@ -1,5 +1,14 @@
 server:
-  port: 8001
+  ssl:
+    key-store: classpath:cert/scs1622380630476_www.xxh160.com_server.jks
+    #    key-store: classpath:keystore/baeldung.p12
+    key-store-password: Am2#$RGYTQR^@v$n
+    key-store-type: JKS
+    #    key-store-type: PKCS12
+    #    key-alias: baeldung
+    enabled: true
+  #    key-store-password: 123456
+  port: 8443
 
 spring:
   datasource:
@@ -33,9 +42,6 @@ oss:
   accesskey-secret: V4T5aWEStBa0jA5x2XD4VqgRZ3X03N
   dir: nju-alley
   callback:
-
-
-
 
 management:
   endpoints:

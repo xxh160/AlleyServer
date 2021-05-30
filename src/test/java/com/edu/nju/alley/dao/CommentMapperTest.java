@@ -44,8 +44,6 @@ public class CommentMapperTest {
         Comment a = defaultComment();
         Comment b = defaultComment();
         this.commentMapper.insertMultiple(Arrays.asList(a, b));
-        assertNotNull(a.getId());
-        assertNotNull(b.getId());
     }
 
 }
