@@ -10,47 +10,36 @@ public final class PostDSS {
 
     public static final Post post = new Post();
 
-
     public static final SqlColumn<Integer> id = post.id;
-
 
     public static final SqlColumn<Integer> authId = post.authId;
 
-
     public static final SqlColumn<Integer> userId = post.userId;
-
 
     public static final SqlColumn<Integer> labelId = post.labelId;
 
-
     public static final SqlColumn<String> title = post.title;
-
 
     public static final SqlColumn<String> content = post.content;
 
-
     public static final SqlColumn<Integer> likeNum = post.likeNum;
-
 
     public static final SqlColumn<Integer> commentNum = post.commentNum;
 
-
     public static final SqlColumn<Date> createT = post.createT;
-
 
     public static final SqlColumn<Date> lastModifiedT = post.lastModifiedT;
 
-
     public static final SqlColumn<Integer> anchorId = post.anchorId;
-
 
     public static final SqlColumn<Integer> longitude = post.longitude;
 
-
     public static final SqlColumn<Integer> latitude = post.latitude;
 
+    public static final SqlColumn<String> pictureUrl = post.pictureUrl;
 
     public static final class Post extends SqlTable {
+        
         public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
 
         public final SqlColumn<Integer> authId = column("auth_id", JDBCType.INTEGER);
@@ -76,6 +65,8 @@ public final class PostDSS {
         public final SqlColumn<Integer> longitude = column("longitude", JDBCType.INTEGER);
 
         public final SqlColumn<Integer> latitude = column("latitude", JDBCType.INTEGER);
+
+        public final SqlColumn<String> pictureUrl = column("picture_url", JDBCType.VARCHAR);
 
         public Post() {
             super("post");

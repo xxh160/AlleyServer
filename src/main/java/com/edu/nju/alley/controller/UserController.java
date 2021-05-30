@@ -64,4 +64,17 @@ public class UserController {
         return ResponseVO.success();
     }
 
+    @PostMapping("/login")
+    public ResponseVO login(@RequestParam String code,
+                            @RequestParam String name,
+                            @RequestParam Integer gender,
+                            @RequestParam String avatarUrl) {
+        return ResponseVO.success().add(userService.login(code, name, gender, avatarUrl));
+    }
+
+    @GetMapping("/info/{userId}")
+    public ResponseVO getUserInfo(@PathVariable Integer userId) {
+        return ResponseVO.success().add(userService.getUserInfo(userId));
+    }
+
 }

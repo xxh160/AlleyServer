@@ -39,7 +39,7 @@
         <!--               selectByExampleQueryId="false">-->
         <!--            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>-->
         <!--        </table>-->
-        <table tableName="customer" domainObjectName="User" enableCountByExample="false"
+        <table tableName="post" domainObjectName="Post" enableCountByExample="false"
                enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false"/>
         <!--        <table tableName="anchor" domainObjectName="Anchor" enableCountByExample="false"-->

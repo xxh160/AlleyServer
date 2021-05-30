@@ -1,6 +1,5 @@
 package com.edu.nju.alley.service;
 
-import cn.hutool.core.date.DateUtil;
 import com.edu.nju.alley.dto.CommentDTO;
 import com.edu.nju.alley.vo.CommentVO;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,6 @@ public class CommentServiceTest {
     private CommentDTO defaultCommentDTO() {
         CommentDTO commentDTO = new CommentDTO();
         commentDTO.setContent("Test");
-        commentDTO.setCreateT(DateUtil.date());
         commentDTO.setFatherId(1);
         commentDTO.setUserId(1);
         return commentDTO;

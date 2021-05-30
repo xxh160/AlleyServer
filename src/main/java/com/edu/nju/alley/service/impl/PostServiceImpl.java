@@ -59,7 +59,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostVO getSpecificPost(Integer postId) {
         Optional<Post> postOptional = postMapper.selectByPrimaryKey(postId);
-        if (!postOptional.isPresent()) throw new NoSuchDataException("没有这条帖子");
+        if (postOptional.isEmpty()) throw new NoSuchDataException("没有这条帖子");
         Post post = postOptional.get();
         List<PostCommentRel> postCommentRels = postCommentRelMapper
                 .select(c -> c.where(PostCommentRelDSS.postId, isEqualTo(post.getId())));
@@ -68,7 +68,7 @@ public class PostServiceImpl implements PostService {
                 .collect(Collectors.toList());
         //找到权限
         Optional<PostAuth> postAuthOptional = postAuthMapper.selectByPrimaryKey(post.getId());
-        if (!postAuthOptional.isPresent()) throw new NoSuchDataException("帖子没有对应的权限");
+        if (postAuthOptional.isEmpty()) throw new NoSuchDataException("帖子没有对应的权限");
         return new PostVO(post, commentVOList, new PostAuthVO(postAuthOptional.get()));
     }
 
@@ -76,11 +76,11 @@ public class PostServiceImpl implements PostService {
     public void updatePost(Integer postId, PostDTO postDTO) {
         //将请求封装成post
         Optional<Post> postOptional = postMapper.selectByPrimaryKey(postId);
-        if (!postOptional.isPresent()) throw new NoSuchDataException("没有这条帖子");
+        if (postOptional.isEmpty()) throw new NoSuchDataException("没有这条帖子");
         Post post = postOptional.get();
 
         Optional<PostAuth> postAuthOptional = postAuthMapper.selectByPrimaryKey(post.getAuthId());
-        if (!postAuthOptional.isPresent()) throw new NoSuchDataException("帖子没有对应的权限");
+        if (postAuthOptional.isEmpty()) throw new NoSuchDataException("帖子没有对应的权限");
         PostAuth postAuth = postAuthOptional.get();
 
         post.updateByDTO(postDTO);
@@ -95,7 +95,7 @@ public class PostServiceImpl implements PostService {
 
         Optional<Post> postOptional = postMapper
                 .selectOne(c -> c.where(PostDSS.id, isEqualTo(postId)));
-        if (!postOptional.isPresent()) throw new NoSuchDataException("没有这条帖子");
+        if (postOptional.isEmpty()) throw new NoSuchDataException("没有这条帖子");
         Post post = postOptional.get();
         // 已经点过赞 取消点赞
         if (userLikePostOptional.isPresent()) {
@@ -129,10 +129,12 @@ public class PostServiceImpl implements PostService {
     public NewRecordVO createPost(PostDTO postDTO) {
         Post post = new Post(postDTO);
         // 创建postAuth并获得id
-        PostAuth postAuth = new PostAuth(post.getId(), postDTO.getAuth());
+        PostAuth postAuth = new PostAuth(postDTO.getAuth());
         postAuthMapper.insert(postAuth);
+
         post.setAuthId(postAuth.getId());
         postMapper.insert(post);
+
         UserPostRel userPostRel = new UserPostRel(post.getUserId(), post.getId());
         userPostRelMapper.insert(userPostRel);
         return new NewRecordVO(post.getId());
@@ -141,7 +143,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public void deletePost(Integer postId) {
         Optional<Post> postOptional = postMapper.selectByPrimaryKey(postId);
-        if (!postOptional.isPresent()) throw new NoSuchDataException("没有这条帖子");
+        if (postOptional.isEmpty()) throw new NoSuchDataException("没有这条帖子");
         Post post = postOptional.get();
         postMapper.deleteByPrimaryKey(postId);
         postAuthMapper.deleteByPrimaryKey(post.getAuthId());

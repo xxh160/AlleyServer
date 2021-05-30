@@ -17,6 +17,8 @@ public interface PostService {
 
     void updatePost(Integer postId, PostDTO postDTO);
 
+//    void updatePostPicture();
+
     LikeVO likePost(Integer postId, Integer likerId);
 
     NewRecordVO commentPost(CommentDTO commentDTO);

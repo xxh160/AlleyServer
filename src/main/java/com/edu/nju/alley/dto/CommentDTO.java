@@ -2,8 +2,6 @@ package com.edu.nju.alley.dto;
 
 import lombok.Data;
 
-import java.util.Date;
-
 @Data
 public class CommentDTO {
 
@@ -14,7 +12,5 @@ public class CommentDTO {
     private Integer fatherId;
 
     private String content;
-
-    private Date createT;
 
 }

@@ -5,6 +5,7 @@ import com.edu.nju.alley.po.Comment;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -12,6 +13,8 @@ import java.util.List;
 public class CommentVO {
 
     private Integer id;
+
+    private Integer userId;
 
     private Integer postId;
 
@@ -21,16 +24,20 @@ public class CommentVO {
 
     private Integer likeNum;
 
+    private Date createTime;
+
     private List<CommentVO> comments;
 
-    public CommentVO(Comment comment, List<CommentVO> comments) {
+    public CommentVO(Comment comment, Integer userId, List<CommentVO> comments) {
         this.id = comment.getId();
+        this.userId = userId;
         if (comment.getUpperTypeId().equals(CommentUpperType.COMMENT.getCode()))
             this.fatherId = comment.getUpperId();
         else this.postId = comment.getUpperId();
         this.content = comment.getContent();
         this.likeNum = comment.getLikeNum();
         this.comments = comments;
+        this.createTime = comment.getCreateT();
     }
 
 }

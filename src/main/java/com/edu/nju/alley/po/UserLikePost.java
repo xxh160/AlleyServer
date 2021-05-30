@@ -7,7 +7,6 @@ public class UserLikePost {
 
     private Integer userId;
 
-
     private Integer postId;
 
     public UserLikePost(Integer userId, Integer postId) {

@@ -28,7 +28,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 @Mapper
 public interface UserMapper {
 
-    BasicColumn[] selectList = BasicColumn.columnList(id, authId, sign, openid);
+    BasicColumn[] selectList = BasicColumn.columnList(id, authId, sign, openid, gender, name, avatar);
 
 
     @SelectProvider(type = SqlProviderAdapter.class, method = "select")
@@ -40,6 +40,7 @@ public interface UserMapper {
 
 
     @InsertProvider(type = SqlProviderAdapter.class, method = "insert")
+    @SelectKey(statement = "SELECT LAST_INSERT_ID()", keyProperty = "record.id", before = false, resultType = Integer.class)
     int insert(InsertStatementProvider<User> insertStatement);
 
 
@@ -52,7 +53,10 @@ public interface UserMapper {
             @Result(column = "id", property = "id", jdbcType = JdbcType.INTEGER, id = true),
             @Result(column = "auth_id", property = "authId", jdbcType = JdbcType.INTEGER),
             @Result(column = "sign", property = "sign", jdbcType = JdbcType.VARCHAR),
-            @Result(column = "openid", property = "openid", jdbcType = JdbcType.VARCHAR)
+            @Result(column = "openid", property = "openid", jdbcType = JdbcType.VARCHAR),
+            @Result(column = "gender", property = "gender", jdbcType = JdbcType.INTEGER),
+            @Result(column = "name", property = "name", jdbcType = JdbcType.VARCHAR),
+            @Result(column = "avatar", property = "avatar", jdbcType = JdbcType.VARCHAR)
     })
     Optional<User> selectOne(SelectStatementProvider selectStatement);
 
@@ -89,6 +93,9 @@ public interface UserMapper {
                         .map(authId).toProperty("authId")
                         .map(sign).toProperty("sign")
                         .map(openid).toProperty("openid")
+                        .map(gender).toProperty("gender")
+                        .map(name).toProperty("name")
+                        .map(avatar).toProperty("avatar")
         );
     }
 
@@ -99,6 +106,9 @@ public interface UserMapper {
                         .map(authId).toProperty("authId")
                         .map(sign).toProperty("sign")
                         .map(openid).toProperty("openid")
+                        .map(gender).toProperty("gender")
+                        .map(name).toProperty("name")
+                        .map(avatar).toProperty("avatar")
         );
     }
 
@@ -109,6 +119,9 @@ public interface UserMapper {
                         .map(authId).toPropertyWhenPresent("authId", record::getAuthId)
                         .map(sign).toPropertyWhenPresent("sign", record::getSign)
                         .map(openid).toPropertyWhenPresent("openid", record::getOpenid)
+                        .map(gender).toPropertyWhenPresent("gender", record::getGender)
+                        .map(name).toPropertyWhenPresent("name", record::getName)
+                        .map(avatar).toPropertyWhenPresent("avatar", record::getAvatar)
         );
     }
 
@@ -144,7 +157,10 @@ public interface UserMapper {
         return dsl.set(id).equalTo(record::getId)
                 .set(authId).equalTo(record::getAuthId)
                 .set(sign).equalTo(record::getSign)
-                .set(openid).equalTo(record::getOpenid);
+                .set(openid).equalTo(record::getOpenid)
+                .set(gender).equalTo(record::getGender)
+                .set(name).equalTo(record::getName)
+                .set(avatar).equalTo(record::getAvatar);
     }
 
 
@@ -152,7 +168,10 @@ public interface UserMapper {
         return dsl.set(id).equalToWhenPresent(record::getId)
                 .set(authId).equalToWhenPresent(record::getAuthId)
                 .set(sign).equalToWhenPresent(record::getSign)
-                .set(openid).equalToWhenPresent(record::getOpenid);
+                .set(openid).equalToWhenPresent(record::getOpenid)
+                .set(gender).equalToWhenPresent(record::getGender)
+                .set(name).equalToWhenPresent(record::getName)
+                .set(avatar).equalToWhenPresent(record::getAvatar);
     }
 
 
@@ -161,6 +180,9 @@ public interface UserMapper {
                 c.set(authId).equalTo(record::getAuthId)
                         .set(sign).equalTo(record::getSign)
                         .set(openid).equalTo(record::getOpenid)
+                        .set(gender).equalTo(record::getGender)
+                        .set(name).equalTo(record::getName)
+                        .set(avatar).equalTo(record::getAvatar)
                         .where(id, isEqualTo(record::getId))
         );
     }
@@ -171,6 +193,9 @@ public interface UserMapper {
                 c.set(authId).equalToWhenPresent(record::getAuthId)
                         .set(sign).equalToWhenPresent(record::getSign)
                         .set(openid).equalToWhenPresent(record::getOpenid)
+                        .set(gender).equalToWhenPresent(record::getGender)
+                        .set(name).equalToWhenPresent(record::getName)
+                        .set(avatar).equalToWhenPresent(record::getAvatar)
                         .where(id, isEqualTo(record::getId))
         );
     }

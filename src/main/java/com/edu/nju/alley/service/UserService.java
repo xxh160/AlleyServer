@@ -22,4 +22,8 @@ public interface UserService {
 
     void authenticate(Integer userId, AuthenticationDTO authenticationDTO);
 
+    NewRecordVO login(String code, String name, Integer gender, String avatarUrl);
+
+    UserViewVO getUserInfo(Integer userId);
+
 }

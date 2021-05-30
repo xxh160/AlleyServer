@@ -14,6 +14,10 @@ public class UserVO {
 
     private String openid; //微信账号唯一的标识码
 
+    private String name;
+
+    private String avatar;
+
     private String sign;
 
     private List<PostVO> posts;
@@ -24,6 +28,8 @@ public class UserVO {
         id = user.getId();
         openid = user.getOpenid();
         sign = user.getSign();
+        this.name = user.getName();
+        this.avatar = user.getAvatar();
         this.posts = posts;
         this.auth = userAuthVO;
     }

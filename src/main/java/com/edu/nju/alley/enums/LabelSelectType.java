@@ -5,7 +5,10 @@ import lombok.Getter;
 @Getter
 public enum LabelSelectType {
 
-    ALL(0, "全部");
+    ALL(0, "全部"),
+    ESSAY(1, "随笔"),
+    NOTIFICATION(2, "通知"),
+    FEEDBACK(3, "反馈");
 
     private final int code;
 

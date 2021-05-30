@@ -37,6 +37,8 @@ public class Post {
 
     private Integer latitude;
 
+    private String pictureUrl;
+
     //新建一个Post
     public Post(PostDTO postDTO) {
         this.userId = postDTO.getUserId();
@@ -50,6 +52,7 @@ public class Post {
         this.anchorId = postDTO.getAnchorId();
         this.longitude = postDTO.getLongitude();
         this.latitude = postDTO.getLatitude();
+        this.pictureUrl = postDTO.getPictureUrl();
     }
 
     public void updateByDTO(PostDTO postDTO) {
@@ -59,6 +62,7 @@ public class Post {
         this.lastModifiedT = DateUtil.date();
         this.longitude = postDTO.getLongitude();
         this.latitude = postDTO.getLatitude();
+        this.pictureUrl = postDTO.getPictureUrl();
     }
 
 }

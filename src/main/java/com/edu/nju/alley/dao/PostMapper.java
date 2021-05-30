@@ -7,6 +7,7 @@ import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.delete.DeleteDSLCompleter;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
+import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.select.CountDSLCompleter;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -17,6 +18,7 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +28,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 @Mapper
 public interface PostMapper {
 
-    BasicColumn[] selectList = BasicColumn.columnList(id, authId, userId, labelId, title, content, likeNum, commentNum, createT, lastModifiedT, anchorId, longitude, latitude);
+    BasicColumn[] selectList = BasicColumn.columnList(id, authId, userId, labelId, title, content, likeNum, commentNum, createT, lastModifiedT, anchorId, longitude, latitude, pictureUrl);
 
 
     @SelectProvider(type = SqlProviderAdapter.class, method = "select")
@@ -40,6 +42,10 @@ public interface PostMapper {
     @InsertProvider(type = SqlProviderAdapter.class, method = "insert")
     @SelectKey(statement = "SELECT LAST_INSERT_ID()", keyProperty = "record.id", before = false, resultType = Integer.class)
     int insert(InsertStatementProvider<Post> insertStatement);
+
+
+    @InsertProvider(type = SqlProviderAdapter.class, method = "insertMultiple")
+    int insertMultiple(MultiRowInsertStatementProvider<Post> multipleInsertStatement);
 
 
     @SelectProvider(type = SqlProviderAdapter.class, method = "select")
@@ -56,7 +62,8 @@ public interface PostMapper {
             @Result(column = "last_modified_t", property = "lastModifiedT", jdbcType = JdbcType.TIMESTAMP),
             @Result(column = "anchor_id", property = "anchorId", jdbcType = JdbcType.INTEGER),
             @Result(column = "longitude", property = "longitude", jdbcType = JdbcType.INTEGER),
-            @Result(column = "latitude", property = "latitude", jdbcType = JdbcType.INTEGER)
+            @Result(column = "latitude", property = "latitude", jdbcType = JdbcType.INTEGER),
+            @Result(column = "picture_url", property = "pictureUrl", jdbcType = JdbcType.VARCHAR)
     })
     Optional<Post> selectOne(SelectStatementProvider selectStatement);
 
@@ -89,7 +96,8 @@ public interface PostMapper {
 
     default int insert(Post record) {
         return MyBatis3Utils.insert(this::insert, record, post, c ->
-                c.map(authId).toProperty("authId")
+                c.map(id).toProperty("id")
+                        .map(authId).toProperty("authId")
                         .map(userId).toProperty("userId")
                         .map(labelId).toProperty("labelId")
                         .map(title).toProperty("title")
@@ -101,13 +109,35 @@ public interface PostMapper {
                         .map(anchorId).toProperty("anchorId")
                         .map(longitude).toProperty("longitude")
                         .map(latitude).toProperty("latitude")
+                        .map(pictureUrl).toProperty("pictureUrl")
+        );
+    }
+
+
+    default int insertMultiple(Collection<Post> records) {
+        return MyBatis3Utils.insertMultiple(this::insertMultiple, records, post, c ->
+                c.map(id).toProperty("id")
+                        .map(authId).toProperty("authId")
+                        .map(userId).toProperty("userId")
+                        .map(labelId).toProperty("labelId")
+                        .map(title).toProperty("title")
+                        .map(content).toProperty("content")
+                        .map(likeNum).toProperty("likeNum")
+                        .map(commentNum).toProperty("commentNum")
+                        .map(createT).toProperty("createT")
+                        .map(lastModifiedT).toProperty("lastModifiedT")
+                        .map(anchorId).toProperty("anchorId")
+                        .map(longitude).toProperty("longitude")
+                        .map(latitude).toProperty("latitude")
+                        .map(pictureUrl).toProperty("pictureUrl")
         );
     }
 
 
     default int insertSelective(Post record) {
         return MyBatis3Utils.insert(this::insert, record, post, c ->
-                c.map(authId).toPropertyWhenPresent("authId", record::getAuthId)
+                c.map(id).toPropertyWhenPresent("id", record::getId)
+                        .map(authId).toPropertyWhenPresent("authId", record::getAuthId)
                         .map(userId).toPropertyWhenPresent("userId", record::getUserId)
                         .map(labelId).toPropertyWhenPresent("labelId", record::getLabelId)
                         .map(title).toPropertyWhenPresent("title", record::getTitle)
@@ -119,6 +149,7 @@ public interface PostMapper {
                         .map(anchorId).toPropertyWhenPresent("anchorId", record::getAnchorId)
                         .map(longitude).toPropertyWhenPresent("longitude", record::getLongitude)
                         .map(latitude).toPropertyWhenPresent("latitude", record::getLatitude)
+                        .map(pictureUrl).toPropertyWhenPresent("pictureUrl", record::getPictureUrl)
         );
     }
 
@@ -151,7 +182,8 @@ public interface PostMapper {
 
 
     static UpdateDSL<UpdateModel> updateAllColumns(Post record, UpdateDSL<UpdateModel> dsl) {
-        return dsl.set(authId).equalTo(record::getAuthId)
+        return dsl.set(id).equalTo(record::getId)
+                .set(authId).equalTo(record::getAuthId)
                 .set(userId).equalTo(record::getUserId)
                 .set(labelId).equalTo(record::getLabelId)
                 .set(title).equalTo(record::getTitle)
@@ -162,12 +194,14 @@ public interface PostMapper {
                 .set(lastModifiedT).equalTo(record::getLastModifiedT)
                 .set(anchorId).equalTo(record::getAnchorId)
                 .set(longitude).equalTo(record::getLongitude)
-                .set(latitude).equalTo(record::getLatitude);
+                .set(latitude).equalTo(record::getLatitude)
+                .set(pictureUrl).equalTo(record::getPictureUrl);
     }
 
 
     static UpdateDSL<UpdateModel> updateSelectiveColumns(Post record, UpdateDSL<UpdateModel> dsl) {
-        return dsl.set(authId).equalToWhenPresent(record::getAuthId)
+        return dsl.set(id).equalToWhenPresent(record::getId)
+                .set(authId).equalToWhenPresent(record::getAuthId)
                 .set(userId).equalToWhenPresent(record::getUserId)
                 .set(labelId).equalToWhenPresent(record::getLabelId)
                 .set(title).equalToWhenPresent(record::getTitle)
@@ -178,7 +212,8 @@ public interface PostMapper {
                 .set(lastModifiedT).equalToWhenPresent(record::getLastModifiedT)
                 .set(anchorId).equalToWhenPresent(record::getAnchorId)
                 .set(longitude).equalToWhenPresent(record::getLongitude)
-                .set(latitude).equalToWhenPresent(record::getLatitude);
+                .set(latitude).equalToWhenPresent(record::getLatitude)
+                .set(pictureUrl).equalToWhenPresent(record::getPictureUrl);
     }
 
 
@@ -196,6 +231,7 @@ public interface PostMapper {
                         .set(anchorId).equalTo(record::getAnchorId)
                         .set(longitude).equalTo(record::getLongitude)
                         .set(latitude).equalTo(record::getLatitude)
+                        .set(pictureUrl).equalTo(record::getPictureUrl)
                         .where(id, isEqualTo(record::getId))
         );
     }
@@ -215,6 +251,7 @@ public interface PostMapper {
                         .set(anchorId).equalToWhenPresent(record::getAnchorId)
                         .set(longitude).equalToWhenPresent(record::getLongitude)
                         .set(latitude).equalToWhenPresent(record::getLatitude)
+                        .set(pictureUrl).equalToWhenPresent(record::getPictureUrl)
                         .where(id, isEqualTo(record::getId))
         );
     }

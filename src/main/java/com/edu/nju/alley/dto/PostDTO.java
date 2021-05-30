@@ -2,8 +2,6 @@ package com.edu.nju.alley.dto;
 
 import lombok.Data;
 
-import java.util.Date;
-
 @Data
 public class PostDTO {
 
@@ -15,8 +13,6 @@ public class PostDTO {
 
     private String content;
 
-    private Date createT;
-
     private Integer anchorId;
 
     private Integer longitude;
@@ -24,5 +20,8 @@ public class PostDTO {
     private Integer latitude;
 
     private PostAuthDTO auth;
+
+    // 如果没有直接为null
+    private String pictureUrl;
 
 }

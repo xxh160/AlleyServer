@@ -7,7 +7,6 @@ public class PostCommentRel {
 
     private Integer postId;
 
-
     private Integer commentId;
 
     public PostCommentRel(Integer postId, Integer commentId) {

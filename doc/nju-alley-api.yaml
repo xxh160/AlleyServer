@@ -638,10 +638,10 @@ components:
           format: date-time
         anchorId:
           type: integer
-        addrX:
+        langitude:
           type: integer
           description: 经度
-        addrY:
+        latitude:
           type: integer
           description: 纬度
         auth:

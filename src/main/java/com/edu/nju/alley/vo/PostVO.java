@@ -23,7 +23,7 @@ public class PostVO {
 
     private Integer likeNum;
 
-    private Integer CommentNum;
+    private Integer commentNum;
 
     private Date createTime;
 
@@ -37,6 +37,10 @@ public class PostVO {
 
     private PostAuthVO auth;
 
+    private String pictureUrl;
+
+    private boolean hasPicture;
+
     public PostVO(Post post, List<CommentVO> comments, PostAuthVO postAuth) {
         this.id = post.getId();
         this.userId = post.getUserId();
@@ -44,13 +48,15 @@ public class PostVO {
         this.title = post.getTitle();
         this.content = post.getContent();
         this.likeNum = post.getLikeNum();
-        this.CommentNum = post.getCommentNum();
+        this.commentNum = post.getCommentNum();
         this.createTime = post.getCreateT();
         this.anchorId = post.getAnchorId();
         this.longitude = post.getLongitude();
         this.latitude = post.getLatitude();
         this.comments = comments;
         this.auth = postAuth;
+        this.pictureUrl = post.getPictureUrl();
+        this.hasPicture = (this.pictureUrl != null);
     }
 
 }

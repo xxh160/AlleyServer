@@ -26,4 +26,14 @@ public class UserAuth {
         this.official = userAuthDTO.isOfficial();
     }
 
+    public static UserAuth defaultUserAuth() {
+        UserAuth userAuth = new UserAuth();
+        userAuth.setChat(false);
+        userAuth.setPosition(false);
+        userAuth.setMakeFriend(false);
+        userAuth.setOfficial(false);
+        userAuth.setShowWxInfo(false);
+        return userAuth;
+    }
+
 }

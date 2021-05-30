@@ -9,13 +9,26 @@ public final class UserDSS {
 
     public static final User user = new User();
 
+
     public static final SqlColumn<Integer> id = user.id;
+
 
     public static final SqlColumn<Integer> authId = user.authId;
 
+
     public static final SqlColumn<String> sign = user.sign;
 
+
     public static final SqlColumn<String> openid = user.openid;
+
+
+    public static final SqlColumn<Integer> gender = user.gender;
+
+
+    public static final SqlColumn<String> name = user.name;
+
+
+    public static final SqlColumn<String> avatar = user.avatar;
 
 
     public static final class User extends SqlTable {
@@ -26,6 +39,12 @@ public final class UserDSS {
         public final SqlColumn<String> sign = column("sign", JDBCType.VARCHAR);
 
         public final SqlColumn<String> openid = column("openid", JDBCType.VARCHAR);
+
+        public final SqlColumn<Integer> gender = column("gender", JDBCType.INTEGER);
+
+        public final SqlColumn<String> name = column("name", JDBCType.VARCHAR);
+
+        public final SqlColumn<String> avatar = column("avatar", JDBCType.VARCHAR);
 
         public User() {
             super("customer");

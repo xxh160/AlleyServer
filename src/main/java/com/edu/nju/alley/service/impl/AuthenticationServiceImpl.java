@@ -33,7 +33,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void addUser(Integer userId, Integer codeId) {
         Optional<InvitationCode> invitationCodeOptional = invitationCodeMapper
                 .selectByPrimaryKey(codeId);
-        if (!invitationCodeOptional.isPresent()) throw new NoSuchDataException("错误的邀请码");
+        if (invitationCodeOptional.isEmpty()) throw new NoSuchDataException("错误的邀请码");
         InvitationCode invitationCode = invitationCodeOptional.get();
         invitationCode.setUserId(userId);
         invitationCodeMapper.updateByPrimaryKeySelective(invitationCode);

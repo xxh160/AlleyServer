@@ -14,10 +14,8 @@ public class PostAuth {
 
     private Boolean comment;
 
-    public PostAuth(Integer postId, PostAuthDTO postAuthDTO) {
-        this.id = postId;
-        this.setVisible(postAuthDTO.isVisible());
-        this.setComment(postAuthDTO.isComment());
+    public PostAuth(PostAuthDTO postAuthDTO) {
+        this.updateByDTO(postAuthDTO);
     }
 
     public void updateByDTO(PostAuthDTO postAuthDTO) {

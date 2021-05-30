@@ -5,6 +5,7 @@ import com.edu.nju.alley.dao.CommentRelMapper;
 import com.edu.nju.alley.dao.UserCommentRelMapper;
 import com.edu.nju.alley.dao.UserLikeCommentMapper;
 import com.edu.nju.alley.dao.support.CommentRelDSS;
+import com.edu.nju.alley.dao.support.UserCommentRelDSS;
 import com.edu.nju.alley.dao.support.UserLikeCommentDSS;
 import com.edu.nju.alley.dto.CommentDTO;
 import com.edu.nju.alley.exceptions.NoSuchDataException;
@@ -68,7 +69,7 @@ public class CommentServiceImpl implements CommentService {
                         .and(UserLikeCommentDSS.userId, SqlBuilder.isEqualTo(likerId)));
         // 把评论找出来
         Optional<Comment> commentOptional = commentMapper.selectByPrimaryKey(commentId);
-        if (!commentOptional.isPresent()) throw new NoSuchDataException("没有这条评论");
+        if (commentOptional.isEmpty()) throw new NoSuchDataException("没有这条评论");
         Comment comment = commentOptional.get();
         // 有点赞记录 则取消点赞
         if (userLikeCommentOptional.isPresent()) {
@@ -91,7 +92,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentVO getSpecificOne(Integer commentId) {
         Optional<Comment> commentOptional = commentMapper.selectByPrimaryKey(commentId);
-        if (!commentOptional.isPresent()) return null;
+        if (commentOptional.isEmpty()) return null;
         Comment comment = commentOptional.get();
         // 寻找子评论id
         // 如果为空 返回的是长度为0的ArrayList
@@ -101,7 +102,11 @@ public class CommentServiceImpl implements CommentService {
         List<CommentVO> children = commentRelList.stream()
                 .map(t -> getSpecificOne(t.getChildId())).collect(Collectors.toList());
 
-        return new CommentVO(comment, children);
+        Optional<UserCommentRel> userCommentRelOptional = userCommentRelMapper
+                .selectOne(c -> c.where(UserCommentRelDSS.commentId, isEqualTo(commentId)));
+        if (userCommentRelOptional.isEmpty()) throw new NoSuchDataException("评论没有作者");
+
+        return new CommentVO(comment, userCommentRelOptional.get().getUserId(), children);
     }
 
     @Override

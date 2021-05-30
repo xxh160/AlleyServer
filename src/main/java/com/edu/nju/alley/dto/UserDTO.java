@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 public class UserDTO {
 
-    private Integer openId; //微信账户标识码
+    private Integer openId; // 微信账户标识码
 
     private String sign;
 
