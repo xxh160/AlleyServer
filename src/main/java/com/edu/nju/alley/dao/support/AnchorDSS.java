@@ -16,10 +16,10 @@ public final class AnchorDSS {
     public static final SqlColumn<String> name = anchor.name;
 
 
-    public static final SqlColumn<Integer> longitude = anchor.longitude;
+    public static final SqlColumn<Float> longitude = anchor.longitude;
 
 
-    public static final SqlColumn<Integer> latitude = anchor.latitude;
+    public static final SqlColumn<Float> latitude = anchor.latitude;
 
 
     public static final class Anchor extends SqlTable {
@@ -27,9 +27,9 @@ public final class AnchorDSS {
 
         public final SqlColumn<String> name = column("name", JDBCType.VARCHAR);
 
-        public final SqlColumn<Integer> longitude = column("longitude", JDBCType.INTEGER);
+        public final SqlColumn<Float> longitude = column("longitude", JDBCType.FLOAT);
 
-        public final SqlColumn<Integer> latitude = column("latitude", JDBCType.INTEGER);
+        public final SqlColumn<Float> latitude = column("latitude", JDBCType.FLOAT);
 
         public Anchor() {
             super("anchor");

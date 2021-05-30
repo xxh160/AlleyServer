@@ -29,9 +29,9 @@ public class PostVO {
 
     private Integer anchorId;
 
-    private Integer longitude;
+    private Float longitude;
 
-    private Integer latitude;
+    private Float latitude;
 
     private List<CommentVO> comments;
 

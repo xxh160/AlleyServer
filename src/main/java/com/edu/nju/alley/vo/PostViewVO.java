@@ -10,9 +10,9 @@ public class PostViewVO {
     private Integer id;
 
     // 纬度
-    private Integer latitude;
+    private Float latitude;
 
     // 经度
-    private Integer longitude;
+    private Float longitude;
 
 }

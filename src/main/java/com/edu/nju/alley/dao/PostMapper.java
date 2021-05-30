@@ -61,8 +61,8 @@ public interface PostMapper {
             @Result(column = "create_t", property = "createT", jdbcType = JdbcType.TIMESTAMP),
             @Result(column = "last_modified_t", property = "lastModifiedT", jdbcType = JdbcType.TIMESTAMP),
             @Result(column = "anchor_id", property = "anchorId", jdbcType = JdbcType.INTEGER),
-            @Result(column = "longitude", property = "longitude", jdbcType = JdbcType.INTEGER),
-            @Result(column = "latitude", property = "latitude", jdbcType = JdbcType.INTEGER),
+            @Result(column = "longitude", property = "longitude", jdbcType = JdbcType.FLOAT),
+            @Result(column = "latitude", property = "latitude", jdbcType = JdbcType.FLOAT),
             @Result(column = "picture_url", property = "pictureUrl", jdbcType = JdbcType.VARCHAR)
     })
     Optional<Post> selectOne(SelectStatementProvider selectStatement);

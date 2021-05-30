@@ -9,8 +9,8 @@ public class Anchor {
 
     private String name;
 
-    private Integer longitude;
+    private Float longitude;
 
-    private Integer latitude;
+    private Float latitude;
 
 }
