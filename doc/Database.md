@@ -17,6 +17,9 @@
 |auth_id|int|对应user_auth权限行id|
 |sign|varchar(100)|个人介绍|
 |openid|varchar(64)|微信用户对应唯一标识码|
+|gender|int|性别，0为未知，1为男，2为女|
+|name|varchar(64)|用户名|
+|avatar|varchar(1024)|头像url|
 
 个人介绍是写在信息概览的地方的。
 
@@ -37,6 +40,7 @@
 |anchor_id|int|锚点id，对应哪个锚点|
 |longitude|int|经度|
 |latitude|int|纬度|
+|pictureUrl|varchar(1024)|图片url|
 
 ### comment
 

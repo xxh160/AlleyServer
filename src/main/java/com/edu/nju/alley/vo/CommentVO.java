@@ -1,6 +1,6 @@
 package com.edu.nju.alley.vo;
 
-import com.edu.nju.alley.enums.CommentUpperType;
+import com.edu.nju.alley.enums.Type;
 import com.edu.nju.alley.po.Comment;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,7 +31,7 @@ public class CommentVO {
     public CommentVO(Comment comment, Integer userId, List<CommentVO> comments) {
         this.id = comment.getId();
         this.userId = userId;
-        if (comment.getUpperTypeId().equals(CommentUpperType.COMMENT.getCode()))
+        if (comment.getUpperTypeId().equals(Type.COMMENT.getCode()))
             this.fatherId = comment.getUpperId();
         else this.postId = comment.getUpperId();
         this.content = comment.getContent();

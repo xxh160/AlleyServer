@@ -24,5 +24,14 @@
 
 12. [X] api /post/view/{postid} 加返回图片url和是否有图片 hasPicture pictureUrl
 
+13. [ ] swagger
+
+14. [ ] 权限支持
+
+15. [ ] AOP 接口访问
+
+16. [ ] log处理
+
+17. [ ] shareNum
 
 

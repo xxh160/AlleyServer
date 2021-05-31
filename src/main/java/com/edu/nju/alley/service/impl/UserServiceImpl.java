@@ -7,7 +7,7 @@ import com.edu.nju.alley.dao.*;
 import com.edu.nju.alley.dao.support.*;
 import com.edu.nju.alley.dto.AuthenticationDTO;
 import com.edu.nju.alley.dto.UserDTO;
-import com.edu.nju.alley.enums.LikeType;
+import com.edu.nju.alley.enums.Type;
 import com.edu.nju.alley.exceptions.NoSuchDataException;
 import com.edu.nju.alley.po.User;
 import com.edu.nju.alley.po.UserAuth;
@@ -95,20 +95,20 @@ public class UserServiceImpl implements UserService {
         List<UserCommentRel> userCommentRels = userCommentRelMapper
                 .select(c -> c.where(UserCommentRelDSS.userId, isEqualTo(userId)));
         return userCommentRels.stream()
-                .map(t -> commentService.getSpecificOne(t.getCommentId()))
+                .map(t -> commentService.getSpecificComment(t.getCommentId()))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<UserLikeVO> getUserLike(Integer userId, Integer pageId) {
+    public List<UserActionVO> getUserLike(Integer userId, Integer pageId) {
         PageHelper.startPage(pageId, Const.pageSize);
         //是返回点赞的帖子还是评论？
-        List<UserLikeVO> userLikeVOList = new ArrayList<>();
+        List<UserActionVO> userActionVOList = new ArrayList<>();
         userLikeCommentMapper.select(c -> c.where(UserLikeCommentDSS.userId, isEqualTo(userId)))
-                .forEach(t -> userLikeVOList.add(new UserLikeVO(t)));
+                .forEach(t -> userActionVOList.add(new UserActionVO(t)));
         userLikePostMapper.select(c -> c.where(UserLikePostDSS.userId, isEqualTo(userId)))
-                .forEach(t -> userLikeVOList.add(new UserLikeVO(t)));
-        return userLikeVOList;
+                .forEach(t -> userActionVOList.add(new UserActionVO(t)));
+        return userActionVOList;
     }
 
     @Override
@@ -151,7 +151,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public LikeVO isLike(Integer userId, Integer typeId, Integer targetId) {
-        if (typeId.equals(LikeType.POST.getCode())) {
+        if (typeId.equals(Type.POST.getCode())) {
             Optional<UserPostRel> userPostRelOptional = userPostRelMapper
                     .selectOne(c -> c.where(UserPostRelDSS.postId, isEqualTo(targetId))
                             .and(UserPostRelDSS.userId, isEqualTo(userId)));
@@ -216,6 +216,60 @@ public class UserServiceImpl implements UserService {
         if (userOptional.isEmpty()) throw new NoSuchDataException("没有这个用户");
         User user = userOptional.get();
         return new UserViewVO(user.getName(), user.getAvatar());
+    }
+
+    @Override
+    public List<UserActionVO> allLikeMe(Integer userId) {
+        // 只有紧跟在page helper后的第一个查询会被分页
+        // 所以没法分页 艹 艹 艹 艹 艹
+        List<UserActionVO> all = new ArrayList<>();
+        // 分为post和comment两块
+        // post，根据userid从user_post_rel中取出user所有的postId，在user_like_post中寻找所有和postId相关的userId
+        List<UserPostRel> userPostRelList = userPostRelMapper
+                .select(c -> c.where(UserPostRelDSS.userId, isEqualTo(userId)));
+
+        userPostRelList.forEach(cur -> all.addAll(userLikePostMapper
+                .select(c -> c.where(UserLikePostDSS.postId, isEqualTo(cur.getPostId())))
+                .stream().map(UserActionVO::new).collect(Collectors.toList())));
+        // comment类似
+        List<UserCommentRel> userCommentRelList = userCommentRelMapper
+                .select(c -> c.where(UserCommentRelDSS.userId, isEqualTo(userId)));
+
+        userCommentRelList.forEach(cur -> all.addAll(userLikeCommentMapper
+                .select(c -> c.where(UserLikeCommentDSS.commentId, isEqualTo(cur.getCommentId())))
+                .stream().map(UserActionVO::new).collect(Collectors.toList())));
+        return all;
+    }
+
+    @Override
+    public List<UserActionVO> allCommentMe(Integer userId) {
+        List<UserActionVO> all = new ArrayList<>();
+
+        List<UserPostRel> userPostRelList = userPostRelMapper
+                .select(c -> c.where(UserPostRelDSS.userId, isEqualTo(userId)));
+
+        userPostRelList.forEach(cur -> all.addAll(postService.getPostComments(cur.getPostId())
+                .stream().map(t -> UserActionVO.userCommentAPost(t.getUserId(), cur.getPostId()))
+                .collect(Collectors.toList())));
+
+        List<UserCommentRel> userCommentRelList = userCommentRelMapper
+                .select(c -> c.where(UserCommentRelDSS.userId, isEqualTo(userId)));
+
+        userCommentRelList.forEach(cur -> all.addAll(commentService.getChildComments(cur.getCommentId())
+                .stream().map(t -> UserActionVO.userCommentAComment(t.getUserId(), cur.getCommentId()))
+                .collect(Collectors.toList())));
+
+        return all;
+    }
+
+    @Override
+    public List<UserActionVO> NewLikeMe(Integer userId) {
+        return null;
+    }
+
+    @Override
+    public List<UserActionVO> NewCommentMe(Integer userId) {
+        return null;
     }
 
 }

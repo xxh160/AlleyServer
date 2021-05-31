@@ -90,7 +90,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentVO getSpecificOne(Integer commentId) {
+    public CommentVO getSpecificComment(Integer commentId) {
         Optional<Comment> commentOptional = commentMapper.selectByPrimaryKey(commentId);
         if (commentOptional.isEmpty()) return null;
         Comment comment = commentOptional.get();
@@ -100,7 +100,7 @@ public class CommentServiceImpl implements CommentService {
                 .select(c -> c.where(CommentRelDSS.fatherId, isEqualTo(commentId)));
 
         List<CommentVO> children = commentRelList.stream()
-                .map(t -> getSpecificOne(t.getChildId())).collect(Collectors.toList());
+                .map(t -> getSpecificComment(t.getChildId())).collect(Collectors.toList());
 
         Optional<UserCommentRel> userCommentRelOptional = userCommentRelMapper
                 .selectOne(c -> c.where(UserCommentRelDSS.commentId, isEqualTo(commentId)));
@@ -115,6 +115,20 @@ public class CommentServiceImpl implements CommentService {
         commentMapper.insert(comment);
         UserCommentRel userCommentRel = new UserCommentRel(comment.getUserId(), comment.getId());
         userCommentRelMapper.insert(userCommentRel);
+    }
+
+    @Override
+    public List<Comment> getChildComments(Integer commentId) {
+        return commentRelMapper
+                .select(c -> c.where(CommentRelDSS.fatherId, isEqualTo(commentId)))
+                .stream()
+                .map(t -> getSherComment(t.getChildId())).collect(Collectors.toList());
+    }
+
+    public Comment getSherComment(Integer commentId) {
+        Optional<Comment> commentOptional = commentMapper.selectByPrimaryKey(commentId);
+        if (commentOptional.isEmpty()) return null;
+        return commentOptional.get();
     }
 
 }

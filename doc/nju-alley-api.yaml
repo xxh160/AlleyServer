@@ -2,9 +2,9 @@ openapi: 3.0.3
 info:
   title: nju-alley-api
   description: nju alley api
-  version: 1.0.5
+  version: 1.0.6
 servers:
-  - url: 'http://119.23.56.136:8001/api'
+  - url: 'https://www.xxh160.com:8443/api'
 tags:
   - name: anchor
   - name: post
@@ -225,7 +225,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ResponseVO"
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/NewRecordVO"
   /post/create:
     post:
       tags:
@@ -245,7 +252,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ResponseVO"
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/NewRecordVO"
   /post/delete/{postId}:
     delete:
       tags:
@@ -488,6 +502,77 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ResponseVO"
+  /user/login:
+    post:
+      tags:
+        - user
+      summary: 用户登录或者注册（第一次使用本系统的微信用户）
+      description: 如果用户对应的openid在数据库内有记录则更新name和avatar和gender，反之加记录，同时openid需要调用微信api获取，前端需要传登录code
+      parameters:
+        - name: code
+          in: query
+          description: 登录code
+          required: true
+          schema:
+            type: string
+        - name: name
+          in: query
+          description: 用户名
+          required: true
+          schema:
+            type: string
+        - name: avatar
+          in: query
+          description: 用户头像url
+          required: true
+          schema:
+            type: string
+        - name: gender
+          in: query
+          description: 性别
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/NewRecordVO"
+  /user/info/{userId}:
+    get:
+      tags:
+        - user
+      summary: 返回用户固定信息
+      description: 返回用户用户名和头像url，这两者在本系统内不支持修改
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/UserViewVO"
   /comment/comment:
     post:
       tags:
@@ -507,7 +592,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ResponseVO"
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/NewRecordVO"
   /comment/like:
     post:
       tags:
@@ -539,6 +631,32 @@ paths:
                     type: string
                   data:
                     $ref: "#/components/schemas/LikeVO"
+  /comment/view/{commentId}:
+    get:
+      tags:
+        - comment
+      summary: 获得评论信息
+      description: 通过commentId获得评论详细信息，通常和别的api配合使用
+      parameters:
+        - name: commentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/CommentVO"
 
 
 components:
@@ -553,6 +671,14 @@ components:
           description: 微信帐号的唯一标识码
         sign:
           type: string
+        name:
+          type: string
+        avatar:
+          type: string
+          description: 头像url
+        gender:
+          type: integer
+          description: 0为未知，1为男，2为女
         posts:
           type: array
           items:
@@ -562,15 +688,8 @@ components:
     UserDTO:
       type: object
       properties:
-        openid:
-          type: integer
-          description: 微信帐号的唯一标识码
         sign:
           type: string
-        posts:
-          type: array
-          items:
-            $ref: '#/components/schemas/PostVO'
         auth:
           $ref: "#/components/schemas/UserAuthDTO"
     PostVO:
@@ -598,10 +717,10 @@ components:
         anchorId:
           type: integer
         langitude:
-          type: integer
-          description: 经度
+          type: number
+          description: 经度 浮点数注意
         latitude:
-          type: integer
+          type: number
           description: 纬度
         comments:
           type: array
@@ -609,6 +728,12 @@ components:
             $ref: '#/components/schemas/CommentVO'
         auth:
           $ref: "#/components/schemas/PostAuthVO"
+        hasPicture:
+          type: boolean
+          description: 是否有图片
+        pictureUrl:
+          type: string
+          description: 图片url，注意只能加一张，目前
     PostViewVO:
       type: object
       properties:
@@ -616,10 +741,10 @@ components:
           type: integer
           description: post id
         langitude:
-          type: integer
+          type: number
           description: 经度
         latitude:
-          type: integer
+          type: number
           description: 纬度
     PostDTO:
       type: object
@@ -639,13 +764,16 @@ components:
         anchorId:
           type: integer
         langitude:
-          type: integer
+          type: number
           description: 经度
         latitude:
-          type: integer
+          type: number
           description: 纬度
         auth:
           $ref: "#/components/schemas/PostAuthDTO"
+        pictureUrl:
+          type: string
+          description: 图片url，如果没有直接为null
     CommentDTO:
       type: object
       properties:
@@ -678,6 +806,9 @@ components:
           type: string
         likeNum:
           type: integer
+        createTime:
+          type: string
+          format: date-time
         comments:
           type: array
           items:
@@ -732,10 +863,14 @@ components:
           type: boolean
         comment:
           type: boolean
-    UserLikeVO:
+    UserActionVO:
       type: object
+      description: 用户行为VO，表示某个用户作用与某个实体，比如用户点赞帖子或评论，用户评论帖子或评论，用户用userId标识，被作用的实体用id标识，type表示被作用的类型。
       properties:
-        upperType:
+        userId:
+          type: integer
+          description: user id
+        type:
           type: integer
           enum:
             - 1
@@ -743,7 +878,7 @@ components:
           description: 1是post，2是comment
         id:
           type: integer
-          description: 被点赞的实体的id
+          description: 被作用的实体的id
     LikeVO:
       type: object
       properties:
@@ -756,3 +891,18 @@ components:
         code:
           type: string
           description: 邀请码
+    NewRecordVO:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 新创建的实体id
+    UserViewVO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 用户名
+        avatarUrl:
+          type: string
+          description: 头像url

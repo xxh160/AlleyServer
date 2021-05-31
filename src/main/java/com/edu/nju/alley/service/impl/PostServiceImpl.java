@@ -61,13 +61,9 @@ public class PostServiceImpl implements PostService {
         Optional<Post> postOptional = postMapper.selectByPrimaryKey(postId);
         if (postOptional.isEmpty()) throw new NoSuchDataException("没有这条帖子");
         Post post = postOptional.get();
-        List<PostCommentRel> postCommentRels = postCommentRelMapper
-                .select(c -> c.where(PostCommentRelDSS.postId, isEqualTo(post.getId())));
-        List<CommentVO> commentVOList = postCommentRels.stream()
-                .map(t -> commentService.getSpecificOne(t.getCommentId()))
-                .collect(Collectors.toList());
+        List<CommentVO> commentVOList = getPostComments(postId);
         //找到权限
-        Optional<PostAuth> postAuthOptional = postAuthMapper.selectByPrimaryKey(post.getId());
+        Optional<PostAuth> postAuthOptional = postAuthMapper.selectByPrimaryKey(post.getAuthId());
         if (postAuthOptional.isEmpty()) throw new NoSuchDataException("帖子没有对应的权限");
         return new PostVO(post, commentVOList, new PostAuthVO(postAuthOptional.get()));
     }
@@ -161,8 +157,22 @@ public class PostServiceImpl implements PostService {
                 .collect(Collectors.toList());
     }
 
+
+    @Override
+    public List<CommentVO> getPostComments(Integer postId) {
+        Optional<Post> postOptional = postMapper.selectByPrimaryKey(postId);
+        if (postOptional.isEmpty()) throw new NoSuchDataException("没有这条帖子");
+        Post post = postOptional.get();
+        List<PostCommentRel> postCommentRels = postCommentRelMapper
+                .select(c -> c.where(PostCommentRelDSS.postId, isEqualTo(post.getId())));
+        return postCommentRels.stream()
+                .map(t -> commentService.getSpecificComment(t.getCommentId()))
+                .collect(Collectors.toList());
+    }
+
     @Override
     public List<Post> getAllSortedPosts(Integer sort) {
+        // bug： 降序？浮点数精度不高
         SelectStatementProvider selectAll = select(PostMapper.selectList)
                 .from(PostDSS.post)
                 .orderBy((sort == SortType.HOT.getCode()) ? PostDSS.likeNum : PostDSS.lastModifiedT)

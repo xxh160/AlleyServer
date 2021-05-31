@@ -27,7 +27,7 @@ public class PostController {
     }
 
     @GetMapping("/view/{postId}")
-    public ResponseVO getSpecialPost(@PathVariable Integer postId) {
+    public ResponseVO getSpecificPost(@PathVariable Integer postId) {
         return ResponseVO.success().add(postService.getSpecificPost(postId));
     }
 

@@ -6,13 +6,17 @@ import com.edu.nju.alley.vo.CommentVO;
 import com.edu.nju.alley.vo.LikeVO;
 import com.edu.nju.alley.vo.NewRecordVO;
 
+import java.util.List;
+
 public interface CommentService {
 
     NewRecordVO commentComment(CommentDTO commentDTO);
 
     LikeVO likeComment(Integer commentId, Integer likerId);
 
-    CommentVO getSpecificOne(Integer commentId);
+    CommentVO getSpecificComment(Integer commentId);
 
     void insertOne(Comment comment);
+
+    List<Comment> getChildComments(Integer commentId);
 }

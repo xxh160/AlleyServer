@@ -77,4 +77,23 @@ public class UserController {
         return ResponseVO.success().add(userService.getUserInfo(userId));
     }
 
+    @GetMapping("/like/all/{userId}")
+    public ResponseVO allLikeMe(@PathVariable Integer userId) {
+        return ResponseVO.success().add(userService.allLikeMe(userId));
+    }
+
+    @GetMapping("/comment/all/{userId}")
+    public ResponseVO allCommentMe(@PathVariable Integer userId) {
+        return ResponseVO.success().add(userService.allCommentMe(userId));
+    }
+
+    @GetMapping("/like/new/{userId}")
+    public ResponseVO newLikeMe(@PathVariable Integer userId) {
+        return ResponseVO.success().add(userService.NewLikeMe(userId));
+    }
+
+    @GetMapping("/comment/new/{userId}")
+    public ResponseVO newCommentMe(@PathVariable Integer userId) {
+        return ResponseVO.success().add(userService.NewCommentMe(userId));
+    }
 }

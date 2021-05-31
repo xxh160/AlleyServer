@@ -12,7 +12,7 @@ public interface UserService {
 
     List<CommentVO> getUserComment(Integer userId, Integer pageId);
 
-    List<UserLikeVO> getUserLike(Integer userId, Integer pageId);
+    List<UserActionVO> getUserLike(Integer userId, Integer pageId);
 
     UserVO viewUser(Integer userId);
 
@@ -25,5 +25,13 @@ public interface UserService {
     NewRecordVO login(String code, String name, Integer gender, String avatarUrl);
 
     UserViewVO getUserInfo(Integer userId);
+
+    List<UserActionVO> allLikeMe(Integer userId);
+
+    List<UserActionVO> allCommentMe(Integer userId);
+
+    List<UserActionVO> NewLikeMe(Integer userId);
+
+    List<UserActionVO> NewCommentMe(Integer userId);
 
 }

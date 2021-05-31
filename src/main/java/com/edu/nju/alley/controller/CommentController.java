@@ -30,4 +30,9 @@ public class CommentController {
                                   @RequestParam Integer likerId) {
         return ResponseVO.success().add(commentService.likeComment(commentId, likerId));
     }
+
+    @GetMapping("/view/{commentId}")
+    public ResponseVO getSpecificComment(@PathVariable Integer commentId) {
+        return ResponseVO.success().add(commentService.getSpecificComment(commentId));
+    }
 }
