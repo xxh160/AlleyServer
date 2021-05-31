@@ -7,6 +7,14 @@ plugins {
 group = 'com.edu.nju'
 version = '0.0.1-SNAPSHOT'
 
+jar {
+    enabled = true
+}
+
+bootJar {
+    classifier = 'boot'
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor

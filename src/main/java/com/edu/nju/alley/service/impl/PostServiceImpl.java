@@ -175,7 +175,7 @@ public class PostServiceImpl implements PostService {
         // bug： 降序？浮点数精度不高
         SelectStatementProvider selectAll = select(PostMapper.selectList)
                 .from(PostDSS.post)
-                .orderBy((sort == SortType.HOT.getCode()) ? PostDSS.likeNum : PostDSS.lastModifiedT)
+                .orderBy((sort == SortType.HOT.getCode()) ? PostDSS.likeNum.descending() : PostDSS.lastModifiedT.descending())
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
