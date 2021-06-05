@@ -11,14 +11,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class OSSServiceImpl implements OSSService {
 
-    private final OSSConfig ossConfig;
+    private final OSSConfig.OSS oss;
 
     private final OSSClient ossClient;
 
     @Autowired
-    public OSSServiceImpl(OSSConfig ossConfig,
+    public OSSServiceImpl(OSSConfig.OSS oss,
                           OSSClient ossClient) {
-        this.ossConfig = ossConfig;
+        this.oss = oss;
         this.ossClient = ossClient;
     }
 
