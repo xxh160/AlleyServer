@@ -7,8 +7,9 @@ import com.edu.nju.alley.dao.support.UserLikePostDSS;
 import com.edu.nju.alley.dao.support.UserPostRelDSS;
 import com.edu.nju.alley.dto.CommentDTO;
 import com.edu.nju.alley.dto.PostDTO;
-import com.edu.nju.alley.enums.LabelSelectType;
-import com.edu.nju.alley.enums.SortType;
+import com.edu.nju.alley.enums.Labels;
+import com.edu.nju.alley.enums.Msg;
+import com.edu.nju.alley.enums.Sort;
 import com.edu.nju.alley.exceptions.NoSuchDataException;
 import com.edu.nju.alley.po.*;
 import com.edu.nju.alley.service.CommentService;
@@ -58,26 +59,24 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostVO getSpecificPost(Integer postId) {
-        Optional<Post> postOptional = postMapper.selectByPrimaryKey(postId);
-        if (postOptional.isEmpty()) throw new NoSuchDataException("没有这条帖子");
-        Post post = postOptional.get();
-        List<CommentVO> commentVOList = getPostComments(postId);
+        Post post = this.getSherPost(postId);
+        if (post == null) throw new NoSuchDataException(Msg.NoSuchPostError.getMsg());
         //找到权限
-        Optional<PostAuth> postAuthOptional = postAuthMapper.selectByPrimaryKey(post.getAuthId());
-        if (postAuthOptional.isEmpty()) throw new NoSuchDataException("帖子没有对应的权限");
-        return new PostVO(post, commentVOList, new PostAuthVO(postAuthOptional.get()));
+        PostAuth postAuth = this.getSherPostAuth(post.getAuthId());
+        if (postAuth == null) throw new NoSuchDataException(Msg.NoSuchAuthError.getMsg());
+
+        List<CommentVO> commentVOList = getPostComments(postId);
+        return new PostVO(post, commentVOList, new PostAuthVO(postAuth));
     }
 
     @Override
     public void updatePost(Integer postId, PostDTO postDTO) {
-        //将请求封装成post
-        Optional<Post> postOptional = postMapper.selectByPrimaryKey(postId);
-        if (postOptional.isEmpty()) throw new NoSuchDataException("没有这条帖子");
-        Post post = postOptional.get();
-
-        Optional<PostAuth> postAuthOptional = postAuthMapper.selectByPrimaryKey(post.getAuthId());
-        if (postAuthOptional.isEmpty()) throw new NoSuchDataException("帖子没有对应的权限");
-        PostAuth postAuth = postAuthOptional.get();
+        // 将请求封装成post
+        Post post = this.getSherPost(postId);
+        if (post == null) throw new NoSuchDataException(Msg.NoSuchPostError.getMsg());
+        // 找到权限
+        PostAuth postAuth = this.getSherPostAuth(post.getAuthId());
+        if (postAuth == null) throw new NoSuchDataException(Msg.NoSuchAuthError.getMsg());
 
         post.updateByDTO(postDTO);
         postAuth.updateByDTO(postDTO.getAuth());
@@ -89,10 +88,9 @@ public class PostServiceImpl implements PostService {
                 .selectOne(c -> c.where(UserLikePostDSS.postId, isEqualTo(postId))
                         .and(UserLikePostDSS.userId, isEqualTo(likerId)));
 
-        Optional<Post> postOptional = postMapper
-                .selectOne(c -> c.where(PostDSS.id, isEqualTo(postId)));
-        if (postOptional.isEmpty()) throw new NoSuchDataException("没有这条帖子");
-        Post post = postOptional.get();
+        Post post = this.getSherPost(postId);
+        if (post == null) throw new NoSuchDataException(Msg.NoSuchPostError.getMsg());
+
         // 已经点过赞 取消点赞
         if (userLikePostOptional.isPresent()) {
             // 点赞数减一
@@ -138,9 +136,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deletePost(Integer postId) {
-        Optional<Post> postOptional = postMapper.selectByPrimaryKey(postId);
-        if (postOptional.isEmpty()) throw new NoSuchDataException("没有这条帖子");
-        Post post = postOptional.get();
+        Post post = this.getSherPost(postId);
+        if (post == null) throw new NoSuchDataException(Msg.NoSuchPostError.getMsg());
+
         postMapper.deleteByPrimaryKey(postId);
         postAuthMapper.deleteByPrimaryKey(post.getAuthId());
         postCommentRelMapper.delete(c -> c.where(PostCommentRelDSS.postId, isEqualTo(postId)));
@@ -152,7 +150,7 @@ public class PostServiceImpl implements PostService {
     public List<PostViewVO> getAllPostView(Integer sort, Integer label) {
         return this.getAllSortedPosts(sort)
                 .stream()
-                .filter(c -> (c.getLabelId().equals(label) || label == LabelSelectType.ALL.getCode()))
+                .filter(c -> (c.getLabelId().equals(label) || label == Labels.ALL.getCode()))
                 .map(t -> new PostViewVO(t.getId(), t.getLatitude(), t.getLongitude()))
                 .collect(Collectors.toList());
     }
@@ -160,9 +158,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<CommentVO> getPostComments(Integer postId) {
-        Optional<Post> postOptional = postMapper.selectByPrimaryKey(postId);
-        if (postOptional.isEmpty()) throw new NoSuchDataException("没有这条帖子");
-        Post post = postOptional.get();
+        Post post = this.getSherPost(postId);
+        if (post == null) throw new NoSuchDataException(Msg.NoSuchPostError.getMsg());
+
         List<PostCommentRel> postCommentRels = postCommentRelMapper
                 .select(c -> c.where(PostCommentRelDSS.postId, isEqualTo(post.getId())));
         return postCommentRels.stream()
@@ -170,12 +168,28 @@ public class PostServiceImpl implements PostService {
                 .collect(Collectors.toList());
     }
 
+    // 工具方法，负责返回各种PO
+    // 工具方法不抛异常，具体由调用函数自己决定
+    @Override
+    public Post getSherPost(Integer postId) {
+        Optional<Post> postOptional = postMapper.selectByPrimaryKey(postId);
+        if (postOptional.isEmpty()) return null;
+        return postOptional.get();
+    }
+
+    @Override
+    public PostAuth getSherPostAuth(Integer postAuthId) {
+        Optional<PostAuth> postAuthOptional = postAuthMapper.selectByPrimaryKey(postAuthId);
+        if (postAuthOptional.isEmpty()) return null;
+        return postAuthOptional.get();
+    }
+
     @Override
     public List<Post> getAllSortedPosts(Integer sort) {
-        // bug： 降序？浮点数精度不高
+        // bug： 浮点数精度不高
         SelectStatementProvider selectAll = select(PostMapper.selectList)
                 .from(PostDSS.post)
-                .orderBy((sort == SortType.HOT.getCode()) ? PostDSS.likeNum.descending() : PostDSS.lastModifiedT.descending())
+                .orderBy((sort == Sort.HOT.getCode()) ? PostDSS.likeNum.descending() : PostDSS.lastModifiedT.descending())
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 

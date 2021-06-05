@@ -4,5 +4,4 @@ public class Const {
 
     public static final int pageSize = 2;
 
-
 }

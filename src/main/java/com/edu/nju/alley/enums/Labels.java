@@ -3,7 +3,7 @@ package com.edu.nju.alley.enums;
 import lombok.Getter;
 
 @Getter
-public enum LabelSelectType {
+public enum Labels {
 
     ALL(0, "全部"),
     ESSAY(1, "随笔"),
@@ -14,7 +14,7 @@ public enum LabelSelectType {
 
     private final String description;
 
-    LabelSelectType(int code, String content) {
+    Labels(int code, String content) {
         this.code = code;
         this.description = content;
     }

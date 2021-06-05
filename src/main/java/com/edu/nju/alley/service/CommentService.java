@@ -18,5 +18,8 @@ public interface CommentService {
 
     void insertOne(Comment comment);
 
+    Comment getSherComment(Integer commentId);
+
     List<Comment> getChildComments(Integer commentId);
+
 }

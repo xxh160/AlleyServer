@@ -30,6 +30,9 @@ public class OSSConfig {
     @Value("callback")
     private String callback;
 
+    @Value("max_size")
+    private Integer maxSize;
+
     @Bean
     public OSSClient ossClient() {
         return new OSSClient(endPoint, accesskeyId, accesskeySecret);

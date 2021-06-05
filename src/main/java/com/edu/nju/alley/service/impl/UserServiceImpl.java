@@ -7,6 +7,7 @@ import com.edu.nju.alley.dao.*;
 import com.edu.nju.alley.dao.support.*;
 import com.edu.nju.alley.dto.AuthenticationDTO;
 import com.edu.nju.alley.dto.UserDTO;
+import com.edu.nju.alley.enums.Msg;
 import com.edu.nju.alley.enums.Type;
 import com.edu.nju.alley.exceptions.NoSuchDataException;
 import com.edu.nju.alley.po.User;
@@ -101,11 +102,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserActionVO> getUserLike(Integer userId, Integer pageId) {
-        PageHelper.startPage(pageId, Const.pageSize);
-        //是返回点赞的帖子还是评论？
+        PageHelper.startPage(pageId, Const.pageSize / 2);
+        //返回点赞的帖子和评论
         List<UserActionVO> userActionVOList = new ArrayList<>();
         userLikeCommentMapper.select(c -> c.where(UserLikeCommentDSS.userId, isEqualTo(userId)))
                 .forEach(t -> userActionVOList.add(new UserActionVO(t)));
+
+        PageHelper.startPage(pageId, Const.pageSize / 2);
         userLikePostMapper.select(c -> c.where(UserLikePostDSS.userId, isEqualTo(userId)))
                 .forEach(t -> userActionVOList.add(new UserActionVO(t)));
         return userActionVOList;
@@ -113,12 +116,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserVO viewUser(Integer userId) {
-        //查看用户信息
         //得到用户基本信息
-        Optional<User> userOptional = userMapper
-                .selectOne(c -> c.where(UserDSS.id, isEqualTo(userId)));
-        if (userOptional.isEmpty()) throw new NoSuchDataException("没有这个用户");
-        User user = userOptional.get();
+        User user = this.getSherUser(userId);
+        if (user == null) throw new NoSuchDataException(Msg.NoSuchUserError.getMsg());
         //得到用户所有帖子
         List<UserPostRel> userPostRels = userPostRelMapper
                 .select(c -> c.where(UserPostRelDSS.userId, isEqualTo(userId)));
@@ -127,22 +127,21 @@ public class UserServiceImpl implements UserService {
                 .map(t -> postService.getSpecificPost(t.getPostId()))
                 .collect(Collectors.toList());
         //得到用户权限数据
-        Optional<UserAuth> userAuthOptional = userAuthMapper.selectByPrimaryKey(user.getAuthId());
-        if (userAuthOptional.isEmpty()) throw new NoSuchDataException("没有这条权限");
-        return new UserVO(user, postVOList, new UserAuthVO(userAuthOptional.get()));
+        UserAuth userAuth = this.getSherUserAuth(user.getAuthId());
+        if (userAuth == null) throw new NoSuchDataException(Msg.NoSuchAuthError.getMsg());
+        return new UserVO(user, postVOList, new UserAuthVO(userAuth));
     }
 
     @Override
     public void updateUser(Integer userId, UserDTO userDTO) {
-        Optional<User> userOptional = userMapper
-                .selectOne(c -> c.where(UserDSS.id, isEqualTo(userId)));
-        if (userOptional.isEmpty()) throw new NoSuchDataException("没有这个用户");
-        User user = userOptional.get();
+        User user = this.getSherUser(userId);
+        if (user == null) throw new NoSuchDataException(Msg.NoSuchUserError.getMsg());
+
         user.updateByDTO(userDTO);
 
-        Optional<UserAuth> userAuthOptional = userAuthMapper.selectByPrimaryKey(user.getAuthId());
-        if (userAuthOptional.isEmpty()) throw new NoSuchDataException("没有这条权限");
-        UserAuth userAuth = userAuthOptional.get();
+        UserAuth userAuth = this.getSherUserAuth(user.getAuthId());
+        if (userAuth == null) throw new NoSuchDataException(Msg.NoSuchAuthError.getMsg());
+
         userAuth.updateByDTO(userDTO.getAuth());
 
         userMapper.updateByPrimaryKeySelective(user);
@@ -157,9 +156,10 @@ public class UserServiceImpl implements UserService {
                             .and(UserPostRelDSS.userId, isEqualTo(userId)));
             return new LikeVO(userPostRelOptional.isPresent());
         }
+
         Optional<UserCommentRel> userCommentRelOptional = userCommentRelMapper
-                .selectOne(c -> c.where(UserPostRelDSS.postId, isEqualTo(targetId))
-                        .and(UserPostRelDSS.userId, isEqualTo(userId)));
+                .selectOne(c -> c.where(UserCommentRelDSS.commentId, isEqualTo(targetId))
+                        .and(UserCommentRelDSS.userId, isEqualTo(userId)));
         return new LikeVO(userCommentRelOptional.isPresent());
     }
 
@@ -167,13 +167,15 @@ public class UserServiceImpl implements UserService {
     public void authenticate(Integer userId, AuthenticationDTO authenticationDTO) {
         Integer codeId = authenticationService.isExist(authenticationDTO.getCode());
         if (codeId == null)
-            throw new NoSuchDataException("错误的邀请码");
+            throw new NoSuchDataException(Msg.AuthCodeError.getMsg());
+
         authenticationService.addUser(userId, codeId);
-        Optional<User> userOptional = userMapper.selectByPrimaryKey(userId);
-        if (userOptional.isEmpty()) throw new NoSuchDataException("没有这个用户");
-        Optional<UserAuth> userAuthOptional = userAuthMapper.selectByPrimaryKey(userOptional.get().getAuthId());
-        if (userAuthOptional.isEmpty()) throw new NoSuchDataException("没有这条权限");
-        UserAuth userAuth = userAuthOptional.get();
+
+        User user = this.getSherUser(userId);
+        if (user == null) throw new NoSuchDataException(Msg.NoSuchUserError.getMsg());
+        UserAuth userAuth = this.getSherUserAuth(user.getAuthId());
+        if (userAuth == null) throw new NoSuchDataException(Msg.NoSuchAuthError.getMsg());
+
         userAuth.setOfficial(true);
         userAuthMapper.updateByPrimaryKeySelective(userAuth);
     }
@@ -188,9 +190,11 @@ public class UserServiceImpl implements UserService {
         String error = json.getStr("errcode");
         if (error != null) {
             int errCode = Integer.parseInt(error);
-            if (errCode != 0) throw new NoSuchDataException("wechat请求失败，错误码为: " + errCode);
+            if (errCode != 0) throw new NoSuchDataException(Msg.WechatError.getMsg() + errCode);
         }
+
         String openid = json.getStr("openid");
+        // 通过openid找用户
         Optional<User> userOptional = userMapper
                 .selectOne(c -> c.where(UserDSS.openid, isEqualTo(openid)));
         // 没有这个用户 注册
@@ -212,9 +216,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserViewVO getUserInfo(Integer userId) {
-        Optional<User> userOptional = userMapper.selectByPrimaryKey(userId);
-        if (userOptional.isEmpty()) throw new NoSuchDataException("没有这个用户");
-        User user = userOptional.get();
+        User user = this.getSherUser(userId);
+        if (user == null) throw new NoSuchDataException(Msg.NoSuchUserError.getMsg());
         return new UserViewVO(user.getName(), user.getAvatar());
     }
 
@@ -238,6 +241,7 @@ public class UserServiceImpl implements UserService {
         userCommentRelList.forEach(cur -> all.addAll(userLikeCommentMapper
                 .select(c -> c.where(UserLikeCommentDSS.commentId, isEqualTo(cur.getCommentId())))
                 .stream().map(UserActionVO::new).collect(Collectors.toList())));
+
         return all;
     }
 
@@ -270,6 +274,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserActionVO> NewCommentMe(Integer userId) {
         return null;
+    }
+
+    // 工具方法，负责返回各种PO
+    // 工具方法不抛异常，具体由调用函数自己决定
+    @Override
+    public User getSherUser(Integer userId) {
+        Optional<User> userOptional = userMapper.selectOne(c -> c.where(UserDSS.id, isEqualTo(userId)));
+        if (userOptional.isEmpty()) return null;
+        return userOptional.get();
+    }
+
+    @Override
+    public UserAuth getSherUserAuth(Integer userAuthId) {
+        Optional<UserAuth> userAuthOptional = userAuthMapper.selectByPrimaryKey(userAuthId);
+        if (userAuthOptional.isEmpty()) return null;
+        return userAuthOptional.get();
     }
 
 }

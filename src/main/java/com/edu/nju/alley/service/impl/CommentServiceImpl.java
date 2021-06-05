@@ -8,6 +8,7 @@ import com.edu.nju.alley.dao.support.CommentRelDSS;
 import com.edu.nju.alley.dao.support.UserCommentRelDSS;
 import com.edu.nju.alley.dao.support.UserLikeCommentDSS;
 import com.edu.nju.alley.dto.CommentDTO;
+import com.edu.nju.alley.enums.Msg;
 import com.edu.nju.alley.exceptions.NoSuchDataException;
 import com.edu.nju.alley.po.Comment;
 import com.edu.nju.alley.po.CommentRel;
@@ -68,9 +69,9 @@ public class CommentServiceImpl implements CommentService {
                 .selectOne(c -> c.where(UserLikeCommentDSS.commentId, isEqualTo(commentId))
                         .and(UserLikeCommentDSS.userId, SqlBuilder.isEqualTo(likerId)));
         // 把评论找出来
-        Optional<Comment> commentOptional = commentMapper.selectByPrimaryKey(commentId);
-        if (commentOptional.isEmpty()) throw new NoSuchDataException("没有这条评论");
-        Comment comment = commentOptional.get();
+        Comment comment = this.getSherComment(commentId);
+        if (comment == null) throw new NoSuchDataException(Msg.NoSuchCommentError.getMsg());
+
         // 有点赞记录 则取消点赞
         if (userLikeCommentOptional.isPresent()) {
             comment.setLikeNum(comment.getLikeNum() - 1);
@@ -91,9 +92,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentVO getSpecificComment(Integer commentId) {
-        Optional<Comment> commentOptional = commentMapper.selectByPrimaryKey(commentId);
-        if (commentOptional.isEmpty()) return null;
-        Comment comment = commentOptional.get();
+        Comment comment = this.getSherComment(commentId);
+        if (comment == null) return null;
         // 寻找子评论id
         // 如果为空 返回的是长度为0的ArrayList
         List<CommentRel> commentRelList = commentRelMapper
@@ -102,9 +102,10 @@ public class CommentServiceImpl implements CommentService {
         List<CommentVO> children = commentRelList.stream()
                 .map(t -> getSpecificComment(t.getChildId())).collect(Collectors.toList());
 
+        // 寻找评论作者
         Optional<UserCommentRel> userCommentRelOptional = userCommentRelMapper
                 .selectOne(c -> c.where(UserCommentRelDSS.commentId, isEqualTo(commentId)));
-        if (userCommentRelOptional.isEmpty()) throw new NoSuchDataException("评论没有作者");
+        if (userCommentRelOptional.isEmpty()) throw new NoSuchDataException(Msg.NoRelError.getMsg());
 
         return new CommentVO(comment, userCommentRelOptional.get().getUserId(), children);
     }
@@ -117,18 +118,21 @@ public class CommentServiceImpl implements CommentService {
         userCommentRelMapper.insert(userCommentRel);
     }
 
+    // 工具方法，负责返回各种PO
+    // 工具方法不抛异常，具体由调用函数自己决定
+    @Override
+    public Comment getSherComment(Integer commentId) {
+        Optional<Comment> commentOptional = commentMapper.selectByPrimaryKey(commentId);
+        if (commentOptional.isEmpty()) return null;
+        return commentOptional.get();
+    }
+
     @Override
     public List<Comment> getChildComments(Integer commentId) {
         return commentRelMapper
                 .select(c -> c.where(CommentRelDSS.fatherId, isEqualTo(commentId)))
                 .stream()
                 .map(t -> getSherComment(t.getChildId())).collect(Collectors.toList());
-    }
-
-    public Comment getSherComment(Integer commentId) {
-        Optional<Comment> commentOptional = commentMapper.selectByPrimaryKey(commentId);
-        if (commentOptional.isEmpty()) return null;
-        return commentOptional.get();
     }
 
 }
