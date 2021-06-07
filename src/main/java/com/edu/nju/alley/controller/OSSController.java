@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/oss")
 public class OSSController {
@@ -25,8 +27,8 @@ public class OSSController {
     }
 
     @PostMapping("/callback")
-    public ResponseVO callback() {
-        return ResponseVO.success().add(ossService.callback());
+    public ResponseVO callback(HttpServletRequest request) {
+        return ResponseVO.success().add(ossService.callback(request));
     }
 
 }

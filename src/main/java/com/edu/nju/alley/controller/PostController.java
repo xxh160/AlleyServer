@@ -40,8 +40,8 @@ public class PostController {
 
     @PostMapping("/like")
     public ResponseVO likePost(@RequestParam Integer postId,
-                               @RequestParam Integer likerId) {
-        return ResponseVO.success().add(postService.likePost(postId, likerId));
+                               @RequestParam Integer userId) {
+        return ResponseVO.success().add(postService.likePost(postId, userId));
     }
 
     @PostMapping("/comment")
