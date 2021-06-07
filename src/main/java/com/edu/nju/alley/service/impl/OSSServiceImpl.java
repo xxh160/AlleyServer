@@ -1,6 +1,5 @@
 package com.edu.nju.alley.service.impl;
 
-import cn.hutool.json.JSONUtil;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.model.MatchMode;
@@ -13,7 +12,6 @@ import com.edu.nju.alley.vo.OSSPolicyVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,18 +27,6 @@ public class OSSServiceImpl implements OSSService {
 
     //zzh 2021/6/7 17:48
     private static final Logger LOGGER = LoggerFactory.getLogger(OSSServiceImpl.class);
-    @Value("${aliyun.oss.policy.expire}")
-    private int ALIYUN_OSS_EXPIRE;
-    @Value("${aliyun.oss.maxSize}")
-    private int ALIYUN_OSS_MAX_SIZE;
-    @Value("${aliyun.oss.callback}")
-    private String ALIYUN_OSS_CALLBACK;
-    @Value("${aliyun.oss.bucketName}")
-    private String ALIYUN_OSS_BUCKET_NAME;
-    @Value("${aliyun.oss.endpoint}")
-    private String ALIYUN_OSS_ENDPOINT;
-    @Value("${aliyun.oss.dir.prefix}")
-    private String ALIYUN_OSS_DIR_PREFIX;
 
     //zzh 2021/6/7 17:48
 
@@ -59,22 +45,22 @@ public class OSSServiceImpl implements OSSService {
 
         //存储目录
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        String dir = ALIYUN_OSS_DIR_PREFIX+sdf.format(new Date());//引用了util的Date
+        String dir = oss.getDir()+sdf.format(new Date());//引用了util的Date
 
         // 签名有效期
-        long expireEndTime = System.currentTimeMillis() + ALIYUN_OSS_EXPIRE * 1000;
+        long expireEndTime = System.currentTimeMillis() + 300 * 1000;
         Date expiration = new Date(expireEndTime);
 
         // 文件大小
-        long maxSize = ALIYUN_OSS_MAX_SIZE * 1024 * 1024;
+        long maxSize = oss.getMaxSize() * 1024 * 1024;
 
         //回调
         OSSCallbackParamVO callback=new OSSCallbackParamVO();
-        callback.setCallbackUrl(ALIYUN_OSS_CALLBACK);
+        callback.setCallbackUrl(oss.getCallback());
         callback.setCallbackBody("filename=${object}&size=${size}&mimeType=${mimeType}&height=${imageInfo.height}&width=${imageInfo.width}");
         callback.setCallbackBodyType("application/x-www-form-urlencoded");
         //提交节点
-        String action = "http://" + ALIYUN_OSS_BUCKET_NAME + "." + ALIYUN_OSS_ENDPOINT;
+        String action = "http://" + oss.getBucketName() + "." + oss.getEndPoint();
 
         try{
             PolicyConditions policyConds = new PolicyConditions();
@@ -105,7 +91,7 @@ public class OSSServiceImpl implements OSSService {
     public OSSCallbackResultVO callback(HttpServletRequest request) {
         OSSCallbackResultVO result=new OSSCallbackResultVO();
         String filename = request.getParameter("filename");
-        filename = "http://".concat(ALIYUN_OSS_BUCKET_NAME).concat(".").concat(ALIYUN_OSS_ENDPOINT).concat("/").concat(filename);
+        filename = "http://".concat(oss.getBucketName()).concat(".").concat(oss.getEndPoint()).concat("/").concat(filename);
         result.setFilename(filename);
         result.setSize(request.getParameter("size"));
         result.setMimeType(request.getParameter("mimeType"));
