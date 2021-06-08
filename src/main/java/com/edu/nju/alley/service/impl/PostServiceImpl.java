@@ -7,7 +7,7 @@ import com.edu.nju.alley.dao.support.UserLikePostDSS;
 import com.edu.nju.alley.dao.support.UserPostRelDSS;
 import com.edu.nju.alley.dto.CommentDTO;
 import com.edu.nju.alley.dto.PostDTO;
-import com.edu.nju.alley.enums.Labels;
+import com.edu.nju.alley.enums.Label;
 import com.edu.nju.alley.enums.Msg;
 import com.edu.nju.alley.enums.Sort;
 import com.edu.nju.alley.exceptions.NoSuchDataException;
@@ -150,7 +150,7 @@ public class PostServiceImpl implements PostService {
     public List<PostViewVO> getAllPostView(Integer sort, Integer label) {
         return this.getAllSortedPosts(sort)
                 .stream()
-                .filter(c -> (c.getLabelId().equals(label) || label == Labels.ALL.getCode()))
+                .filter(c -> (c.getLabelId().equals(label) || label == Label.ALL.getCode()))
                 .map(t -> new PostViewVO(t.getId(), t.getLatitude(), t.getLongitude()))
                 .collect(Collectors.toList());
     }

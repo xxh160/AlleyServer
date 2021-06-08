@@ -875,9 +875,9 @@ components:
         type:
           type: integer
           enum:
+            - 0
             - 1
-            - 2
-          description: 1是post，2是comment
+          description: 0是post，1是comment
         id:
           type: integer
           description: 被作用的实体的id

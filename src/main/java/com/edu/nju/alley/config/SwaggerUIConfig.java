@@ -1,5 +1,6 @@
 package com.edu.nju.alley.config;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -21,6 +22,7 @@ public class SwaggerUIConfig {
                 .apiInfo(apiInfo()).enable(true)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.edu.nju.alley"))
+                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
                 .paths(PathSelectors.any())
                 .build();
     }

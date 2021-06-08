@@ -15,9 +15,7 @@ import com.edu.nju.alley.po.UserAuth;
 import com.edu.nju.alley.po.UserCommentRel;
 import com.edu.nju.alley.po.UserPostRel;
 import com.edu.nju.alley.service.*;
-import com.edu.nju.alley.util.Const;
 import com.edu.nju.alley.vo.*;
-import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -259,23 +257,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserActionVO> NewLikeMe(Integer userId) {
+    public List<NotificationVO> getNotifications(Integer userId) {
         return null;
     }
 
     @Override
-    public List<UserActionVO> NewCommentMe(Integer userId) {
-        return null;
+    public void checkNotification(Integer userId, Integer notificationId) {
+
     }
 
     @Override
     public List<PostIntroVO> getUserPostIntro(Integer userId) {
-        List<PostIntroVO> all=new ArrayList<>();
+        List<PostIntroVO> all = new ArrayList<>();
 
         List<UserPostRel> userPostRelList = userPostRelMapper
                 .select(c -> c.where(UserPostRelDSS.userId, isEqualTo(userId)));
         //还未实现完
-
 
 
         return all;

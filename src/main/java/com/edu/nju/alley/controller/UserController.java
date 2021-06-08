@@ -23,7 +23,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @ApiOperation("返回该用户的所有帖子;通过user id定位帖子，通过page id定位页数")
+    @ApiOperation("返回该用户的所有帖子;通过 user id 定位帖子 通过page id定位页数")
     @GetMapping("/post/{userId}")
     public ResponseVO<List<PostVO>> getUserPost(@PathVariable Integer userId) {
         return ResponseVO.<List<PostVO>>success().add(userService.getUserPost(userId));
@@ -50,7 +50,7 @@ public class UserController {
     @ApiOperation("更新用户信息;通过request body的信息更新用户信息")
     @PostMapping("/update/{userId}")
     public ResponseVO<Object> updateUser(@PathVariable Integer userId,
-                                 @RequestBody UserDTO userDTO) {
+                                         @RequestBody UserDTO userDTO) {
         userService.updateUser(userId, userDTO);
         return ResponseVO.success();
     }
@@ -58,15 +58,15 @@ public class UserController {
     @ApiOperation("获得用户是否点赞;通过userId定位用户，typeId定位点赞种类，0是post，1是comment，targetId是对应实体的id")
     @GetMapping("/isLike")
     public ResponseVO<LikeVO> isLike(@RequestParam Integer userId,
-                             @RequestParam Integer typeId,
-                             @RequestParam Integer targetId) {
+                                     @RequestParam Integer typeId,
+                                     @RequestParam Integer targetId) {
         return ResponseVO.<LikeVO>success().add(userService.isLike(userId, typeId, targetId));
     }
 
     @ApiOperation("官方用户认证;通过user id定位用户，对比invitation code是否相同。若通过则更新其权限，同时更新invitation_code中user id。")
     @PostMapping("/authenticate/{userId}")
     public ResponseVO<Object> authenticate(@PathVariable Integer userId,
-                                   @RequestBody AuthenticationDTO authenticationDTO) {
+                                           @RequestBody AuthenticationDTO authenticationDTO) {
         userService.authenticate(userId, authenticationDTO);
         return ResponseVO.success();
     }
@@ -74,9 +74,9 @@ public class UserController {
     @ApiOperation("用户登录或者注册(第一次使用本系统的微信用户);如果用户对应的openid在数据库内有记录则更新name和avatar和gender，反之加记录，同时openid需要调用微信api获取，前端需要传登录code")
     @PostMapping("/login")
     public ResponseVO<NewRecordVO> login(@RequestParam String code,
-                            @RequestParam String name,
-                            @RequestParam Integer gender,
-                            @RequestParam String avatarUrl) {
+                                         @RequestParam String name,
+                                         @RequestParam Integer gender,
+                                         @RequestParam String avatarUrl) {
         return ResponseVO.<NewRecordVO>success().add(userService.login(code, name, gender, avatarUrl));
     }
 
@@ -98,33 +98,35 @@ public class UserController {
         return ResponseVO.<List<UserActionVO>>success().add(userService.allCommentMe(userId));
     }
 
-    @ApiOperation("")
-    @GetMapping("/like/new/{userId}")
-    public ResponseVO<List<UserActionVO>> newLikeMe(@PathVariable Integer userId) {
-        return ResponseVO.<List<UserActionVO>>success().add(userService.NewLikeMe(userId));
+    @ApiOperation("获取通知列表")
+    @GetMapping("/notification/all/{userId}")
+    public ResponseVO<List<NotificationVO>> getNotifications(@PathVariable Integer userId) {
+        return ResponseVO.<List<NotificationVO>>success().add(userService.getNotifications(userId));
     }
 
-    @ApiOperation("")
-    @GetMapping("/comment/new/{userId}")
-    public ResponseVO<List<UserActionVO>> newCommentMe(@PathVariable Integer userId) {
-        return ResponseVO.<List<UserActionVO>>success().add(userService.NewCommentMe(userId));
+    @ApiOperation("标识某一条通知已阅")
+    @GetMapping("/notifications/check")
+    public ResponseVO<Object> checkNotification(@RequestParam Integer userId,
+                                                @RequestParam Integer notificationId) {
+        userService.checkNotification(userId, notificationId);
+        return ResponseVO.success();
     }
 
     @ApiOperation("获取用户发过的帖子信息")
     @GetMapping("/{userId}")//待补充
-    public ResponseVO<List<PostIntroVO>> getUserPostIntro(@PathVariable Integer userId){
+    public ResponseVO<List<PostIntroVO>> getUserPostIntro(@PathVariable Integer userId) {
         return ResponseVO.<List<PostIntroVO>>success().add(userService.getUserPostIntro(userId));
     }
 
     @ApiOperation("获取用户评论过的帖子的信息")
     @GetMapping("/{userId}")//待补充
-    public ResponseVO<List<PostIntroVO>> getUserCommentPostIntro(@PathVariable Integer userId){
+    public ResponseVO<List<PostIntroVO>> getUserCommentPostIntro(@PathVariable Integer userId) {
         return ResponseVO.<List<PostIntroVO>>success().add(userService.getUserCommentPostIntro(userId));
     }
 
     @ApiOperation("获取用户点赞过的帖子的信息")
     @GetMapping("/{userId}")//待补充
-    public ResponseVO<List<PostIntroVO>> getUserLikePostIntro(@PathVariable Integer userId){
+    public ResponseVO<List<PostIntroVO>> getUserLikePostIntro(@PathVariable Integer userId) {
         return ResponseVO.<List<PostIntroVO>>success().add(userService.getUserLikePostIntro(userId));
     }
 

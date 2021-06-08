@@ -1,6 +1,6 @@
 package com.edu.nju.alley.service;
 
-import com.edu.nju.alley.enums.Labels;
+import com.edu.nju.alley.enums.Label;
 import com.edu.nju.alley.enums.Sort;
 import com.edu.nju.alley.vo.PostViewVO;
 import org.junit.jupiter.api.Assertions;
@@ -22,7 +22,7 @@ public class AnchorServiceTest {
 
     @Test
     public void getAllPostTest() {
-        List<PostViewVO> posts = anchorService.getAllPosts(2, Sort.HOT.getCode(), Labels.ALL.getCode());
+        List<PostViewVO> posts = anchorService.getAllPosts(2, Sort.HOT.getCode(), Label.ALL.getCode());
         Assertions.assertEquals(posts.size(), 0);
     }
 

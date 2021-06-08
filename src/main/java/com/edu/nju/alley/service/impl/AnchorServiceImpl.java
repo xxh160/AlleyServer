@@ -1,11 +1,9 @@
 package com.edu.nju.alley.service.impl;
 
-import com.edu.nju.alley.enums.Labels;
+import com.edu.nju.alley.enums.Label;
 import com.edu.nju.alley.service.AnchorService;
 import com.edu.nju.alley.service.PostService;
-import com.edu.nju.alley.util.Const;
 import com.edu.nju.alley.vo.PostViewVO;
-import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +27,7 @@ public class AnchorServiceImpl implements AnchorService {
 
         return postService.getAllSortedPosts(sort)
                 .stream()
-                .filter(c -> (c.getLabelId().equals(label) || label == Labels.ALL.getCode()))
+                .filter(c -> (c.getLabelId().equals(label) || label == Label.ALL.getCode()))
                 .filter(c -> c.getAnchorId().equals(anchorId))
                 .map(t -> new PostViewVO(t.getId(), t.getLatitude(), t.getLongitude()))
                 .collect(Collectors.toList());

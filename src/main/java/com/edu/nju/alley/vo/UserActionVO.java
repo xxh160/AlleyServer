@@ -16,11 +16,11 @@ public class UserActionVO {
     @ApiModelProperty("作用的实体id")
     private Integer userId;
 
-    @ApiModelProperty("动作类型")
-    private Integer type; //0是post，1是comment
+    @ApiModelProperty("被作用的实体类型")
+    private Integer type; // 0是post，1是comment
 
     @ApiModelProperty("被作用的实体的id")
-    private Integer id; //被作用的实体id
+    private Integer id; // 被作用的实体id
 
     public UserActionVO(UserLikePost userLikePost) {
         this.userId = userLikePost.getUserId();

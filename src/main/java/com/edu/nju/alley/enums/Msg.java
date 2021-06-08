@@ -10,6 +10,7 @@ public enum Msg {
     NoSuchPostError("没有这条帖子"),
     NoSuchUserError("没有这个用户"),
     NoSuchAuthError("没有对应的权限"),
+    NoSuchNotificationError("没有这条通知"),
     NoRelError("缺少相关信息，如作者等"),
     WechatError("wechat请求失败，错误码为: "),
     UnknownError("未知错误，可能原因是：");

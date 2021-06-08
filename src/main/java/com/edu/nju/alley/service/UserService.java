@@ -2,7 +2,6 @@ package com.edu.nju.alley.service;
 
 import com.edu.nju.alley.dto.AuthenticationDTO;
 import com.edu.nju.alley.dto.UserDTO;
-import com.edu.nju.alley.po.Post;
 import com.edu.nju.alley.po.User;
 import com.edu.nju.alley.po.UserAuth;
 import com.edu.nju.alley.vo.*;
@@ -33,9 +32,9 @@ public interface UserService {
 
     List<UserActionVO> allCommentMe(Integer userId);
 
-    List<UserActionVO> NewLikeMe(Integer userId);
+    List<NotificationVO> getNotifications(Integer userId);
 
-    List<UserActionVO> NewCommentMe(Integer userId);
+    void checkNotification(Integer userId, Integer notificationId);
 
     List<PostIntroVO> getUserPostIntro(Integer userId);
 
@@ -46,6 +45,5 @@ public interface UserService {
     User getSherUser(Integer userId);
 
     UserAuth getSherUserAuth(Integer userAuthId);
-
 
 }
