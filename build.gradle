@@ -30,7 +30,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.25'
+//    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.25'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.4'
     implementation 'org.mybatis.generator:mybatis-generator-core:1.4.0'
     implementation 'org.mybatis:mybatis:3.5.4'
@@ -40,6 +40,9 @@ dependencies {
     implementation group: 'com.aliyun.oss', name: 'aliyun-sdk-oss', version: '3.11.2'
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '3.0.2'
     implementation group: 'cn.hutool', name: 'hutool-all', version: '5.6.6'
+    implementation group: 'com.alibaba', name: 'druid-spring-boot-starter', version: '1.2.4'
+    // https://mvnrepository.com/artifact/log4j/log4j
+    implementation group: 'log4j', name: 'log4j', version: '1.2.17'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'mysql:mysql-connector-java'
