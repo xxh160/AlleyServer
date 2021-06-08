@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Api(tags = "oss")
 @RestController
-@RequestMapping("/oss")
+@RequestMapping("/api/oss")
 public class OSSController {
 
     private final OSSService ossService;

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Api(tags = "anchor")
 @RestController
-@RequestMapping("/anchor")
+@RequestMapping("/api/anchor")
 public class AnchorController {
 
     private final AnchorService anchorService;
