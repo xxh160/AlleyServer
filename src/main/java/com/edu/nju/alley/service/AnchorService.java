@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface AnchorService {
 
-    List<PostViewVO> getAllPosts(Integer anchorId, Integer pageId, Integer sort, Integer label);
+    List<PostViewVO> getAllPosts(Integer anchorId,  Integer sort, Integer label);
 
 }

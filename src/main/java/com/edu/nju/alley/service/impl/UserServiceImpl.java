@@ -79,9 +79,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<PostVO> getUserPost(Integer userId, Integer pageId) {
+    public List<PostVO> getUserPost(Integer userId) {
         // 返回用户所有帖子
-        PageHelper.startPage(pageId, Const.pageSize);
+
         List<UserPostRel> userPostRels = userPostRelMapper
                 .select(c -> c.where(UserPostRelDSS.userId, isEqualTo(userId)));
         return userPostRels.stream()
@@ -90,9 +90,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<CommentVO> getUserComment(Integer userId, Integer pageId) {
+    public List<CommentVO> getUserComment(Integer userId) {
         //返回用户所有评论
-        PageHelper.startPage(pageId, Const.pageSize);
         List<UserCommentRel> userCommentRels = userCommentRelMapper
                 .select(c -> c.where(UserCommentRelDSS.userId, isEqualTo(userId)));
         return userCommentRels.stream()
@@ -101,14 +100,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserActionVO> getUserLike(Integer userId, Integer pageId) {
-        PageHelper.startPage(pageId, Const.pageSize / 2);
+    public List<UserActionVO> getUserLike(Integer userId) {
         //返回点赞的帖子和评论
         List<UserActionVO> userActionVOList = new ArrayList<>();
         userLikeCommentMapper.select(c -> c.where(UserLikeCommentDSS.userId, isEqualTo(userId)))
                 .forEach(t -> userActionVOList.add(new UserActionVO(t)));
 
-        PageHelper.startPage(pageId, Const.pageSize / 2);
         userLikePostMapper.select(c -> c.where(UserLikePostDSS.userId, isEqualTo(userId)))
                 .forEach(t -> userActionVOList.add(new UserActionVO(t)));
         return userActionVOList;
@@ -119,17 +116,12 @@ public class UserServiceImpl implements UserService {
         //得到用户基本信息
         User user = this.getSherUser(userId);
         if (user == null) throw new NoSuchDataException(Msg.NoSuchUserError.getMsg());
-        //得到用户所有帖子
-        List<UserPostRel> userPostRels = userPostRelMapper
-                .select(c -> c.where(UserPostRelDSS.userId, isEqualTo(userId)));
+        //得到用户所有帖子 已删除
 
-        List<PostVO> postVOList = userPostRels.stream()
-                .map(t -> postService.getSpecificPost(t.getPostId()))
-                .collect(Collectors.toList());
         //得到用户权限数据
         UserAuth userAuth = this.getSherUserAuth(user.getAuthId());
         if (userAuth == null) throw new NoSuchDataException(Msg.NoSuchAuthError.getMsg());
-        return new UserVO(user, postVOList, new UserAuthVO(userAuth));
+        return new UserVO(user, new UserAuthVO(userAuth));
     }
 
     @Override
@@ -273,6 +265,31 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserActionVO> NewCommentMe(Integer userId) {
+        return null;
+    }
+
+    @Override
+    public List<PostIntroVO> getUserPostIntro(Integer userId) {
+        List<PostIntroVO> all=new ArrayList<>();
+
+        List<UserPostRel> userPostRelList = userPostRelMapper
+                .select(c -> c.where(UserPostRelDSS.userId, isEqualTo(userId)));
+        //还未实现完
+
+
+
+        return all;
+    }
+
+    @Override
+    public List<PostIntroVO> getUserCommentPostIntro(Integer userId) {
+        //未实现
+        return null;
+    }
+
+    @Override
+    public List<PostIntroVO> getUserLikePostIntro(Integer userId) {
+        //未实现
         return null;
     }
 

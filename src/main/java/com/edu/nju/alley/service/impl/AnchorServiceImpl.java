@@ -24,11 +24,8 @@ public class AnchorServiceImpl implements AnchorService {
 
     @Override
     public List<PostViewVO> getAllPosts(Integer anchorId,
-                                        Integer pageId,
                                         Integer sort,
                                         Integer label) {
-
-        PageHelper.startPage(pageId, Const.pageSize);
 
         return postService.getAllSortedPosts(sort)
                 .stream()

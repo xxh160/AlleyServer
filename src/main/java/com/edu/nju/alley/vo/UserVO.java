@@ -28,19 +28,17 @@ public class UserVO {
     @ApiModelProperty("用户签名")
     private String sign;
 
-    @ApiModelProperty("用户发的帖子")
-    private List<PostVO> posts;
 
     @ApiModelProperty("用户权限")
     private UserAuthVO auth;
 
-    public UserVO(User user, List<PostVO> posts, UserAuthVO userAuthVO) {
+
+    public UserVO(User user, UserAuthVO userAuthVO) {
         id = user.getId();
         openid = user.getOpenid();
         sign = user.getSign();
         this.name = user.getName();
         this.avatar = user.getAvatar();
-        this.posts = posts;
         this.auth = userAuthVO;
     }
 }

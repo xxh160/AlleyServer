@@ -2,6 +2,7 @@ package com.edu.nju.alley.service;
 
 import com.edu.nju.alley.dto.AuthenticationDTO;
 import com.edu.nju.alley.dto.UserDTO;
+import com.edu.nju.alley.po.Post;
 import com.edu.nju.alley.po.User;
 import com.edu.nju.alley.po.UserAuth;
 import com.edu.nju.alley.vo.*;
@@ -10,11 +11,11 @@ import java.util.List;
 
 public interface UserService {
 
-    List<PostVO> getUserPost(Integer userId, Integer pageId);
+    List<PostVO> getUserPost(Integer userId);
 
-    List<CommentVO> getUserComment(Integer userId, Integer pageId);
+    List<CommentVO> getUserComment(Integer userId);
 
-    List<UserActionVO> getUserLike(Integer userId, Integer pageId);
+    List<UserActionVO> getUserLike(Integer userId);
 
     UserVO viewUser(Integer userId);
 
@@ -36,8 +37,15 @@ public interface UserService {
 
     List<UserActionVO> NewCommentMe(Integer userId);
 
+    List<PostIntroVO> getUserPostIntro(Integer userId);
+
+    List<PostIntroVO> getUserCommentPostIntro(Integer userId);
+
+    List<PostIntroVO> getUserLikePostIntro(Integer userId);
+
     User getSherUser(Integer userId);
 
     UserAuth getSherUserAuth(Integer userAuthId);
+
 
 }

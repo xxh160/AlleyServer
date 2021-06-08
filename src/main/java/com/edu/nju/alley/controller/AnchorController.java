@@ -25,10 +25,9 @@ public class AnchorController {
     @ApiOperation("获取该锚点对应的所有post预览;根据锚点id返回post；返回根据page id分页；sort是排序方式；label是根据标签筛选")
     @GetMapping("/post/{anchorId}")
     public ResponseVO<List<PostViewVO>> getAllPosts(@PathVariable Integer anchorId,
-                                                    @RequestParam("pageId") Integer pageId,
                                                     @RequestParam("sort") Integer sort,
                                                     @RequestParam("label") Integer label) {
-        return ResponseVO.<List<PostViewVO>>success().add(anchorService.getAllPosts(anchorId, pageId, sort, label));
+        return ResponseVO.<List<PostViewVO>>success().add(anchorService.getAllPosts(anchorId, sort, label));
     }
 
 }

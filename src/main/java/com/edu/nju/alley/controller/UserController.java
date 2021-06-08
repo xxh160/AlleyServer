@@ -25,23 +25,20 @@ public class UserController {
 
     @ApiOperation("返回该用户的所有帖子;通过user id定位帖子，通过page id定位页数")
     @GetMapping("/post/{userId}")
-    public ResponseVO<List<PostVO>> getUserPost(@PathVariable Integer userId,
-                                                @RequestParam Integer pageId) {
-        return ResponseVO.<List<PostVO>>success().add(userService.getUserPost(userId, pageId));
+    public ResponseVO<List<PostVO>> getUserPost(@PathVariable Integer userId) {
+        return ResponseVO.<List<PostVO>>success().add(userService.getUserPost(userId));
     }
 
-    @ApiOperation("返回用户的所有评论;通过user id找到用户所有评论并返回，通过page id定位页数")
+    @ApiOperation("返回用户的所有评论 通过 user id 找到用户所有评论并返回，通过page id定位页数")
     @GetMapping("/comment/{userId}")
-    public ResponseVO<List<CommentVO>> getUserComment(@PathVariable Integer userId,
-                                                      @RequestParam Integer pageId) {
-        return ResponseVO.<List<CommentVO>>success().add(userService.getUserComment(userId, pageId));
+    public ResponseVO<List<CommentVO>> getUserComment(@PathVariable Integer userId) {
+        return ResponseVO.<List<CommentVO>>success().add(userService.getUserComment(userId));
     }
 
     @ApiOperation("返回用户所有点赞记录;通过user_like_*查找点赞记录并返回，page id定位页数")
     @GetMapping("/like/{userId}")
-    public ResponseVO<List<UserActionVO>> getUserLike(@PathVariable Integer userId,
-                                  @RequestParam Integer pageId) {
-        return ResponseVO.<List<UserActionVO>>success().add(userService.getUserLike(userId, pageId));
+    public ResponseVO<List<UserActionVO>> getUserLike(@PathVariable Integer userId) {
+        return ResponseVO.<List<UserActionVO>>success().add(userService.getUserLike(userId));
     }
 
     @ApiOperation("查看用户信息;通过user id定位用户并返回信息")
@@ -112,4 +109,24 @@ public class UserController {
     public ResponseVO<List<UserActionVO>> newCommentMe(@PathVariable Integer userId) {
         return ResponseVO.<List<UserActionVO>>success().add(userService.NewCommentMe(userId));
     }
+
+    @ApiOperation("获取用户发过的帖子信息")
+    @GetMapping("/{userId}")//待补充
+    public ResponseVO<List<PostIntroVO>> getUserPostIntro(@PathVariable Integer userId){
+        return ResponseVO.<List<PostIntroVO>>success().add(userService.getUserPostIntro(userId));
+    }
+
+    @ApiOperation("获取用户评论过的帖子的信息")
+    @GetMapping("/{userId}")//待补充
+    public ResponseVO<List<PostIntroVO>> getUserCommentPostIntro(@PathVariable Integer userId){
+        return ResponseVO.<List<PostIntroVO>>success().add(userService.getUserCommentPostIntro(userId));
+    }
+
+    @ApiOperation("获取用户点赞过的帖子的信息")
+    @GetMapping("/{userId}")//待补充
+    public ResponseVO<List<PostIntroVO>> getUserLikePostIntro(@PathVariable Integer userId){
+        return ResponseVO.<List<PostIntroVO>>success().add(userService.getUserLikePostIntro(userId));
+    }
+
+
 }

@@ -22,7 +22,7 @@ public class AnchorServiceTest {
 
     @Test
     public void getAllPostTest() {
-        List<PostViewVO> posts = anchorService.getAllPosts(2, 1, Sort.HOT.getCode(), Labels.ALL.getCode());
+        List<PostViewVO> posts = anchorService.getAllPosts(2, Sort.HOT.getCode(), Labels.ALL.getCode());
         Assertions.assertEquals(posts.size(), 0);
     }
 
