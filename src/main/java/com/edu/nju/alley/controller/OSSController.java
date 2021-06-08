@@ -1,6 +1,8 @@
 package com.edu.nju.alley.controller;
 
 import com.edu.nju.alley.service.OSSService;
+import com.edu.nju.alley.vo.OSSCallbackResultVO;
+import com.edu.nju.alley.vo.OSSPolicyVO;
 import com.edu.nju.alley.vo.ResponseVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -21,18 +23,18 @@ public class OSSController {
 
     @ApiOperation("")
     @GetMapping("/policy")
-    public ResponseVO policy() {
-        return ResponseVO.success().add(ossService.policy());
+    public ResponseVO<OSSPolicyVO> policy() {
+        return ResponseVO.<OSSPolicyVO>success().add(ossService.policy());
     }
 
     @ApiOperation("")
     @PostMapping("/callback")
-    public ResponseVO callback(@RequestParam String filename,
-                               @RequestParam String size,
-                               @RequestParam String mimeType,
-                               @RequestParam String width,
-                               @RequestParam String height) {
-        return ResponseVO.success().add(ossService.callback(filename, size, mimeType, width, height));
+    public ResponseVO<OSSCallbackResultVO> callback(@RequestParam String filename,
+                                                    @RequestParam String size,
+                                                    @RequestParam String mimeType,
+                                                    @RequestParam String width,
+                                                    @RequestParam String height) {
+        return ResponseVO.<OSSCallbackResultVO>success().add(ossService.callback(filename, size, mimeType, width, height));
     }
 
 }

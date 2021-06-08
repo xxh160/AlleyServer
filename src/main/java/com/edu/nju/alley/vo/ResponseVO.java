@@ -6,10 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
-@ApiModel("api response format")
+@ApiModel("ResponseVO")
 @Data
 @NoArgsConstructor
-public class ResponseVO {
+public class ResponseVO<T>{
 
     @ApiModelProperty("标识代码, 1表示成功，-1表示出错")
     public int code;
@@ -18,7 +18,7 @@ public class ResponseVO {
     public String message;
 
     @ApiModelProperty("返回的数据")
-    public Object data;
+    public T data;
 
     ResponseVO(int code, String message) {
         this.code = code;
@@ -26,25 +26,25 @@ public class ResponseVO {
         this.data = null;
     }
 
-    public static ResponseVO success() {
-        return new ResponseVO(1, "successful");
+    public static <T> ResponseVO<T> success() {
+        return new ResponseVO<T>(1, "successful");
     }
 
-    public static ResponseVO failure() {
-        return new ResponseVO(-1, "failed");
+    public static <T> ResponseVO<T> failure() {
+        return new ResponseVO<T>(-1, "failed");
     }
 
-    public ResponseVO add(Object data) {
+    public ResponseVO <T> add(T data) {
         this.data = data;
         return this;
     }
 
-    public ResponseVO code(int code) {
+    public ResponseVO <T> code(int code) {
         this.code = code;
         return this;
     }
 
-    public ResponseVO msg(String message) {
+    public ResponseVO <T> msg(String message) {
         this.message = message;
         return this;
     }

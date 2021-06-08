@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class UserVO {
 
-    @ApiModelProperty("UserVO的唯一标识码")
+    @ApiModelProperty("用户的唯一标识码")
     private Integer id;
 
     @ApiModelProperty("微信帐号的唯一标识码")

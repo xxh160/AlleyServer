@@ -1,7 +1,6 @@
 package com.edu.nju.alley.vo;
 
 import com.edu.nju.alley.po.Post;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -51,7 +50,7 @@ public class PostVO {
     @ApiModelProperty("评论")
     private List<CommentVO> comments;
 
-    @ApiModelProperty("帖子权限?")
+    @ApiModelProperty("帖子权限")
     private PostAuthVO auth;
 
     @ApiModelProperty("图片url,注意目前只能加一张")

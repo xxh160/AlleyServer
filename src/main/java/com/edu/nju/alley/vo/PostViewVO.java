@@ -10,7 +10,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class PostViewVO {
 
-    @ApiModelProperty("???")
+    @ApiModelProperty("帖子id")
     private Integer id;
 
     // 纬度

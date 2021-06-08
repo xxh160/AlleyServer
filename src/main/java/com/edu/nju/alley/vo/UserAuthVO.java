@@ -11,19 +11,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserAuthVO {
 
-    @ApiModelProperty("是否能被聊天?")
+    @ApiModelProperty("是否能被发起聊天")
     private boolean chat;
 
-    @ApiModelProperty("是否能被添加好友?")
+    @ApiModelProperty("是否能被添加好友")
     private boolean mkfriend;
 
-    @ApiModelProperty("是否共享位置?")
+    @ApiModelProperty("是否共享位置")
     private boolean locate;
 
-    @ApiModelProperty("是否展示微信信息?")
+    @ApiModelProperty("是否展示微信信息")
     private boolean wxInfo;
 
-    @ApiModelProperty("是否是官方用户?")
+    @ApiModelProperty("是否是官方用户")
     private boolean official;
 
     public UserAuthVO(UserAuth userAuth) {
