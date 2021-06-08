@@ -10,7 +10,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://www.xiayi.org.cn:3306/NJUAlley?setUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://114.116.230.11:3306/NJUAlley?setUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
     username: xiayi
     password: 1928yI2333!
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -39,7 +39,7 @@ oss:
   accesskey-id: LTAI5t724aEYK7wCPavU6b3A
   accesskey-secret: V4T5aWEStBa0jA5x2XD4VqgRZ3X03N
   dir: nju-alley
-  callback: https://www.xiayi.org.cn:8443/oss/callback
+  callback: https://www.xiayi.org.cn:8443/api/oss/callback
   max_size: 10
 
 management:

@@ -1,9 +1,13 @@
 package com.edu.nju.alley.vo;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class OSSPolicyVO {
 
     @ApiModelProperty("访问身份验证中用到用户标识")

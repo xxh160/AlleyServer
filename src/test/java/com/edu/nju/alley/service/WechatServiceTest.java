@@ -13,11 +13,11 @@ public class WechatServiceTest {
 
     private final WechatService wechatService;
 
-    private final WechatConfig.Wechat wechat;
+    private final WechatConfig wechat;
 
     @Autowired
     public WechatServiceTest(WechatService wechatService,
-                             WechatConfig.Wechat wechat) {
+                             WechatConfig wechat) {
         this.wechatService = wechatService;
         this.wechat = wechat;
     }

@@ -1,9 +1,13 @@
 package com.edu.nju.alley.vo;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class OSSCallbackResultVO {
 
     @ApiModelProperty("文件名称")
@@ -20,5 +24,6 @@ public class OSSCallbackResultVO {
 
     @ApiModelProperty("图片文件的高")
     private String height;
-    
+
+
 }

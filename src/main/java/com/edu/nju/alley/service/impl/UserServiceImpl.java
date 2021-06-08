@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
 
     private final WechatService wechatService;
 
-    private final WechatConfig.Wechat wechat;
+    private final WechatConfig wechat;
 
     @Autowired
     public UserServiceImpl(PostService postService,
@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
                            UserAuthMapper userAuthMapper,
                            AuthenticationService authenticationService,
                            WechatService wechatService,
-                           WechatConfig.Wechat wechat) {
+                           WechatConfig wechat) {
         this.postService = postService;
         this.commentService = commentService;
         this.userMapper = userMapper;

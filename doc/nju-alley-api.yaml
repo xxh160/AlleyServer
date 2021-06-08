@@ -796,6 +796,8 @@ components:
       properties:
         id:
           type: integer
+        userId:
+          type: integer
         postId:
           type: integer
           description: 父级帖子的id，可以为null

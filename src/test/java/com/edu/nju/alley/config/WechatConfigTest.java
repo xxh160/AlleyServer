@@ -7,10 +7,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class WechatConfigTest {
 
-    private final WechatConfig.Wechat wechat;
+    private final WechatConfig wechat;
 
     @Autowired
-    public WechatConfigTest(WechatConfig.Wechat wechat) {
+    public WechatConfigTest(WechatConfig wechat) {
         this.wechat = wechat;
     }
 
