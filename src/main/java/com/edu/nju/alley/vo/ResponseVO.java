@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @ApiModel("api response format")
 @Data
 @NoArgsConstructor
