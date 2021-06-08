@@ -3,17 +3,23 @@ package com.edu.nju.alley.vo;
 import com.edu.nju.alley.enums.Type;
 import com.edu.nju.alley.po.UserLikeComment;
 import com.edu.nju.alley.po.UserLikePost;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@ApiModel("UserActionVO")
 @Data
 @NoArgsConstructor
 public class UserActionVO {
 
+    @ApiModelProperty("作用的实体id")
     private Integer userId;
 
-    private Integer type; //1是post，2是comment
+    @ApiModelProperty("动作类型")
+    private Integer type; //0是post，1是comment
 
+    @ApiModelProperty("被作用的实体的id")
     private Integer id; //被作用的实体id
 
     public UserActionVO(UserLikePost userLikePost) {
