@@ -22,7 +22,7 @@ public class AnchorController {
         this.anchorService = anchorService;
     }
 
-    @ApiOperation("获取该锚点对应的所有post预览;根据锚点id返回post；返回根据page id分页；sort是排序方式；label是根据标签筛选")
+    @ApiOperation("获取该锚点对应的所有post预览；根据锚点id返回post；sort是排序方式；label标签筛选方式，0全部1随笔2通知3反馈")
     @GetMapping("/post/{anchorId}")
     public ResponseVO<List<PostViewVO>> getAllPosts(@PathVariable Integer anchorId,
                                                     @RequestParam("sort") Integer sort,

@@ -6,8 +6,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @ApiModel("UserVO")
 @Data
 @NoArgsConstructor
@@ -27,7 +25,6 @@ public class UserVO {
 
     @ApiModelProperty("用户签名")
     private String sign;
-
 
     @ApiModelProperty("用户权限")
     private UserAuthVO auth;

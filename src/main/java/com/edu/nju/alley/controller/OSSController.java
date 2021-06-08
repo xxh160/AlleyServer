@@ -21,13 +21,13 @@ public class OSSController {
         this.ossService = ossService;
     }
 
-    @ApiOperation("")
+    @ApiOperation("oss的policy请求接口")
     @GetMapping("/policy")
     public ResponseVO<OSSPolicyVO> policy() {
         return ResponseVO.<OSSPolicyVO>success().add(ossService.policy());
     }
 
-    @ApiOperation("")
+    @ApiOperation("oss的回调接口，由oss服务器调用")
     @PostMapping("/callback")
     public ResponseVO<OSSCallbackResultVO> callback(@RequestParam String filename,
                                                     @RequestParam String size,

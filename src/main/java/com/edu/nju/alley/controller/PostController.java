@@ -23,47 +23,47 @@ public class PostController {
         this.postService = postService;
     }
 
-    @ApiOperation("返回所有帖子预览;sortId决定排序方式，labelId决定标签筛选方式")
+    @ApiOperation("返回所有帖子预览；sortId决定排序方式1按时间2按热度，labelId决定标签筛选方式，0全部1随笔2通知3反馈")
     @GetMapping("/all")
     public ResponseVO<List<PostViewVO>> getAllPosts(@RequestParam Integer sort,
                                                     @RequestParam Integer label) {
         return ResponseVO.<List<PostViewVO>>success().add(postService.getAllPostView(sort, label));
     }
 
-    @ApiOperation("返回特定的帖子;通过帖子id返回特定的帖子")
+    @ApiOperation("返回特定的帖子")
     @GetMapping("/view/{postId}")
     public ResponseVO<PostVO> getSpecificPost(@PathVariable Integer postId) {
         return ResponseVO.<PostVO>success().add(postService.getSpecificPost(postId));
     }
 
-    @ApiOperation("更新帖子;从request body中接收PostDTO来部分重写帖子以达到更新效果")
+    @ApiOperation("更新帖子")
     @PostMapping("/update/{postId}")
     public ResponseVO<Object> updatePost(@PathVariable Integer postId,
-                                 @RequestBody PostDTO postDTO) {
+                                         @RequestBody PostDTO postDTO) {
         postService.updatePost(postId, postDTO);
         return ResponseVO.success();
     }
 
-    @ApiOperation("点赞或者取消点赞帖子;将对应帖子的点赞数加/减一，通过查询user_like_post数据库来判断是点赞还是取消点赞，并且向user_like_post数据库里加/减一条记录")
+    @ApiOperation("点赞或者取消点赞帖子")
     @PostMapping("/like")
     public ResponseVO<LikeVO> likePost(@RequestParam Integer postId,
                                        @RequestParam Integer userId) {
         return ResponseVO.<LikeVO>success().add(postService.likePost(postId, userId));
     }
 
-    @ApiOperation("评论帖子;通过PostCommentDTO的评论信息新建立一个评论加入数据库，更新post_comment_rel、user_comment_rel数据库以及相关post信息（commentNum等）")
+    @ApiOperation("评论帖子")
     @PostMapping("/comment")
     public ResponseVO<NewRecordVO> commentPost(@RequestBody CommentDTO commentDTO) {
         return ResponseVO.<NewRecordVO>success().add(postService.commentPost(commentDTO));
     }
 
-    @ApiOperation("新建帖子;新建一个帖子，更新post数据库和user_post_rel数据库")
+    @ApiOperation("新建帖子")
     @PostMapping("/create")
     public ResponseVO<NewRecordVO> createPost(@RequestBody PostDTO postDTO) {
         return ResponseVO.<NewRecordVO>success().add(postService.createPost(postDTO));
     }
 
-    @ApiOperation("删除帖子;删除帖子，更新相应数据库，注意user id在post表中有存")
+    @ApiOperation("删除帖子")
     @DeleteMapping("/delete/{postId}")
     public ResponseVO<Object> deletePost(@PathVariable Integer postId) {
         postService.deletePost(postId);

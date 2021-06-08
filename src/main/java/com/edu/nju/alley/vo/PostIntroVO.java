@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-@ApiModel("post 简介")
+@ApiModel("PostIntroVO，post简介")
 @Data
 public class PostIntroVO {
 

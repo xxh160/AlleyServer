@@ -25,20 +25,20 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    @ApiOperation("评论一条评论;评论一条评论，更新comment、user_comment_rel和comment_rel数据库")
+    @ApiOperation("评论一条评论")
     @PostMapping("/comment")
     public ResponseVO<NewRecordVO> commentComment(@RequestBody CommentDTO commentDTO) {
         return ResponseVO.<NewRecordVO>success().add(commentService.commentComment(commentDTO));
     }
 
-    @ApiOperation("点赞或取消点赞评论;更新评论信息，同时通过user id定位到user，更新user_like_comment数据库")
+    @ApiOperation("点赞或取消点赞评论；由后端动态决定是点赞还是取消点赞")
     @PostMapping("/like")
     public ResponseVO<LikeVO> likeComment(@RequestParam Integer commentId,
-                                  @RequestParam Integer likerId) {
+                                          @RequestParam Integer likerId) {
         return ResponseVO.<LikeVO>success().add(commentService.likeComment(commentId, likerId));
     }
 
-    @ApiOperation("获得评论信息;通过commentId获得评论详细信息，通常和别的api配合使用")
+    @ApiOperation("获得特定评论")
     @GetMapping("/view/{commentId}")
     public ResponseVO<CommentVO> getSpecificComment(@PathVariable Integer commentId) {
         return ResponseVO.<CommentVO>success().add(commentService.getSpecificComment(commentId));
