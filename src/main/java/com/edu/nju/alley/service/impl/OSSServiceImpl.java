@@ -42,6 +42,7 @@ public class OSSServiceImpl implements OSSService {
         Date expiration = new Date(System.currentTimeMillis() + 300 * 1000);
 
         PolicyConditions policyConds = new PolicyConditions();
+
         policyConds.addConditionItem(PolicyConditions.COND_CONTENT_LENGTH_RANGE, 0, maxSize);
         policyConds.addConditionItem(MatchMode.StartWith, PolicyConditions.COND_KEY, dir);
 
@@ -52,7 +53,7 @@ public class OSSServiceImpl implements OSSService {
         // 提交节点
         String action = "https://" + oss.getBucketName() + "." + oss.getEndPoint();
         String signature = ossClient.calculatePostSignature(postPolicy);
-        
+
         return new OSSPolicyVO(
                 ossClient.getCredentialsProvider().getCredentials().getAccessKeyId(),
                 policy,
@@ -65,6 +66,7 @@ public class OSSServiceImpl implements OSSService {
     @Override
     public OSSCallbackResultVO callback(String filename, String size, String mimeType, String width, String height) {
         String file = "https://".concat(oss.getBucketName()).concat(".").concat(oss.getEndPoint()).concat("/").concat(filename);
+        
         return new OSSCallbackResultVO(file, size, mimeType, width, height);
     }
 }
