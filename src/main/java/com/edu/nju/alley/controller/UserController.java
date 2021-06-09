@@ -113,22 +113,21 @@ public class UserController {
     }
 
     @ApiOperation("获取用户发过的帖子简略信息")
-    @GetMapping("/post/intro/{userId}")//待补充
+    @GetMapping("/post/intro/{userId}")
     public ResponseVO<List<PostIntroVO>> getUserPostIntro(@PathVariable Integer userId) {
         return ResponseVO.<List<PostIntroVO>>success().add(userService.getUserPostIntro(userId));
     }
 
     @ApiOperation("获取用户评论过的帖子的简略信息")
-    @GetMapping("/comment/intro/{userId}")//待补充
+    @GetMapping("/comment/intro/{userId}")
     public ResponseVO<List<PostIntroVO>> getUserCommentPostIntro(@PathVariable Integer userId) {
         return ResponseVO.<List<PostIntroVO>>success().add(userService.getUserCommentPostIntro(userId));
     }
 
     @ApiOperation("获取用户点赞过的帖子的简略信息")
-    @GetMapping("/like/intro/{userId}")//待补充
+    @GetMapping("/like/intro/{userId}")
     public ResponseVO<List<PostIntroVO>> getUserLikePostIntro(@PathVariable Integer userId) {
         return ResponseVO.<List<PostIntroVO>>success().add(userService.getUserLikePostIntro(userId));
     }
-
 
 }

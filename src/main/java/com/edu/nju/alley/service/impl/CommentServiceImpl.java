@@ -9,12 +9,11 @@ import com.edu.nju.alley.dao.support.UserCommentRelDSS;
 import com.edu.nju.alley.dao.support.UserLikeCommentDSS;
 import com.edu.nju.alley.dto.CommentDTO;
 import com.edu.nju.alley.enums.Msg;
+import com.edu.nju.alley.enums.Type;
 import com.edu.nju.alley.exceptions.NoSuchDataException;
-import com.edu.nju.alley.po.Comment;
-import com.edu.nju.alley.po.CommentRel;
-import com.edu.nju.alley.po.UserCommentRel;
-import com.edu.nju.alley.po.UserLikeComment;
+import com.edu.nju.alley.po.*;
 import com.edu.nju.alley.service.CommentService;
+import com.edu.nju.alley.service.PostService;
 import com.edu.nju.alley.vo.CommentVO;
 import com.edu.nju.alley.vo.LikeVO;
 import com.edu.nju.alley.vo.NewRecordVO;
@@ -31,6 +30,8 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 @Service
 public class CommentServiceImpl implements CommentService {
 
+    private final PostService postService;
+
     private final CommentMapper commentMapper;
 
     private final CommentRelMapper commentRelMapper;
@@ -40,10 +41,12 @@ public class CommentServiceImpl implements CommentService {
     private final UserLikeCommentMapper userLikeCommentMapper;
 
     @Autowired
-    public CommentServiceImpl(CommentMapper commentMapper,
+    public CommentServiceImpl(PostService postService,
+                              CommentMapper commentMapper,
                               CommentRelMapper commentRelMapper,
                               UserCommentRelMapper userCommentRelMapper,
                               UserLikeCommentMapper userLikeCommentMapper) {
+        this.postService = postService;
         this.commentMapper = commentMapper;
         this.commentRelMapper = commentRelMapper;
         this.userCommentRelMapper = userCommentRelMapper;
@@ -133,6 +136,19 @@ public class CommentServiceImpl implements CommentService {
                 .select(c -> c.where(CommentRelDSS.fatherId, isEqualTo(commentId)))
                 .stream()
                 .map(t -> getSherComment(t.getChildId())).collect(Collectors.toList());
+    }
+
+    @Override
+    public Post getOriginPost(Integer commentId) {
+        Comment comment = this.getSherComment(commentId);
+        if (comment == null) throw new NoSuchDataException(Msg.NoSuchCommentError.getMsg());
+
+        while (comment.getUpperTypeId() == Type.COMMENT.getCode()) {
+            comment = this.getSherComment(comment.getUpperId());
+            if (comment == null) throw new NoSuchDataException(Msg.NoSuchCommentError.getMsg());
+        }
+
+        return postService.getSherPost(comment.getUpperId());
     }
 
 }

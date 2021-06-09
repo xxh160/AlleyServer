@@ -1,11 +1,16 @@
 package com.edu.nju.alley.vo;
 
+import com.edu.nju.alley.po.Post;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @ApiModel("PostIntroVO，post简介")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class PostIntroVO {
 
     @ApiModelProperty("帖子id")
@@ -20,11 +25,11 @@ public class PostIntroVO {
     @ApiModelProperty("帖子内容")
     private String content;
 
-    public  PostIntroVO(Integer id,Integer labelId,String title,String content){
-        this.id=id;
-        this.labelId=labelId;
-        this.title=title;
-        this.content=content;
+    public PostIntroVO(Post post) {
+        this.id = post.getId();
+        this.labelId = post.getLabelId();
+        this.title = post.getTitle();
+        this.content = post.getContent();
     }
 
 }

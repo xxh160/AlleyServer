@@ -2,6 +2,7 @@ package com.edu.nju.alley.service;
 
 import com.edu.nju.alley.dto.CommentDTO;
 import com.edu.nju.alley.po.Comment;
+import com.edu.nju.alley.po.Post;
 import com.edu.nju.alley.vo.CommentVO;
 import com.edu.nju.alley.vo.LikeVO;
 import com.edu.nju.alley.vo.NewRecordVO;
@@ -21,5 +22,7 @@ public interface CommentService {
     Comment getSherComment(Integer commentId);
 
     List<Comment> getChildComments(Integer commentId);
+
+    Post getOriginPost(Integer commentId);
 
 }

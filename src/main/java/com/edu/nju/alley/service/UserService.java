@@ -2,8 +2,7 @@ package com.edu.nju.alley.service;
 
 import com.edu.nju.alley.dto.AuthenticationDTO;
 import com.edu.nju.alley.dto.UserDTO;
-import com.edu.nju.alley.po.User;
-import com.edu.nju.alley.po.UserAuth;
+import com.edu.nju.alley.po.*;
 import com.edu.nju.alley.vo.*;
 
 import java.util.List;
@@ -45,5 +44,13 @@ public interface UserService {
     User getSherUser(Integer userId);
 
     UserAuth getSherUserAuth(Integer userAuthId);
+
+    List<UserPostRel> getSherUserPostRel(Integer userId);
+
+    List<UserCommentRel> getSherUserCommentRel(Integer userId);
+
+    List<UserLikePost> getSherUserLikePost(Integer userId);
+
+    List<UserLikeComment> getSherUserLikeComment(Integer userId);
 
 }
