@@ -130,16 +130,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public LikeVO isLike(Integer userId, Integer typeId, Integer targetId) {
         if (typeId.equals(Type.POST.getCode())) {
-            Optional<UserPostRel> userPostRelOptional = userPostRelMapper
-                    .selectOne(c -> c.where(UserPostRelDSS.postId, isEqualTo(targetId))
-                            .and(UserPostRelDSS.userId, isEqualTo(userId)));
-            return new LikeVO(userPostRelOptional.isPresent());
+            Optional<UserLikePost> userLikePostOptional = userLikePostMapper
+                    .selectOne(c -> c.where(UserLikePostDSS.postId, isEqualTo(targetId))
+                            .and(UserLikePostDSS.userId, isEqualTo(userId)));
+            return new LikeVO(userLikePostOptional.isPresent());
         }
 
-        Optional<UserCommentRel> userCommentRelOptional = userCommentRelMapper
-                .selectOne(c -> c.where(UserCommentRelDSS.commentId, isEqualTo(targetId))
-                        .and(UserCommentRelDSS.userId, isEqualTo(userId)));
-        return new LikeVO(userCommentRelOptional.isPresent());
+        Optional<UserLikeComment> userLikeCommentOptional = userLikeCommentMapper
+                .selectOne(c -> c.where(UserLikeCommentDSS.commentId, isEqualTo(targetId))
+                        .and(UserLikeCommentDSS.userId, isEqualTo(userId)));
+        return new LikeVO(userLikeCommentOptional.isPresent());
     }
 
     @Override

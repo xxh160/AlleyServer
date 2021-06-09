@@ -1,9 +1,6 @@
 package com.edu.nju.alley.service.impl;
 
-import com.edu.nju.alley.dao.CommentMapper;
-import com.edu.nju.alley.dao.CommentRelMapper;
-import com.edu.nju.alley.dao.UserCommentRelMapper;
-import com.edu.nju.alley.dao.UserLikeCommentMapper;
+import com.edu.nju.alley.dao.*;
 import com.edu.nju.alley.dao.support.CommentRelDSS;
 import com.edu.nju.alley.dao.support.UserCommentRelDSS;
 import com.edu.nju.alley.dao.support.UserLikeCommentDSS;
@@ -40,15 +37,19 @@ public class CommentServiceImpl implements CommentService {
 
     private final UserLikeCommentMapper userLikeCommentMapper;
 
+    private final PostCommentRelMapper postCommentRelMapper;
+
     @Autowired
     public CommentServiceImpl(CommentMapper commentMapper,
                               CommentRelMapper commentRelMapper,
                               UserCommentRelMapper userCommentRelMapper,
-                              UserLikeCommentMapper userLikeCommentMapper) {
+                              UserLikeCommentMapper userLikeCommentMapper,
+                              PostCommentRelMapper postCommentRelMapper) {
         this.commentMapper = commentMapper;
         this.commentRelMapper = commentRelMapper;
         this.userCommentRelMapper = userCommentRelMapper;
         this.userLikeCommentMapper = userLikeCommentMapper;
+        this.postCommentRelMapper = postCommentRelMapper;
     }
 
     @Override
