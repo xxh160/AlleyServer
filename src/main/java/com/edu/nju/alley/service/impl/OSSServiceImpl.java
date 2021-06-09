@@ -66,7 +66,6 @@ public class OSSServiceImpl implements OSSService {
     @Override
     public OSSCallbackResultVO callback(String filename, String size, String mimeType, String width, String height) {
         String file = "https://".concat(oss.getBucketName()).concat(".").concat(oss.getEndPoint()).concat("/").concat(filename);
-        
         return new OSSCallbackResultVO(file, size, mimeType, width, height);
     }
 }
