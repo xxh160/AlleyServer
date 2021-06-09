@@ -111,10 +111,19 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public NewRecordVO commentPost(CommentDTO commentDTO) {
+        // 评论数加一
+        Post post = this.getSherPost(commentDTO.getPostId());
+        if (post == null) throw new NoSuchDataException(Msg.NoSuchPostError.getMsg());
+
+        post.setCommentNum(post.getCommentNum() + 1);
+        postMapper.updateByPrimaryKeySelective(post);
+
         Comment comment = Comment.PostComment(commentDTO);
         commentService.insertOne(comment);
+
         PostCommentRel postCommentRel = new PostCommentRel(commentDTO.getPostId(), comment.getId());
         postCommentRelMapper.insert(postCommentRel);
+        
         return new NewRecordVO(comment.getId());
     }
 
