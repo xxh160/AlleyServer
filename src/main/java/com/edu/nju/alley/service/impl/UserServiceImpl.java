@@ -274,9 +274,9 @@ public class UserServiceImpl implements UserService {
     public List<PostIntroVO> getUserLikePostIntro(Integer userId) {
         List<PostIntroVO> all = new ArrayList<>();
         this.getSherUserLikePost(userId)
-                .forEach(t -> new PostIntroVO(postService.getSherPost(t.getPostId())));
+                .forEach(t -> all.add(new PostIntroVO(postService.getSherPost(t.getPostId()))));
         this.getSherUserLikeComment(userId)
-                .forEach(t -> new PostIntroVO(postService.getSherPost(commentService.getOriginPostId(t.getCommentId()))));
+                .forEach(t -> all.add(new PostIntroVO(postService.getSherPost(commentService.getOriginPostId(t.getCommentId())))));
         return all;
     }
 
