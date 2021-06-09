@@ -65,8 +65,7 @@ public class PostServiceImpl implements PostService {
         PostAuth postAuth = this.getSherPostAuth(post.getAuthId());
         if (postAuth == null) throw new NoSuchDataException(Msg.NoSuchAuthError.getMsg());
 
-        List<CommentVO> commentVOList = getPostComments(postId);
-        return new PostVO(post, commentVOList, new PostAuthVO(postAuth));
+        return new PostVO(post, this.getPostComments(postId), new PostAuthVO(postAuth));
     }
 
     @Override
@@ -155,15 +154,9 @@ public class PostServiceImpl implements PostService {
                 .collect(Collectors.toList());
     }
 
-
     @Override
     public List<CommentVO> getPostComments(Integer postId) {
-        Post post = this.getSherPost(postId);
-        if (post == null) throw new NoSuchDataException(Msg.NoSuchPostError.getMsg());
-
-        List<PostCommentRel> postCommentRels = postCommentRelMapper
-                .select(c -> c.where(PostCommentRelDSS.postId, isEqualTo(post.getId())));
-        return postCommentRels.stream()
+        return this.getSherPostCommentRel(postId).stream()
                 .map(t -> commentService.getSpecificComment(t.getCommentId()))
                 .collect(Collectors.toList());
     }
@@ -194,6 +187,11 @@ public class PostServiceImpl implements PostService {
                 .render(RenderingStrategies.MYBATIS3);
 
         return postMapper.selectMany(selectAll);
+    }
+
+    @Override
+    public List<PostCommentRel> getSherPostCommentRel(Integer postId) {
+        return postCommentRelMapper.select(c -> c.where(PostCommentRelDSS.postId, isEqualTo(postId)));
     }
 
 }

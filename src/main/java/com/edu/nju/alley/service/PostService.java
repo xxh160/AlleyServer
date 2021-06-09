@@ -4,6 +4,7 @@ import com.edu.nju.alley.dto.CommentDTO;
 import com.edu.nju.alley.dto.PostDTO;
 import com.edu.nju.alley.po.Post;
 import com.edu.nju.alley.po.PostAuth;
+import com.edu.nju.alley.po.PostCommentRel;
 import com.edu.nju.alley.vo.*;
 
 import java.util.List;
@@ -25,9 +26,11 @@ public interface PostService {
 
     List<PostViewVO> getAllPostView(Integer sort, Integer label);
 
+    List<CommentVO> getPostComments(Integer postId);
+
     List<Post> getAllSortedPosts(Integer sort);
 
-    List<CommentVO> getPostComments(Integer postId);
+    List<PostCommentRel> getSherPostCommentRel(Integer postId);
 
     Post getSherPost(Integer postId);
 

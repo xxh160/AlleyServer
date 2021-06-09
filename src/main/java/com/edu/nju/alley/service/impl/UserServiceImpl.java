@@ -268,7 +268,7 @@ public class UserServiceImpl implements UserService {
     public List<PostIntroVO> getUserCommentPostIntro(Integer userId) {
         return this.getSherUserCommentRel(userId)
                 .stream()
-                .map(c -> new PostIntroVO(commentService.getOriginPost(c.getCommentId())))
+                .map(c -> new PostIntroVO(postService.getSherPost(commentService.getOriginPostId(c.getCommentId()))))
                 .collect(Collectors.toList());
     }
 
@@ -278,7 +278,7 @@ public class UserServiceImpl implements UserService {
         this.getSherUserLikePost(userId)
                 .forEach(t -> new PostIntroVO(postService.getSherPost(t.getPostId())));
         this.getSherUserLikeComment(userId)
-                .forEach(t -> new PostIntroVO(commentService.getOriginPost(t.getCommentId())));
+                .forEach(t -> new PostIntroVO(postService.getSherPost(commentService.getOriginPostId(t.getCommentId()))));
         return all;
     }
 

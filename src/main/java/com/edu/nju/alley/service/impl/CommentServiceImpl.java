@@ -11,9 +11,11 @@ import com.edu.nju.alley.dto.CommentDTO;
 import com.edu.nju.alley.enums.Msg;
 import com.edu.nju.alley.enums.Type;
 import com.edu.nju.alley.exceptions.NoSuchDataException;
-import com.edu.nju.alley.po.*;
+import com.edu.nju.alley.po.Comment;
+import com.edu.nju.alley.po.CommentRel;
+import com.edu.nju.alley.po.UserCommentRel;
+import com.edu.nju.alley.po.UserLikeComment;
 import com.edu.nju.alley.service.CommentService;
-import com.edu.nju.alley.service.PostService;
 import com.edu.nju.alley.vo.CommentVO;
 import com.edu.nju.alley.vo.LikeVO;
 import com.edu.nju.alley.vo.NewRecordVO;
@@ -30,8 +32,6 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 @Service
 public class CommentServiceImpl implements CommentService {
 
-    private final PostService postService;
-
     private final CommentMapper commentMapper;
 
     private final CommentRelMapper commentRelMapper;
@@ -41,12 +41,10 @@ public class CommentServiceImpl implements CommentService {
     private final UserLikeCommentMapper userLikeCommentMapper;
 
     @Autowired
-    public CommentServiceImpl(PostService postService,
-                              CommentMapper commentMapper,
+    public CommentServiceImpl(CommentMapper commentMapper,
                               CommentRelMapper commentRelMapper,
                               UserCommentRelMapper userCommentRelMapper,
                               UserLikeCommentMapper userLikeCommentMapper) {
-        this.postService = postService;
         this.commentMapper = commentMapper;
         this.commentRelMapper = commentRelMapper;
         this.userCommentRelMapper = userCommentRelMapper;
@@ -121,6 +119,7 @@ public class CommentServiceImpl implements CommentService {
         userCommentRelMapper.insert(userCommentRel);
     }
 
+
     // 工具方法，负责返回各种PO
     // 工具方法不抛异常，具体由调用函数自己决定
     @Override
@@ -139,7 +138,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Post getOriginPost(Integer commentId) {
+    public Integer getOriginPostId(Integer commentId) {
         Comment comment = this.getSherComment(commentId);
         if (comment == null) throw new NoSuchDataException(Msg.NoSuchCommentError.getMsg());
 
@@ -148,7 +147,7 @@ public class CommentServiceImpl implements CommentService {
             if (comment == null) throw new NoSuchDataException(Msg.NoSuchCommentError.getMsg());
         }
 
-        return postService.getSherPost(comment.getUpperId());
+        return comment.getUpperId();
     }
 
 }
