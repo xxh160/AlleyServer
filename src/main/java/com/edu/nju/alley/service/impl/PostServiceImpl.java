@@ -110,7 +110,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public NewRecordVO commentPost(CommentDTO commentDTO) {
+    public CommentVO commentPost(CommentDTO commentDTO) {
         // 评论数加一
         Post post = this.getSherPost(commentDTO.getPostId());
         if (post == null) throw new NoSuchDataException(Msg.NoSuchPostError.getMsg());
@@ -123,8 +123,8 @@ public class PostServiceImpl implements PostService {
 
         PostCommentRel postCommentRel = new PostCommentRel(commentDTO.getPostId(), comment.getId());
         postCommentRelMapper.insert(postCommentRel);
-        
-        return new NewRecordVO(comment.getId());
+
+        return new CommentVO(comment, commentDTO.getUserId(), null);
     }
 
     @Override

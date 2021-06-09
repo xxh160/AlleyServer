@@ -18,7 +18,7 @@ public interface PostService {
 
     LikeVO likePost(Integer postId, Integer likerId);
 
-    NewRecordVO commentPost(CommentDTO commentDTO);
+    CommentVO commentPost(CommentDTO commentDTO);
 
     NewRecordVO createPost(PostDTO postDTO);
 

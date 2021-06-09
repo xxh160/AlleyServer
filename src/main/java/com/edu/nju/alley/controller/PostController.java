@@ -53,8 +53,8 @@ public class PostController {
 
     @ApiOperation("评论帖子")
     @PostMapping("/comment")
-    public ResponseVO<NewRecordVO> commentPost(@RequestBody CommentDTO commentDTO) {
-        return ResponseVO.<NewRecordVO>success().add(postService.commentPost(commentDTO));
+    public ResponseVO<CommentVO> commentPost(@RequestBody CommentDTO commentDTO) {
+        return ResponseVO.<CommentVO>success().add(postService.commentPost(commentDTO));
     }
 
     @ApiOperation("新建帖子")
