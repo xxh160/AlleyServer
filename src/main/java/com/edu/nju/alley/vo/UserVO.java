@@ -29,6 +29,8 @@ public class UserVO {
     @ApiModelProperty("用户权限")
     private UserAuthVO auth;
 
+    @ApiModelProperty("性别")
+    private Integer gender;
 
     public UserVO(User user, UserAuthVO userAuthVO) {
         id = user.getId();
@@ -37,5 +39,6 @@ public class UserVO {
         this.name = user.getName();
         this.avatar = user.getAvatar();
         this.auth = userAuthVO;
+        this.gender = user.getGender();
     }
 }

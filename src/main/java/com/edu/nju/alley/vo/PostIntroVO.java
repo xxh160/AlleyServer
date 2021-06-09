@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@ApiModel("PostIntroVO，post简介")
+@ApiModel("PostIntroVO")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

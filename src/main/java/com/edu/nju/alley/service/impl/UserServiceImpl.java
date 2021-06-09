@@ -105,8 +105,6 @@ public class UserServiceImpl implements UserService {
         //得到用户基本信息
         User user = this.getSherUser(userId);
         if (user == null) throw new NoSuchDataException(Msg.NoSuchUserError.getMsg());
-        //得到用户所有帖子 已删除
-
         //得到用户权限数据
         UserAuth userAuth = this.getSherUserAuth(user.getAuthId());
         if (userAuth == null) throw new NoSuchDataException(Msg.NoSuchAuthError.getMsg());

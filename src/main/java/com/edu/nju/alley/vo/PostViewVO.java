@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-@ApiModel("PostViewVO，一般用于地图上的预览")
+@ApiModel("PostViewVO")
 @Data
 @AllArgsConstructor
 public class PostViewVO {
