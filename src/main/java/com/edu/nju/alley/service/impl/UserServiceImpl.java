@@ -10,10 +10,7 @@ import com.edu.nju.alley.dto.UserDTO;
 import com.edu.nju.alley.enums.Msg;
 import com.edu.nju.alley.enums.Type;
 import com.edu.nju.alley.exceptions.NoSuchDataException;
-import com.edu.nju.alley.po.User;
-import com.edu.nju.alley.po.UserAuth;
-import com.edu.nju.alley.po.UserCommentRel;
-import com.edu.nju.alley.po.UserPostRel;
+import com.edu.nju.alley.po.*;
 import com.edu.nju.alley.service.*;
 import com.edu.nju.alley.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +29,8 @@ public class UserServiceImpl implements UserService {
     private final PostService postService;
 
     private final CommentService commentService;
+
+    private final CommentMapper commentMapper;
 
     private final UserMapper userMapper;
 
@@ -54,6 +53,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     public UserServiceImpl(PostService postService,
                            CommentService commentService,
+                           CommentMapper commentMapper,
                            UserMapper userMapper,
                            UserLikeCommentMapper userLikeCommentMapper,
                            UserLikePostMapper userLikePostMapper,
@@ -65,6 +65,7 @@ public class UserServiceImpl implements UserService {
                            WechatConfig wechat) {
         this.postService = postService;
         this.commentService = commentService;
+        this.commentMapper=commentMapper;
         this.userMapper = userMapper;
         this.userLikeCommentMapper = userLikeCommentMapper;
         this.userLikePostMapper = userLikePostMapper;
@@ -270,26 +271,57 @@ public class UserServiceImpl implements UserService {
     public List<PostIntroVO> getUserPostIntro(Integer userId) {
         List<PostIntroVO> all = new ArrayList<>();
 
-        List<UserPostRel> userPostRelList = userPostRelMapper
-                .select(c -> c.where(UserPostRelDSS.userId, isEqualTo(userId)));
-        //还未实现完
+        //获得用户所有的帖子
+        List<PostVO> postVOS=getUserPost(userId);
 
+        //将每个帖子的信息取出来封装
+        postVOS.forEach(cur->all.add(Inverse(cur)));
 
         return all;
     }
 
     @Override
     public List<PostIntroVO> getUserCommentPostIntro(Integer userId) {
-        //未实现
-        return null;
+        List<PostIntroVO> all = new ArrayList<>();
+
+        //获得用户所有的评论
+        List<CommentVO> commentVOS=getUserComment(userId);
+
+        //找出所有用户评论过的帖子的内容
+        commentVOS.forEach(cur->all.add(getCommentPost(cur)));
+
+        return all;
     }
+
+    public PostIntroVO getCommentPost(CommentVO commentVO){
+
+        //找到帖子id
+        while(commentVO.getPostId()==null){//如果当前评论的父级不是帖子
+            commentVO=commentService.getSpecificComment(commentVO.getFatherId());//网上找
+        }
+
+        //返回该帖子
+        PostVO postVO=postService.getSpecificPost(commentVO.getPostId());
+
+        //封装成PostIntroVO
+        return Inverse(postVO);
+    }
+
+
+
 
     @Override
     public List<PostIntroVO> getUserLikePostIntro(Integer userId) {
-        //未实现
-        return null;
+
+        List<PostIntroVO> all=new ArrayList<>();
+        userLikePostMapper.select(c -> c.where(UserLikePostDSS.userId, isEqualTo(userId)))
+                .forEach(t -> all.add(Inverse(postService.getSpecificPost(t.getPostId()))));
+        return all;
     }
 
+    public PostIntroVO Inverse(PostVO postVO){
+        return new PostIntroVO(postVO.getId(),postVO.getLabelId(),postVO.getTitle(),postVO.getContent());
+    }
     // 工具方法，负责返回各种PO
     // 工具方法不抛异常，具体由调用函数自己决定
     @Override

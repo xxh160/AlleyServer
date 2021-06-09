@@ -19,4 +19,12 @@ public class PostIntroVO {
 
     @ApiModelProperty("帖子内容")
     private String content;
+
+    public  PostIntroVO(Integer id,Integer labelId,String title,String content){
+        this.id=id;
+        this.labelId=labelId;
+        this.title=title;
+        this.content=content;
+    }
+
 }
