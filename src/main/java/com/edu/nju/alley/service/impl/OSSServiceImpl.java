@@ -1,5 +1,6 @@
 package com.edu.nju.alley.service.impl;
 
+import cn.hutool.json.JSONUtil;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.model.MatchMode;
@@ -51,14 +52,14 @@ public class OSSServiceImpl implements OSSService {
         // 提交节点
         String action = "https://" + oss.getBucketName() + "." + oss.getEndPoint();
         String signature = ossClient.calculatePostSignature(postPolicy);
-
+        
         return new OSSPolicyVO(
                 ossClient.getCredentialsProvider().getCredentials().getAccessKeyId(),
                 policy,
                 signature,
                 dir,
                 action,
-                new OSSCallbackParamVO(oss.getCallback()));
+                BinaryUtil.toBase64String(JSONUtil.parse(new OSSCallbackParamVO(oss.getCallback())).toString().getBytes(StandardCharsets.UTF_8)));
     }
 
     @Override

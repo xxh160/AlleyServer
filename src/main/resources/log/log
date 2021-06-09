@@ -1,0 +1,34 @@
+2021-06-10 02:33:57.772  INFO 38462 --- [restartedMain] com.edu.nju.alley.ServerApplication      : Starting ServerApplication using Java 16.0.1 on xiayi with PID 38462 (/home/xiayi/Mine/code/yours/nju-alley/alley-server/build/classes/java/main started by xiayi in /home/xiayi/Mine/code/yours/nju-alley/alley-server)
+2021-06-10 02:33:57.777  INFO 38462 --- [restartedMain] com.edu.nju.alley.ServerApplication      : No active profile set, falling back to default profiles: default
+2021-06-10 02:33:57.885  INFO 38462 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2021-06-10 02:33:57.886  INFO 38462 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2021-06-10 02:34:00.458  INFO 38462 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2021-06-10 02:34:00.491  INFO 38462 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 19 ms. Found 0 JPA repository interfaces.
+2021-06-10 02:34:00.994  INFO 38462 --- [restartedMain] o.s.cloud.context.scope.GenericScope     : BeanFactory id=2f2ff356-606a-3179-95f9-906df0fab9b6
+2021-06-10 02:34:02.560  INFO 38462 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8443 (https)
+2021-06-10 02:34:02.577  INFO 38462 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2021-06-10 02:34:02.577  INFO 38462 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.45]
+2021-06-10 02:34:02.637  INFO 38462 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2021-06-10 02:34:02.638  INFO 38462 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 4750 ms
+2021-06-10 02:34:03.151  INFO 38462 --- [restartedMain] c.a.d.s.b.a.DruidDataSourceAutoConfigure : Init DruidDataSource
+2021-06-10 02:34:05.444  INFO 38462 --- [restartedMain] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} inited
+2021-06-10 02:34:05.941  INFO 38462 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2021-06-10 02:34:06.025  INFO 38462 --- [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.30.Final
+2021-06-10 02:34:06.287  INFO 38462 --- [restartedMain] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2021-06-10 02:34:06.482  INFO 38462 --- [restartedMain] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL57Dialect
+2021-06-10 02:34:06.760  INFO 38462 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2021-06-10 02:34:06.783  INFO 38462 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2021-06-10 02:34:08.216  WARN 38462 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2021-06-10 02:34:08.477  INFO 38462 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2021-06-10 02:34:09.747  INFO 38462 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 5 endpoint(s) beneath base path '/actuator'
+2021-06-10 02:34:10.162  INFO 38462 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2021-06-10 02:34:11.605  INFO 38462 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8443 (https) with context path ''
+2021-06-10 02:34:12.865  INFO 38462 --- [restartedMain] com.edu.nju.alley.ServerApplication      : Started ServerApplication in 15.967 seconds (JVM running for 17.373)
+2021-06-10 02:34:12.978  INFO 38462 --- [RMI TCP Connection(4)-127.0.0.1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2021-06-10 02:34:12.979  INFO 38462 --- [RMI TCP Connection(4)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2021-06-10 02:34:12.983  INFO 38462 --- [RMI TCP Connection(4)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 4 ms
+2021-06-10 02:34:23.956  INFO 38462 --- [https-jsse-nio-8443-exec-4] com.edu.nju.alley.aop.ApiAspect          : {"method":"GET","description":"返回特定的帖子","uri":"/api/post/view/13","url":"https://localhost:8443/api/post/view/13","result":{"code":1,"data":{"comments":[{"comments":[],"postId":13,"userId":10,"content":"？","likeNum":0,"createTime":1623246630000,"id":66},{"comments":[],"postId":13,"userId":7,"content":"a","likeNum":0,"createTime":1623248943000,"id":68},{"comments":[],"postId":13,"userId":7,"content":"","likeNum":0,"createTime":1623249061000,"id":69},{"comments":[],"postId":13,"userId":7,"content":"","likeNum":0,"createTime":1623249082000,"id":70},{"comments":[],"postId":13,"userId":7,"content":"ak","likeNum":0,"createTime":1623253964000,"id":76},{"comments":[],"postId":13,"userId":7,"content":"aaaa","likeNum":0,"createTime":1623254022000,"id":77},{"comments":[],"postId":13,"userId":7,"content":"hxd","likeNum":0,"createTime":1623254072000,"id":78},{"comments":[],"postId":13,"userId":7,"content":"linjunjie","likeNum":0,"createTime":1623254575000,"id":79}],"auth":{"visible":true,"comment":true},"latitude":32.1213,"pictureUrl":"","title":"测试","anchorId":0,"userId":7,"content":"测试","likeNum":2,"commentNum":8,"hasPicture":true,"labelId":1,"createTime":1622989727000,"id":13,"longitude":118.959},"message":"successful"},"basePath":"https://localhost:8443","startTime":1623263661920,"spendTime":1960}
+2021-06-10 02:35:05.215  INFO 38462 --- [SpringContextShutdownHook] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
+2021-06-10 02:35:05.237  INFO 38462 --- [SpringContextShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2021-06-10 02:35:05.241  INFO 38462 --- [SpringContextShutdownHook] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} closing ...
+2021-06-10 02:35:05.249  INFO 38462 --- [SpringContextShutdownHook] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} closed

@@ -82,3 +82,7 @@ management:
     web:
       exposure:
         include: health,info,beans,conditions,env
+
+logging:
+  file:
+    name: src/main/resources/log/log

@@ -28,6 +28,6 @@ public class OSSPolicyVO {
     private String host;
 
     @ApiModelProperty("上传成功后的回调设置")
-    private OSSCallbackParamVO callback;
+    private String callback;
 
 }
