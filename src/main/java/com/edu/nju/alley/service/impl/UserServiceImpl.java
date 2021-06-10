@@ -259,6 +259,7 @@ public class UserServiceImpl implements UserService {
         return this.getSherUserPostRel(userId)
                 .stream()
                 .map(c -> new PostIntroVO(postService.getSherPost(c.getPostId())))
+                .distinct()//去重
                 .collect(Collectors.toList());
     }
 
@@ -267,6 +268,7 @@ public class UserServiceImpl implements UserService {
         return this.getSherUserCommentRel(userId)
                 .stream()
                 .map(c -> new PostIntroVO(postService.getSherPost(commentService.getOriginPostId(c.getCommentId()))))
+                .distinct()//去重
                 .collect(Collectors.toList());
     }
 
@@ -277,7 +279,7 @@ public class UserServiceImpl implements UserService {
                 .forEach(t -> all.add(new PostIntroVO(postService.getSherPost(t.getPostId()))));
         this.getSherUserLikeComment(userId)
                 .forEach(t -> all.add(new PostIntroVO(postService.getSherPost(commentService.getOriginPostId(t.getCommentId())))));
-        return all;
+        return all.stream().distinct().collect(Collectors.toList());//去重
     }
 
     // 工具方法，负责返回各种PO
