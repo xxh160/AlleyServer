@@ -18,10 +18,10 @@ public interface CommentService {
 
     void insertOne(Comment comment);
 
+    void deleteComment(Integer commentId);
+
     Comment getSherComment(Integer commentId);
 
     List<Comment> getChildComments(Integer commentId);
-
-    Integer getOriginPostId(Integer commentId);
 
 }

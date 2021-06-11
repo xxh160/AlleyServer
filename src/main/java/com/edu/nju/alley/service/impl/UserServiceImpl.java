@@ -3,8 +3,9 @@ package com.edu.nju.alley.service.impl;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.edu.nju.alley.config.WechatConfig;
-import com.edu.nju.alley.dao.*;
-import com.edu.nju.alley.dao.support.*;
+import com.edu.nju.alley.dao.UserAuthMapper;
+import com.edu.nju.alley.dao.UserMapper;
+import com.edu.nju.alley.dao.support.UserDSS;
 import com.edu.nju.alley.dto.AuthenticationDTO;
 import com.edu.nju.alley.dto.UserDTO;
 import com.edu.nju.alley.enums.Msg;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,15 +32,9 @@ public class UserServiceImpl implements UserService {
 
     private final CommentService commentService;
 
+    private final PostCommentService postCommentService;
+
     private final UserMapper userMapper;
-
-    private final UserLikeCommentMapper userLikeCommentMapper;
-
-    private final UserLikePostMapper userLikePostMapper;
-
-    private final UserPostRelMapper userPostRelMapper;
-
-    private final UserCommentRelMapper userCommentRelMapper;
 
     private final UserAuthMapper userAuthMapper;
 
@@ -48,44 +44,49 @@ public class UserServiceImpl implements UserService {
 
     private final WechatConfig wechat;
 
+    private final UserCommentService userCommentService;
+
+    private final UserPostService userPostService;
+
+
     @Autowired
     public UserServiceImpl(PostService postService,
                            CommentService commentService,
+                           PostCommentService postCommentService,
                            UserMapper userMapper,
-                           UserLikeCommentMapper userLikeCommentMapper,
-                           UserLikePostMapper userLikePostMapper,
-                           UserPostRelMapper userPostRelMapper,
-                           UserCommentRelMapper userCommentRelMapper,
                            UserAuthMapper userAuthMapper,
                            AuthenticationService authenticationService,
                            WechatService wechatService,
-                           WechatConfig wechat) {
+                           WechatConfig wechat,
+                           UserCommentService userCommentService,
+                           UserPostService userPostService) {
         this.postService = postService;
         this.commentService = commentService;
+        this.postCommentService = postCommentService;
         this.userMapper = userMapper;
-        this.userLikeCommentMapper = userLikeCommentMapper;
-        this.userLikePostMapper = userLikePostMapper;
-        this.userPostRelMapper = userPostRelMapper;
-        this.userCommentRelMapper = userCommentRelMapper;
         this.userAuthMapper = userAuthMapper;
         this.authenticationService = authenticationService;
         this.wechatService = wechatService;
         this.wechat = wechat;
+        this.userCommentService = userCommentService;
+        this.userPostService = userPostService;
     }
 
     @Override
     public List<PostVO> getUserPost(Integer userId) {
         // 返回用户所有帖子
-        return this.getSherUserPostRel(userId).stream()
+        return this.userPostService.getSherUserPostRel(userId).stream()
                 .map(t -> postService.getSpecificPost(t.getPostId()))
+                .sorted(Comparator.comparing(PostVO::getCreateTime).reversed())
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<CommentVO> getUserComment(Integer userId) {
         //返回用户所有评论
-        return this.getSherUserCommentRel(userId).stream()
+        return userCommentService.getSherUserCommentRel(userId).stream()
                 .map(t -> commentService.getSpecificComment(t.getCommentId()))
+                .sorted(Comparator.comparing(CommentVO::getCreateTime).reversed())
                 .collect(Collectors.toList());
     }
 
@@ -93,9 +94,9 @@ public class UserServiceImpl implements UserService {
     public List<UserActionVO> getUserLike(Integer userId) {
         //返回点赞的帖子和评论
         List<UserActionVO> userActionVOList = new ArrayList<>();
-        this.getSherUserLikeComment(userId)
+        userCommentService.getSherUserLikeComment(userId)
                 .forEach(t -> userActionVOList.add(new UserActionVO(t)));
-        this.getSherUserLikePost(userId)
+        userPostService.getSherUserLikePost(userId)
                 .forEach(t -> userActionVOList.add(new UserActionVO(t)));
         return userActionVOList;
     }
@@ -129,17 +130,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public LikeVO isLike(Integer userId, Integer typeId, Integer targetId) {
-        if (typeId.equals(Type.POST.getCode())) {
-            Optional<UserLikePost> userLikePostOptional = userLikePostMapper
-                    .selectOne(c -> c.where(UserLikePostDSS.postId, isEqualTo(targetId))
-                            .and(UserLikePostDSS.userId, isEqualTo(userId)));
-            return new LikeVO(userLikePostOptional.isPresent());
-        }
-
-        Optional<UserLikeComment> userLikeCommentOptional = userLikeCommentMapper
-                .selectOne(c -> c.where(UserLikeCommentDSS.commentId, isEqualTo(targetId))
-                        .and(UserLikeCommentDSS.userId, isEqualTo(userId)));
-        return new LikeVO(userLikeCommentOptional.isPresent());
+        if (typeId.equals(Type.POST.getCode()))
+            return new LikeVO(userPostService.getSherUserLikePost(userId, targetId) != null);
+        return new LikeVO(userCommentService.getSherUserLikeComment(userId, targetId) != null);
     }
 
     @Override
@@ -207,18 +200,16 @@ public class UserServiceImpl implements UserService {
         List<UserActionVO> all = new ArrayList<>();
         // 分为post和comment两块
         // post，根据userid从user_post_rel中取出user所有的postId，在user_like_post中寻找所有和postId相关的userId
-        List<UserPostRel> userPostRelList = userPostRelMapper
-                .select(c -> c.where(UserPostRelDSS.userId, isEqualTo(userId)));
+        List<UserPostRel> userPostRelList = userPostService.getSherUserPostRel(userId);
 
-        userPostRelList.forEach(cur -> all.addAll(userLikePostMapper
-                .select(c -> c.where(UserLikePostDSS.postId, isEqualTo(cur.getPostId())))
+        userPostRelList.forEach(cur -> all.addAll(userPostService
+                .getSherUserLikePostByPost(cur.getPostId())
                 .stream().map(UserActionVO::new).collect(Collectors.toList())));
         // comment类似
-        List<UserCommentRel> userCommentRelList = userCommentRelMapper
-                .select(c -> c.where(UserCommentRelDSS.userId, isEqualTo(userId)));
+        List<UserCommentRel> userCommentRelList = userCommentService.getSherUserCommentRel(userId);
 
-        userCommentRelList.forEach(cur -> all.addAll(userLikeCommentMapper
-                .select(c -> c.where(UserLikeCommentDSS.commentId, isEqualTo(cur.getCommentId())))
+        userCommentRelList.forEach(cur -> all.addAll(userCommentService
+                .getSherUserLikeCommentByComment(cur.getCommentId())
                 .stream().map(UserActionVO::new).collect(Collectors.toList())));
 
         return all;
@@ -228,15 +219,13 @@ public class UserServiceImpl implements UserService {
     public List<UserActionVO> allCommentMe(Integer userId) {
         List<UserActionVO> all = new ArrayList<>();
 
-        List<UserPostRel> userPostRelList = userPostRelMapper
-                .select(c -> c.where(UserPostRelDSS.userId, isEqualTo(userId)));
+        List<UserPostRel> userPostRelList = userPostService.getSherUserPostRel(userId);
 
         userPostRelList.forEach(cur -> all.addAll(postService.getPostComments(cur.getPostId())
                 .stream().map(t -> UserActionVO.userCommentAPost(t.getUserId(), cur.getPostId()))
                 .collect(Collectors.toList())));
 
-        List<UserCommentRel> userCommentRelList = userCommentRelMapper
-                .select(c -> c.where(UserCommentRelDSS.userId, isEqualTo(userId)));
+        List<UserCommentRel> userCommentRelList = userCommentService.getSherUserCommentRel(userId);
 
         userCommentRelList.forEach(cur -> all.addAll(commentService.getChildComments(cur.getCommentId())
                 .stream().map(t -> UserActionVO.userCommentAComment(t.getUserId(), cur.getCommentId()))
@@ -256,30 +245,44 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<PostIntroVO> getUserPostIntro(Integer userId) {
-        return this.getSherUserPostRel(userId)
+        return userPostService.getSherUserPostRel(userId)
                 .stream()
-                .map(c -> new PostIntroVO(postService.getSherPost(c.getPostId())))
+                .map(c -> postService.getSherPost(c.getPostId()))
+                .sorted(Comparator.comparing(Post::getCreateT).reversed())
+                .map(PostIntroVO::new)
                 .distinct() // 去重
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<PostIntroVO> getUserCommentPostIntro(Integer userId) {
-        return this.getSherUserCommentRel(userId)
+        return userCommentService.getSherUserCommentRel(userId)
                 .stream()
-                .map(c -> new PostIntroVO(postService.getSherPost(commentService.getOriginPostId(c.getCommentId()))))
+                .map(c -> postService.getSherPost(postCommentService.getSherPostCommentRelByComment(c.getCommentId()).getPostId()))
+                .sorted(Comparator.comparing(Post::getCreateT).reversed())
+                .map(PostIntroVO::new)
                 .distinct() // 去重
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<PostIntroVO> getUserLikePostIntro(Integer userId) {
-        List<PostIntroVO> all = new ArrayList<>();
-        this.getSherUserLikePost(userId)
-                .forEach(t -> all.add(new PostIntroVO(postService.getSherPost(t.getPostId()))));
-        this.getSherUserLikeComment(userId)
-                .forEach(t -> all.add(new PostIntroVO(postService.getSherPost(commentService.getOriginPostId(t.getCommentId())))));
-        return all.stream().distinct().collect(Collectors.toList()); // 去重
+        List<Post> all = userPostService
+                .getSherUserLikePost(userId)
+                .stream()
+                .map(c -> postService.getSherPost(c.getPostId()))
+                .collect(Collectors.toList());
+
+        all.addAll(userCommentService
+                .getSherUserLikeComment(userId)
+                .stream()
+                .map(c -> postService.getSherPost(postCommentService.getSherPostCommentRelByComment(c.getCommentId()).getPostId()))
+                .collect(Collectors.toList()));
+
+        return all.stream()
+                .sorted(Comparator.comparing(Post::getCreateT).reversed())
+                .map(PostIntroVO::new)
+                .distinct().collect(Collectors.toList()); // 去重
     }
 
     // 工具方法，负责返回各种PO
@@ -298,24 +301,5 @@ public class UserServiceImpl implements UserService {
         return userAuthOptional.get();
     }
 
-    @Override
-    public List<UserPostRel> getSherUserPostRel(Integer userId) {
-        return userPostRelMapper.select(c -> c.where(UserPostRelDSS.userId, isEqualTo(userId)));
-    }
-
-    @Override
-    public List<UserCommentRel> getSherUserCommentRel(Integer userId) {
-        return userCommentRelMapper.select(c -> c.where(UserCommentRelDSS.userId, isEqualTo(userId)));
-    }
-
-    @Override
-    public List<UserLikePost> getSherUserLikePost(Integer userId) {
-        return userLikePostMapper.select(c -> c.where(UserLikePostDSS.userId, isEqualTo(userId)));
-    }
-
-    @Override
-    public List<UserLikeComment> getSherUserLikeComment(Integer userId) {
-        return userLikeCommentMapper.select(c -> c.where(UserLikeCommentDSS.userId, isEqualTo(userId)));
-    }
 
 }
