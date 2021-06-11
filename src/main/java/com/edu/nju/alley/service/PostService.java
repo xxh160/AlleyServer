@@ -23,13 +23,13 @@ public interface PostService {
 
     void deletePost(Integer postId);
 
-    List<PostViewVO> getAllPostView(Integer sort, Integer label);
+    List<PostViewVO> getAllPostView(Integer sort, Integer label, Integer userId);
 
     List<CommentVO> getPostComments(Integer postId);
 
     List<Post> getAllSortedPosts(Integer sort);
 
-    
+
     Post getSherPost(Integer postId);
 
     PostAuth getSherPostAuth(Integer postAuthId);

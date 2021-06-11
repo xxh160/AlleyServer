@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
         // 返回用户所有帖子
         return this.userPostService.getSherUserPostRel(userId).stream()
                 .map(t -> postService.getSpecificPost(t.getPostId()))
-                .sorted(Comparator.comparing(PostVO::getCreateTime).reversed())
+                .sorted(Comparator.comparing(PostVO::getCreateTime))
                 .collect(Collectors.toList());
     }
 
@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
         //返回用户所有评论
         return userCommentService.getSherUserCommentRel(userId).stream()
                 .map(t -> commentService.getSpecificComment(t.getCommentId()))
-                .sorted(Comparator.comparing(CommentVO::getCreateTime).reversed())
+                .sorted(Comparator.comparing(CommentVO::getCreateTime))
                 .collect(Collectors.toList());
     }
 
@@ -248,7 +248,7 @@ public class UserServiceImpl implements UserService {
         return userPostService.getSherUserPostRel(userId)
                 .stream()
                 .map(c -> postService.getSherPost(c.getPostId()))
-                .sorted(Comparator.comparing(Post::getCreateT).reversed())
+                .sorted(Comparator.comparing(Post::getCreateT))
                 .map(PostIntroVO::new)
                 .distinct() // 去重
                 .collect(Collectors.toList());
@@ -259,7 +259,7 @@ public class UserServiceImpl implements UserService {
         return userCommentService.getSherUserCommentRel(userId)
                 .stream()
                 .map(c -> postService.getSherPost(postCommentService.getSherPostCommentRelByComment(c.getCommentId()).getPostId()))
-                .sorted(Comparator.comparing(Post::getCreateT).reversed())
+                .sorted(Comparator.comparing(Post::getCreateT))
                 .map(PostIntroVO::new)
                 .distinct() // 去重
                 .collect(Collectors.toList());
@@ -280,7 +280,7 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList()));
 
         return all.stream()
-                .sorted(Comparator.comparing(Post::getCreateT).reversed())
+                .sorted(Comparator.comparing(Post::getCreateT))
                 .map(PostIntroVO::new)
                 .distinct().collect(Collectors.toList()); // 去重
     }

@@ -24,7 +24,6 @@ public class AnchorServiceImpl implements AnchorService {
     public List<PostViewVO> getAllPosts(Integer anchorId,
                                         Integer sort,
                                         Integer label) {
-
         return postService.getAllSortedPosts(sort)
                 .stream()
                 .filter(c -> (c.getLabelId().equals(label) || label == Label.ALL.getCode()))

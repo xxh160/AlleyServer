@@ -154,11 +154,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostViewVO> getAllPostView(Integer sort, Integer label) {
+    public List<PostViewVO> getAllPostView(Integer sort, Integer label, Integer userId) {
         return this.getAllSortedPosts(sort)
                 .stream()
-                .filter(c -> (c.getLabelId().equals(label) || label == Label.ALL.getCode()))
-                .sorted(Comparator.comparing(Post::getCreateT).reversed())
+                .filter(c -> (c.getLabelId().equals(label)
+                        || label == Label.ALL.getCode()
+                        || (label == Label.SELF.getCode() && c.getUserId().equals(userId))))
+                .sorted(Comparator.comparing(Post::getCreateT))
                 .map(t -> new PostViewVO(t.getId(), t.getLatitude(), t.getLongitude()))
                 .collect(Collectors.toList());
     }
@@ -167,7 +169,7 @@ public class PostServiceImpl implements PostService {
     public List<CommentVO> getPostComments(Integer postId) {
         return postCommentService.getSherPostCommentRel(postId).stream()
                 .map(t -> commentService.getSpecificComment(t.getCommentId()))
-                .sorted(Comparator.comparing(CommentVO::getCreateTime).reversed())
+                .sorted(Comparator.comparing(CommentVO::getCreateTime))
                 .collect(Collectors.toList());
     }
 
@@ -198,7 +200,7 @@ public class PostServiceImpl implements PostService {
 
         return postMapper.selectMany(selectAll)
                 .stream()
-                .sorted(Comparator.comparing(Post::getCreateT).reversed())
+                .sorted(Comparator.comparing(Post::getCreateT))
                 .collect(Collectors.toList());
     }
 

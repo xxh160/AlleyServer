@@ -23,11 +23,12 @@ public class PostController {
         this.postService = postService;
     }
 
-    @ApiOperation("返回所有帖子预览；sortId决定排序方式1按时间2按热度，labelId决定标签筛选方式，0全部1随笔2通知3反馈")
+    @ApiOperation("返回所有帖子预览；sortId决定排序方式1按时间2按热度，labelId决定标签筛选方式，0全部1随笔2通知3反馈4仅看自己")
     @GetMapping("/all")
-    public ResponseVO<List<PostViewVO>> getAllPosts(@RequestParam Integer sort,
+    public ResponseVO<List<PostViewVO>> getAllPosts(@RequestParam Integer userId,
+                                                    @RequestParam Integer sort,
                                                     @RequestParam Integer label) {
-        return ResponseVO.<List<PostViewVO>>success().add(postService.getAllPostView(sort, label));
+        return ResponseVO.<List<PostViewVO>>success().add(postService.getAllPostView(sort, label, userId));
     }
 
     @ApiOperation("返回特定的帖子")
