@@ -22,4 +22,10 @@ public class UserServiceTest {
         List<UserActionVO> list = userService.allLikeMe(1);
     }
 
+    @Test
+    public void getUserCommentPostIntroTest() {
+        var list = userService.getUserCommentPostIntro(7);
+        list.forEach(System.out::println);
+    }
+
 }
