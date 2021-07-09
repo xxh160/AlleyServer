@@ -384,7 +384,7 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/UserLikeVO'
+                      $ref: '#/components/schemas/UserActionVO'
   /user/view/{userId}:
     get:
       tags:

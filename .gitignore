@@ -138,3 +138,5 @@ gradle-app.setting
 # End of https://www.toptal.com/developers/gitignore/api/java,gradle,intellij+all
 
 src/main/resources/log
+
+**/application-dev.yml
